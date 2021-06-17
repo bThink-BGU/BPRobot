@@ -2,7 +2,7 @@
 [![Docs](https://github.com/bThink-BGU/BPRobot/actions/workflows/docs.yml/badge.svg)](https://bthink-bgu.github.io/BPRobot/)
 
 # BPRobot
-BPRobot is a library for programming Lego Mindstorms with BPjs.
+BPRobot is a library for programming Lego Mindstorms with [BPjs](https://github.com/bThink-BGU/BPjs).
 
 The library was written by Adi Jumah, David Ziegler and Peleg Avraham in 2021 as their final project for their BSc in software engineering in Ben-Gurion University.
 

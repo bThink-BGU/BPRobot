@@ -1,0 +1,4 @@
+before_install:
+  - echo "Copy local repository"
+  - mkdir -p ~/.m2/repository
+  - cp -fr lib/* ~/.m2/repository/

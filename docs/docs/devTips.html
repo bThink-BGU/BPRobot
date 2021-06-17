@@ -1,0 +1,113 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appendices &#8212; RobotBP 0.1 documentation</title>
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Packages and Classes" href="classes.html" />
+    <link rel="prev" title="Add Queue" href="addQueue.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="classes.html" title="Packages and Classes"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="addQueue.html" title="Add Queue"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">RobotBP 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="devManual.html" accesskey="U">Developer Manual: Extending RobotBP</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Appendices</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="appendices">
+<h1>Appendices<a class="headerlink" href="#appendices" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><p>The robot is slower than BPjs, and it may be overflowed with commands and this can cause lost of commands.
+make sure you don’t send to many commands together (especially not in while(true)).</p></li>
+<li><p>When adding a new functionality to CommandHandler in RobotActuator - you might want to test it,
+use the TestBoard object for these tests if needed.
+This will allow you to test methods without connecting the robot.</p></li>
+<li><p>When updating one of the projects - make sure you run ‘mvn deploy’ command to update the maven dependency.</p></li>
+<li><p>When you add new command you can use the nicknames that you define in the build command and subscribe them, as parameters in the json of the command.</p></li>
+</ul>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="addQueue.html"
+                        title="previous chapter">Add Queue</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="classes.html"
+                        title="next chapter">Packages and Classes</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/devTips.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="classes.html" title="Packages and Classes"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="addQueue.html" title="Add Queue"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">RobotBP 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="devManual.html" >Developer Manual: Extending RobotBP</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Appendices</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright Ben-Gurion University SE project documentation 2021, Adi Jumah, David Ziegler, Peleg Avraham.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.1.2.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,162 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Manual: Commands in RobotBP tutorial &#8212; RobotBP 0.1 documentation</title>
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Introduction" href="userIntro.html" />
+    <link rel="prev" title="Setup instructions" href="setup.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="userIntro.html" title="Introduction"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="setup.html" title="Setup instructions"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">RobotBP 0.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">User Manual: Commands in RobotBP tutorial</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="user-manual-commands-in-robotbp-tutorial">
+<h1>User Manual: Commands in RobotBP tutorial<a class="headerlink" href="#user-manual-commands-in-robotbp-tutorial" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="userIntro.html">Introduction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="userIntro.html#code-usage">Code usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="userIntro.html#coding-the-program">Coding the program</a></li>
+<li class="toctree-l2"><a class="reference internal" href="userIntro.html#running-the-program">Running the program</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="build.html">Build</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="build.html#event-description">Event description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="build.html#json-structure">Json structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="build.html#port-description">Port Description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="build.html#support-nick-names">Support nick names</a></li>
+<li class="toctree-l2"><a class="reference internal" href="build.html#example">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="subscribe.html">Subscribe</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="subscribe.html#event-description">Event description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="subscribe.html#json-structure">Json structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="subscribe.html#example">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="unsubscribe.html">Unsubscribe</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="unsubscribe.html#event-description">Event description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="unsubscribe.html#json-structure">Json structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="unsubscribe.html#example">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="setActuatorData.html">Set Actuator Data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="setActuatorData.html#event-description">Event description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="setActuatorData.html#json-structure">Json structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="setActuatorData.html#example">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="setSensorMode.html">Set Sensor Mode</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="setSensorMode.html#event-description">Event description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="setSensorMode.html#json-structure">Json structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="setSensorMode.html#example">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="drive.html">Drive</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="drive.html#event-description">Event description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="drive.html#json-structure">Json structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="drive.html#example">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="rotate.html">Rotate</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="rotate.html#event-description">Event description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rotate.html#json-structure">Json structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rotate.html#example">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="myAlgorithm.html">My Algorithm</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="myAlgorithm.html#event-description">Event description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="myAlgorithm.html#json-structure">Json structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="myAlgorithm.html#example">Example</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="setup.html"
+                        title="previous chapter">Setup instructions</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="userIntro.html"
+                        title="next chapter">Introduction</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/userManual.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="userIntro.html" title="Introduction"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="setup.html" title="Setup instructions"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">RobotBP 0.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">User Manual: Commands in RobotBP tutorial</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright Ben-Gurion University SE project documentation 2021, Adi Jumah, David Ziegler, Peleg Avraham.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.1.2.
+    </div>
+  </body>
+</html>

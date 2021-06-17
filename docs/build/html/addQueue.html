@@ -1,0 +1,156 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Queue &#8212; RobotBP 0.1 documentation</title>
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Appendices" href="devTips.html" />
+    <link rel="prev" title="Add Board" href="addBoard.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="devTips.html" title="Appendices"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="addBoard.html" title="Add Board"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">RobotBP 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="devManual.html" accesskey="U">Developer Manual: Extending RobotBP</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Add Queue</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="add-queue">
+<h1>Add Queue<a class="headerlink" href="#add-queue" title="Permalink to this headline">¶</a></h1>
+<p>If you have additional commands that need to transmit over new channel (from your reasons) you can add new queue.</p>
+<p>We show here the way to do that.</p>
+<p>The 1-3 steps refer to RobotUtils repository, and related to the definition of the new channel.</p>
+<p>The 3-5 steps refer to RobotBProgramRunnerListener class in BPjsProject repository and</p>
+<p>MainTest class in RobotActuator repository, and related to the usage in the new channel.</p>
+<div class="section" id="add-queue-name-enum">
+<h2>3. Add Queue Name Enum<a class="headerlink" href="#add-queue-name-enum" title="Permalink to this headline">¶</a></h2>
+<p>add enum in QueueNameEnum with the name of your new queue.</p>
+<p>This will serve you for a separation between behavior for the different queues in the code.</p>
+</div>
+<div class="section" id="add-channel">
+<h2>2. Add Channel<a class="headerlink" href="#add-channel" title="Permalink to this headline">¶</a></h2>
+<p>Simply, add new Channel in CommunicationHandler.</p>
+<p>The initialization of the channel will be in the connect function by the ConnectionFactory.</p>
+</div>
+<div class="section" id="channel-configuration">
+<h2>3. Channel Configuration<a class="headerlink" href="#channel-configuration" title="Permalink to this headline">¶</a></h2>
+<p>Add support to your new channel in the following functions in CommunicationHandler:</p>
+<ul class="simple">
+<li><p>connect: connect to RabbitMQ queues.</p></li>
+<li><p>purgeQueue: remove all messages from queue</p></li>
+<li><p>consumeFromQueue: listen to queue and execute callback when messages from it arrive</p></li>
+<li><p>closeConnection: close Send and Receive connection</p></li>
+<li><p>send: put message in Send queue</p></li>
+</ul>
+<p>Use the enum you created in step 1.</p>
+</div>
+<div class="section" id="purge-queue">
+<h2>4. Purge Queue<a class="headerlink" href="#purge-queue" title="Permalink to this headline">¶</a></h2>
+<p>Now, after you defined all the behavior of the queue in the different functions this is the time to use them.</p>
+<p>In RobotBProgramRunnerListener and MainTest use ICommunication to purge the queue as you define in step 3.</p>
+</div>
+<div class="section" id="send-messages-in-the-queue">
+<h2>5. Send Messages in the queue<a class="headerlink" href="#send-messages-in-the-queue" title="Permalink to this headline">¶</a></h2>
+<p>Now everything is prepared to send and receive the messages over the new channel. The implementation in that part is</p>
+<p>at your discretion, according to the commands that use in this channel.</p>
+<p>You can send the commands over the channel in RobotBProgramRunnerListener and get them in MainTest</p>
+<p>and act accordingly. Or alternatively, send the commands over the channel in MainTest and get them</p>
+<p>in RobotBProgramRunnerListener.</p>
+</div>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Add Queue</a><ul>
+<li><a class="reference internal" href="#add-queue-name-enum">3. Add Queue Name Enum</a></li>
+<li><a class="reference internal" href="#add-channel">2. Add Channel</a></li>
+<li><a class="reference internal" href="#channel-configuration">3. Channel Configuration</a></li>
+<li><a class="reference internal" href="#purge-queue">4. Purge Queue</a></li>
+<li><a class="reference internal" href="#send-messages-in-the-queue">5. Send Messages in the queue</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="addBoard.html"
+                        title="previous chapter">Add Board</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="devTips.html"
+                        title="next chapter">Appendices</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/addQueue.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="devTips.html" title="Appendices"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="addBoard.html" title="Add Board"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">RobotBP 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="devManual.html" >Developer Manual: Extending RobotBP</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Add Queue</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright Ben-Gurion University SE project documentation 2021, Adi Jumah, David Ziegler, Peleg Avraham.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.1.2.
+    </div>
+  </body>
+</html>

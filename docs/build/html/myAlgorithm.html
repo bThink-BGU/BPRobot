@@ -1,0 +1,155 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Algorithm &#8212; RobotBP 0.1 documentation</title>
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Developer Manual: Extending RobotBP" href="devManual.html" />
+    <link rel="prev" title="Rotate" href="rotate.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="devManual.html" title="Developer Manual: Extending RobotBP"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="rotate.html" title="Rotate"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">RobotBP 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="userManual.html" accesskey="U">User Manual: Commands in RobotBP tutorial</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">My Algorithm</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="my-algorithm">
+<h1>My Algorithm<a class="headerlink" href="#my-algorithm" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="event-description">
+<h2>Event description<a class="headerlink" href="#event-description" title="Permalink to this headline">¶</a></h2>
+<p><strong>Event name:</strong> MyAlgorithm</p>
+<p><strong>Params:</strong> Json with the boards to run the algorithm belongs them and their indexes,
+and for each board specifies the parameters that the programmer needs for the algorithm with free hand of the programmer.</p>
+<p><strong>Description:</strong> The system executes the algorithm of each board the programmer request with the appropriate params. The algorithm defines by the programmer.</p>
+</div>
+<div class="section" id="json-structure">
+<h2>Json structure<a class="headerlink" href="#json-structure" title="Permalink to this headline">¶</a></h2>
+<p>For each board type ‘EV3’ and ‘GrovePi’ as key specifies the value will be a json such that the key will be the index of the board (depending on how it is written in the build event),
+and the value will be json with the params as the programmer want.</p>
+<p>For example if you have one EV3 and two Grove pi the json will be in this structure:</p>
+<div class="highlight-javascript notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span>  <span class="nx">bp</span><span class="p">.</span><span class="nx">sync</span><span class="p">({</span><span class="nx">request</span><span class="o">:</span> <span class="nx">bp</span><span class="p">.</span><span class="nx">Event</span><span class="p">(</span><span class="s2">&quot;MyAlgorithm&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;EV3&quot;</span><span class="o">:</span> <span class="p">{</span><span class="mi">1</span><span class="o">:</span> <span class="p">{}},</span> <span class="s2">&quot;GrovePi&quot;</span><span class="o">:</span> <span class="p">{</span><span class="mi">2</span><span class="o">:</span> <span class="p">{}}})});</span>
+</pre></div>
+</td></tr></table></div>
+<p>As mention, the parameters of the boards include json of what the programmer needs for the algorithm with free hand of the programmer.</p>
+</div>
+<div class="section" id="example">
+<h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-javascript notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10</pre></div></td><td class="code"><div class="highlight"><pre><span></span>  <span class="kd">var</span> <span class="nx">AlgorithmEventSet</span> <span class="o">=</span> <span class="nx">bp</span><span class="p">.</span><span class="nx">EventSet</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">e</span><span class="p">.</span><span class="nx">name</span><span class="p">.</span><span class="nx">equals</span><span class="p">(</span><span class="s2">&quot;GetAlgorithmResult&quot;</span><span class="p">);</span>
+  <span class="p">});</span>
+
+  <span class="nx">bp</span><span class="p">.</span><span class="nx">registerBThread</span><span class="p">(</span><span class="s2">&quot;Do My Algorithm&quot;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="nx">bp</span><span class="p">.</span><span class="nx">sync</span><span class="p">({</span><span class="nx">request</span><span class="o">:</span> <span class="nx">bp</span><span class="p">.</span><span class="nx">Event</span><span class="p">(</span><span class="s2">&quot;MyAlgorithm&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;EV3&quot;</span><span class="o">:</span> <span class="p">{</span><span class="mi">1</span><span class="o">:</span> <span class="p">{</span><span class="s2">&quot;Param1&quot;</span><span class="o">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s2">&quot;Param2&quot;</span><span class="o">:</span> <span class="p">{</span><span class="s2">&quot;Param2_1&quot;</span> <span class="o">:</span> <span class="s2">&quot;Hello&quot;</span><span class="p">}}},</span> <span class="s2">&quot;GrovePi&quot;</span><span class="o">:</span> <span class="p">{</span><span class="mi">2</span><span class="o">:</span> <span class="p">{</span><span class="s2">&quot;Param3&quot;</span><span class="o">:</span> <span class="mi">100</span><span class="p">}}})});</span>
+    <span class="kd">var</span> <span class="nx">e</span> <span class="o">=</span> <span class="nx">bp</span><span class="p">.</span><span class="nx">sync</span><span class="p">({</span><span class="nx">waitFor</span><span class="o">:</span> <span class="nx">AlgorithmEventSet</span><span class="p">});</span>
+    <span class="kd">var</span> <span class="nx">data</span> <span class="o">=</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">data</span><span class="p">);</span>
+    <span class="nx">bp</span><span class="p">.</span><span class="nx">sync</span><span class="p">({</span><span class="nx">request</span><span class="o">:</span> <span class="nx">bp</span><span class="p">.</span><span class="nx">Event</span><span class="p">(</span><span class="s2">&quot;Test&quot;</span><span class="p">,</span> <span class="nx">data</span><span class="p">)});</span>
+  <span class="p">});</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">My Algorithm</a><ul>
+<li><a class="reference internal" href="#event-description">Event description</a></li>
+<li><a class="reference internal" href="#json-structure">Json structure</a></li>
+<li><a class="reference internal" href="#example">Example</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="rotate.html"
+                        title="previous chapter">Rotate</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="devManual.html"
+                        title="next chapter">Developer Manual: Extending RobotBP</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/myAlgorithm.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="devManual.html" title="Developer Manual: Extending RobotBP"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="rotate.html" title="Rotate"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">RobotBP 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="userManual.html" >User Manual: Commands in RobotBP tutorial</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">My Algorithm</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright Ben-Gurion University SE project documentation 2021, Adi Jumah, David Ziegler, Peleg Avraham.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.1.2.
+    </div>
+  </body>
+</html>

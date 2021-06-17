@@ -1,3 +1,6 @@
+[![Java CI with Maven](https://github.com/bThink-BGU/BPRobot/actions/workflows/maven.yml/badge.svg)](https://github.com/bThink-BGU/BPRobot/actions/workflows/maven.yml)
+[![Docs](https://github.com/bThink-BGU/BPRobot/actions/workflows/docs.yml/badge.svg)](https://bthink-bgu.github.io/BPRobot/)
+
 # RobotBPDocs
 RobotBP’s documentation!
 

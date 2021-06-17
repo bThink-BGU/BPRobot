@@ -1,14 +1,10 @@
 [![Java CI with Maven](https://github.com/bThink-BGU/BPRobot/actions/workflows/maven.yml/badge.svg)](https://github.com/bThink-BGU/BPRobot/actions/workflows/maven.yml)
 [![Docs](https://github.com/bThink-BGU/BPRobot/actions/workflows/docs.yml/badge.svg)](https://bthink-bgu.github.io/BPRobot/)
 
-# RobotBPDocs
-RobotBP’s documentation!
+# BPRobot
+BPRobot is a library for programming Lego Mindstorms with BPjs.
 
-This project document RobotBP project done by Adi Jumah, David Ziegler and Peleg Avraham in 2021 as final project in SE degree in Ben-Gurion university.
+The library was written by Adi Jumah, David Ziegler and Peleg Avraham in 2021 as their final project for their BSc in software engineering in Ben-Gurion University.
 
-The site exist in: https://bthink-bgu.github.io/BPRobot/
-
-Any change in the docs folder on master branch will be reflected in the site (defined with github pages).
-
-The project makes used of Sphinx to edit the site you must download Sphinx first.
+For more information, visit the [documentation site](https://bthink-bgu.github.io/BPRobot).
 

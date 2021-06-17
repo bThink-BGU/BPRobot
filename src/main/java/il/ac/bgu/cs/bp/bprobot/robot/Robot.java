@@ -1,9 +1,9 @@
 package il.ac.bgu.cs.bp.bprobot.robot;
 
+import il.ac.bgu.cs.bp.bprobot.Ev3Control.EV3;
 import il.ac.bgu.cs.bp.bprobot.robot.Boards.Ev3Board;
 import il.ac.bgu.cs.bp.bprobot.robot.Boards.GrovePiBoard;
 import il.ac.bgu.cs.bp.bprobot.robot.Boards.IBoard;
-import EV3.EV3;
 import il.ac.bgu.cs.bp.bprobot.robot.Enums.BoardTypeEnum;
 import il.ac.bgu.cs.bp.bprobot.robot.Enums.GrovePiPort;
 import il.ac.bgu.cs.bp.bprobot.robot.Enums.IEv3Port;

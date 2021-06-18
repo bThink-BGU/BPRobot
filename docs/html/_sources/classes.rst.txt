@@ -44,7 +44,12 @@ The GrovePi has analog(A0-A2) and digital(D3-D8) sensors that derived in the Gro
 
 The EV3Board has EV3 instance such that the implementation of the functions in the IBoard interface calls the functions of the EV3.
 
+MindCtrlJava
+--------------
+
 **Ev3**: The EV3 send messages of bytes to the physical EV3 board which connected by the SerialPort.
+
+**Messages**: Class for the messages data itself. Messages are split into smaller parts that can be easily constructed using this class.
 
 RobotUtils
 -----------

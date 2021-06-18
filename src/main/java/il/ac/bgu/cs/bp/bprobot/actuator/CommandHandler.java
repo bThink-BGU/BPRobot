@@ -1,7 +1,7 @@
 package il.ac.bgu.cs.bp.bprobot.actuator;
 
-import il.ac.bgu.cs.bp.bprobot.robot.Boards.DriveDataObject;
-import il.ac.bgu.cs.bp.bprobot.robot.Boards.IBoard;
+import il.ac.bgu.cs.bp.bprobot.robot.boards.DriveDataObject;
+import il.ac.bgu.cs.bp.bprobot.robot.boards.IBoard;
 import il.ac.bgu.cs.bp.bprobot.robot.Enums.BoardTypeEnum;
 import il.ac.bgu.cs.bp.bprobot.robot.Enums.IPortEnums;
 import il.ac.bgu.cs.bp.bprobot.robot.Robot;
@@ -19,14 +19,10 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-@SuppressWarnings("rawtypes")
 class CommandHandler {
-
     RobotSensorsData robotSensorsData;
 
-
     Map<BoardTypeEnum, Map<Integer, IBoard>> robot;
-    private final int commandTimeout = 100;
 
     // Uniform Interface for commands arriving from BPjs
     private final ICommand subscribe = this::subscribe;
@@ -219,7 +215,6 @@ class CommandHandler {
      *
      * @param json info on boards, ports and values to call 'setSensorData' on.
      */
-    @SuppressWarnings("unchecked")
     private void setSensorMode(String json) {
         try {
             if (robot == null) {
@@ -241,7 +236,6 @@ class CommandHandler {
         }
     }
 
-    @SuppressWarnings("unchecked")
     private void setActuatorData(String json) {
         try {
             if (robot == null) {
@@ -291,7 +285,7 @@ class CommandHandler {
             // If its a map, then we have board indexing, else we have port and values.
 
             Optional<Object> anyValue = valueMapped.values().stream().findFirst();
-            if (!anyValue.isPresent()) {
+            if (anyValue.isEmpty()) {
                 continue;
             }
 
@@ -396,6 +390,7 @@ class CommandHandler {
         }
 
         try {
+            int commandTimeout = 100;
             dataCollectionFuture = executor.scheduleWithFixedDelay(dataCollector, 0L, commandTimeout, TimeUnit.MILLISECONDS);
         } catch (Exception e) {
             e.printStackTrace();

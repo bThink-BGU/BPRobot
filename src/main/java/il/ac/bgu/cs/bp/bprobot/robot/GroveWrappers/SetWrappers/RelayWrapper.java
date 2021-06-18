@@ -7,26 +7,30 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class RelayWrapper implements IGroveSensorSetWrapper {
-    private Logger logger = Logger.getLogger(RelayWrapper.class.getName());
-    private final GroveRelay relay;
+  private Logger logger = Logger.getLogger(RelayWrapper.class.getName());
+  private final GroveRelay relay;
 
-    public RelayWrapper(GroveRelay relay){
-        this.relay = relay;
-        logger.setLevel(Level.SEVERE);
+  public RelayWrapper(GroveRelay relay) {
+    this.relay = relay;
+    logger.setLevel(Level.SEVERE);
+  }
+
+  @Override
+  public boolean set(boolean value) {
+    try {
+      relay.set(value);
+      return true;
+    } catch (IOException e) {
+      logger.severe("Error when writing data to port");
+      return false;
     }
+  }
 
-    @Override
-    public boolean set(boolean value) {
-        try {
-            relay.set(value);
-            return true;
-        } catch (IOException e) {
-            logger.severe("Error when writing data to port");
-            return false;
-        }
-    }
+  public void setLogger(Logger logger) {
+    this.logger = logger;
+  }
 
-    public void setLogger(Logger logger){ this.logger=logger; }
-
-    public Logger getLogger(){ return this.logger; }
+  public Logger getLogger() {
+    return this.logger;
+  }
 }

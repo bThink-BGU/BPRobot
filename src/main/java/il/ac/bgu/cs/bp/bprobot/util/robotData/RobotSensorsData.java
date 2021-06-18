@@ -8,8 +8,6 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-@SuppressWarnings({"unused", "WeakerAccess"})
-
 public class RobotSensorsData implements Cloneable {
 
     private final Logger logger = Logger.getLogger("Robot Sensor Data");
@@ -70,7 +68,7 @@ public class RobotSensorsData implements Cloneable {
                 for (Map.Entry<String, ?> ports : portDataMap.entrySet()) {
                     if (ports.getValue() instanceof LinkedTreeMap) { // Check if port value is actually a map with nickname
                         @SuppressWarnings("unchecked")
-                        Map<String, String> valueMap = (Map<String, String>) ports.getValue();
+                        var valueMap = (Map<String, String>) ports.getValue();
                         if (valueMap.containsKey("Name") && !valueMap.get("Name").isBlank()) {
                             String nickName = valueMap.get("Name");
                             String errorMessage = String.format(

@@ -1,12 +1,12 @@
-package il.ac.bgu.cs.bp.bprobot.robot.Boards;
+package il.ac.bgu.cs.bp.bprobot.robot.boards;
 
-import Enums.IPortEnums;
+
+import il.ac.bgu.cs.bp.bprobot.robot.Enums.IPortEnums;
 
 import java.util.List;
 import java.util.Map;
 
-@SuppressWarnings("unused")
-public class TestBoard implements Boards.IBoard<IPortEnums> {
+public class TestBoard implements IBoard<IPortEnums> {
 
     private final Map<IPortEnums, Double> portsMap;
 

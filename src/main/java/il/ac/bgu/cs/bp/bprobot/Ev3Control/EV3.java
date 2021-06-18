@@ -6,8 +6,7 @@ import java.time.LocalDateTime;
 import java.util.logging.Logger;
 
 public class EV3 {
-
-    private Logger logger = Logger.getLogger(EV3.class.getName());
+    private static final Logger logger = Logger.getLogger(EV3.class.getName());
     private SerialPort port;
     private int delay = 0;
 

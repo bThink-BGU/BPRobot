@@ -6,9 +6,7 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.TimeoutException;
 
-@SuppressWarnings("unused")
 public class CommunicationHandler implements ICommunication {
-
     private Channel commandsChannel;
     private Channel dataChannel;
     private Channel freeChannel;

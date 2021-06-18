@@ -16,11 +16,11 @@ public class RobotSensorsDataTest {
 
     private RobotSensorsData robotSensorsData = new RobotSensorsData();
     //  private Map<String, Map<String, Map<String, Double>>> mapToCompare = new HashMap<>();
-    private Map<String, Double> grovePiInsideMap = new HashMap<>();
-    private Map<String, Map<String, Double>> grovePiMap = new HashMap<>();
-    private Map<String, Double> ev3InsideMap1 = new HashMap<>();
-    private Map<String, Map<String, Double>> ev3Map = new HashMap<>();
-    private Map<String, Double> ev3InsideMap2 = new HashMap<>();
+    private final Map<String, Double> grovePiInsideMap = new HashMap<>();
+    private final Map<String, Map<String, Double>> grovePiMap = new HashMap<>();
+    private final Map<String, Double> ev3InsideMap1 = new HashMap<>();
+    private final Map<String, Map<String, Double>> ev3Map = new HashMap<>();
+    private final Map<String, Double> ev3InsideMap2 = new HashMap<>();
 
 
     @Before

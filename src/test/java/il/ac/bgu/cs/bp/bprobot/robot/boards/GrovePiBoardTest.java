@@ -1,4 +1,4 @@
-package il.ac.bgu.cs.bp.bprobot.robot.Boards;
+package il.ac.bgu.cs.bp.bprobot.robot.boards;
 
 import il.ac.bgu.cs.bp.bprobot.robot.Enums.GrovePiPort;
 import il.ac.bgu.cs.bp.bprobot.robot.GroveWrappers.GetWrappers.IGroveSensorGetWrapper;

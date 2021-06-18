@@ -1,7 +1,7 @@
 package il.ac.bgu.cs.bp.bprobot.actuator;
 
-import il.ac.bgu.cs.bp.bprobot.robot.Boards.IBoard;
-import il.ac.bgu.cs.bp.bprobot.robot.Boards.TestBoard;
+import il.ac.bgu.cs.bp.bprobot.robot.boards.IBoard;
+import il.ac.bgu.cs.bp.bprobot.robot.boards.TestBoard;
 import il.ac.bgu.cs.bp.bprobot.robot.Enums.*;
 import il.ac.bgu.cs.bp.bprobot.util.robotData.RobotSensorsData;
 import com.google.gson.JsonObject;

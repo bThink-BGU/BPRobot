@@ -18,7 +18,6 @@ public class MainTest {
     private static CommandHandler commandHandler;
     private static ICommunication communicationHandler;
 
-    @SuppressWarnings("InfiniteLoopStatement")
     public static void main(String[] args) throws IOException, TimeoutException {
         RobotSensorsData robotSensorsData = new RobotSensorsData();
         commandHandler = new CommandHandler(robotSensorsData);
@@ -43,6 +42,7 @@ public class MainTest {
         communicationHandler.consumeFromQueue(QueueNameEnum.Commands, MainTest::onReceiveCallback);
         communicationHandler.consumeFromQueue(QueueNameEnum.SOS, MainTest::onReceiveCallback);
 
+        //noinspection InfiniteLoopStatement
         while (true){
             if (robotSensorsData.isUpdated()) {
                 String json = robotSensorsData.toJson();

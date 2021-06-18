@@ -1,4 +1,4 @@
-package il.ac.bgu.cs.bp.bprobot.robot.Boards;
+package il.ac.bgu.cs.bp.bprobot.robot.boards;
 
 import il.ac.bgu.cs.bp.bprobot.Ev3Control.EV3;
 import il.ac.bgu.cs.bp.bprobot.robot.Enums.Ev3DrivePort;

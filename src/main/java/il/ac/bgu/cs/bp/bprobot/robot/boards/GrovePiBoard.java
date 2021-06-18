@@ -1,4 +1,4 @@
-package il.ac.bgu.cs.bp.bprobot.robot.Boards;
+package il.ac.bgu.cs.bp.bprobot.robot.boards;
 
 import il.ac.bgu.cs.bp.bprobot.robot.Enums.GrovePiPort;
 import il.ac.bgu.cs.bp.bprobot.robot.GroveWrappers.GetWrappers.IGroveSensorGetWrapper;
@@ -56,7 +56,7 @@ public class GrovePiBoard extends GrovePi4J implements IBoard<GrovePiPort> {
      */
     @Override
     public Boolean getBooleanSensorData(GrovePiPort port) {
-        return sensorGetMap.get(port.portName).get(sensorModes.get(port)) > 0.0;
+        return sensorGetMap.get(port.name()).get(sensorModes.get(port)) > 0.0;
     }
 
     /**
@@ -67,7 +67,7 @@ public class GrovePiBoard extends GrovePi4J implements IBoard<GrovePiPort> {
      */
     @Override
     public Double getDoubleSensorData(GrovePiPort port) {
-        return sensorGetMap.get(port.portName).get(sensorModes.get(port));
+        return sensorGetMap.get(port.name()).get(sensorModes.get(port));
     }
 
     /**

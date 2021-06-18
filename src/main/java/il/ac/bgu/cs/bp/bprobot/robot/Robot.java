@@ -2,7 +2,7 @@ package il.ac.bgu.cs.bp.bprobot.robot;
 
 import com.google.gson.Gson;
 import il.ac.bgu.cs.bp.bprobot.Ev3Control.EV3;
-import il.ac.bgu.cs.bp.bprobot.robot.Boards.*;
+import il.ac.bgu.cs.bp.bprobot.robot.boards.*;
 import il.ac.bgu.cs.bp.bprobot.robot.Enums.*;
 import il.ac.bgu.cs.bp.bprobot.robot.GroveWrappers.GetWrappers.*;
 import il.ac.bgu.cs.bp.bprobot.robot.GroveWrappers.SetWrappers.*;
@@ -18,7 +18,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-@SuppressWarnings("unused")
 public class Robot {
 
     private static final IParser ev3Parser = Robot::ev3Parser;

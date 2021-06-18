@@ -1,6 +1,7 @@
 package il.ac.bgu.cs.bp.bprobot;
 
 import il.ac.bgu.cs.bp.bpjs.execution.BProgramRunner;
+import il.ac.bgu.cs.bp.bpjs.model.BProgram;
 import il.ac.bgu.cs.bp.bpjs.model.ResourceBProgram;
 import il.ac.bgu.cs.bp.bprobot.util.Communication.CommunicationHandler;
 import il.ac.bgu.cs.bp.bprobot.util.Communication.ICommunication;
@@ -8,23 +9,20 @@ import il.ac.bgu.cs.bp.bprobot.util.Communication.ICommunication;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.TimeoutException;
 
 public class RobotCliRunner {
 
   public static void main(String[] args) throws IOException, TimeoutException {
-    var possibleNumOfParams = List.of(0,1,3,4);
-    if(!possibleNumOfParams.contains(args.length)) {
+    if (!List.of(0, 1, 3, 4).contains(args.length)) {
       printUsageAndExit();
     }
 
-    // This will load the program file  <Project>/src/main/resources/HelloBPjsWorld.js
     String filename = args.length == 1 || args.length == 4 ? args[0] : "SampleRobot.js";
-    var bProgram = new ResourceBProgram(filename);
+    BProgram bProgram = new ResourceBProgram(filename);
     bProgram.setWaitForExternalEvents(true);
-    var rnr = new BProgramRunner(bProgram);
+    BProgramRunner rnr = new BProgramRunner(bProgram);
 
     // Print program events to the console
 //        rnr.addListener( new PrintBProgramRunnerListener() );

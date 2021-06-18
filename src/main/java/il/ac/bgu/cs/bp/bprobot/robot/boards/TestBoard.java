@@ -1,7 +1,7 @@
 package il.ac.bgu.cs.bp.bprobot.robot.boards;
 
 
-import il.ac.bgu.cs.bp.bprobot.robot.Enums.IPortEnums;
+import il.ac.bgu.cs.bp.bprobot.robot.enums.IPortEnums;
 
 import java.util.List;
 import java.util.Map;

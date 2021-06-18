@@ -6,9 +6,9 @@ import com.rabbitmq.client.AlreadyClosedException;
 import il.ac.bgu.cs.bp.bpjs.execution.listeners.BProgramRunnerListenerAdapter;
 import il.ac.bgu.cs.bp.bpjs.model.BEvent;
 import il.ac.bgu.cs.bp.bpjs.model.BProgram;
-import il.ac.bgu.cs.bp.bprobot.util.Communication.ICommunication;
-import il.ac.bgu.cs.bp.bprobot.util.Communication.QueueNameEnum;
-import il.ac.bgu.cs.bp.bprobot.util.robotData.RobotSensorsData;
+import il.ac.bgu.cs.bp.bprobot.util.communication.ICommunication;
+import il.ac.bgu.cs.bp.bprobot.util.communication.QueueNameEnum;
+import il.ac.bgu.cs.bp.bprobot.util.robotdata.RobotSensorsData;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;

@@ -1,9 +1,9 @@
 package il.ac.bgu.cs.bp.bprobot.actuator;
 
-import il.ac.bgu.cs.bp.bprobot.util.Communication.CommunicationHandler;
-import il.ac.bgu.cs.bp.bprobot.util.Communication.ICommunication;
-import il.ac.bgu.cs.bp.bprobot.util.Communication.QueueNameEnum;
-import il.ac.bgu.cs.bp.bprobot.util.robotData.RobotSensorsData;
+import il.ac.bgu.cs.bp.bprobot.util.communication.CommunicationHandler;
+import il.ac.bgu.cs.bp.bprobot.util.communication.ICommunication;
+import il.ac.bgu.cs.bp.bprobot.util.communication.QueueNameEnum;
+import il.ac.bgu.cs.bp.bprobot.util.robotdata.RobotSensorsData;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.rabbitmq.client.AlreadyClosedException;

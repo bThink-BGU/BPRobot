@@ -3,8 +3,8 @@ package il.ac.bgu.cs.bp.bprobot;
 import il.ac.bgu.cs.bp.bpjs.execution.BProgramRunner;
 import il.ac.bgu.cs.bp.bpjs.model.BProgram;
 import il.ac.bgu.cs.bp.bpjs.model.ResourceBProgram;
-import il.ac.bgu.cs.bp.bprobot.util.Communication.CommunicationHandler;
-import il.ac.bgu.cs.bp.bprobot.util.Communication.ICommunication;
+import il.ac.bgu.cs.bp.bprobot.util.communication.CommunicationHandler;
+import il.ac.bgu.cs.bp.bprobot.util.communication.ICommunication;
 
 import java.io.BufferedReader;
 import java.io.IOException;

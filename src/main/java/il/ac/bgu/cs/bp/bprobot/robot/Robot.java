@@ -1,11 +1,11 @@
 package il.ac.bgu.cs.bp.bprobot.robot;
 
 import com.google.gson.Gson;
-import il.ac.bgu.cs.bp.bprobot.Ev3Control.EV3;
+import il.ac.bgu.cs.bp.bprobot.ev3control.EV3;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.*;
-import il.ac.bgu.cs.bp.bprobot.robot.Enums.*;
-import il.ac.bgu.cs.bp.bprobot.robot.GroveWrappers.GetWrappers.*;
-import il.ac.bgu.cs.bp.bprobot.robot.GroveWrappers.SetWrappers.*;
+import il.ac.bgu.cs.bp.bprobot.robot.enums.*;
+import il.ac.bgu.cs.bp.bprobot.robot.grovewrappers.get.*;
+import il.ac.bgu.cs.bp.bprobot.robot.grovewrappers.set.*;
 import org.iot.raspberry.grovepi.GroveDigitalOut;
 import org.iot.raspberry.grovepi.GrovePi;
 import org.iot.raspberry.grovepi.devices.*;

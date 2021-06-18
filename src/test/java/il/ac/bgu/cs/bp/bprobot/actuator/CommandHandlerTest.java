@@ -2,8 +2,8 @@ package il.ac.bgu.cs.bp.bprobot.actuator;
 
 import il.ac.bgu.cs.bp.bprobot.robot.boards.IBoard;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.TestBoard;
-import il.ac.bgu.cs.bp.bprobot.robot.Enums.*;
-import il.ac.bgu.cs.bp.bprobot.util.robotData.RobotSensorsData;
+import il.ac.bgu.cs.bp.bprobot.robot.enums.*;
+import il.ac.bgu.cs.bp.bprobot.util.robotdata.RobotSensorsData;
 import com.google.gson.JsonObject;
 
 import java.io.IOException;

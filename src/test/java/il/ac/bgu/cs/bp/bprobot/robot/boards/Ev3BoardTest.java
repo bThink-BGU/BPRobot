@@ -1,8 +1,8 @@
 package il.ac.bgu.cs.bp.bprobot.robot.boards;
 
-import il.ac.bgu.cs.bp.bprobot.Ev3Control.EV3;
-import il.ac.bgu.cs.bp.bprobot.robot.Enums.Ev3DrivePort;
-import il.ac.bgu.cs.bp.bprobot.robot.Enums.Ev3SensorPort;
+import il.ac.bgu.cs.bp.bprobot.ev3control.EV3;
+import il.ac.bgu.cs.bp.bprobot.robot.enums.Ev3DrivePort;
+import il.ac.bgu.cs.bp.bprobot.robot.enums.Ev3SensorPort;
 import org.junit.Before;
 import org.junit.Test;
 

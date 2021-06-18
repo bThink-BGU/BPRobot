@@ -2,10 +2,10 @@ package il.ac.bgu.cs.bp.bprobot.actuator;
 
 import il.ac.bgu.cs.bp.bprobot.robot.boards.DriveDataObject;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.IBoard;
-import il.ac.bgu.cs.bp.bprobot.robot.Enums.BoardTypeEnum;
-import il.ac.bgu.cs.bp.bprobot.robot.Enums.IPortEnums;
+import il.ac.bgu.cs.bp.bprobot.robot.enums.BoardTypeEnum;
+import il.ac.bgu.cs.bp.bprobot.robot.enums.IPortEnums;
 import il.ac.bgu.cs.bp.bprobot.robot.Robot;
-import il.ac.bgu.cs.bp.bprobot.util.robotData.RobotSensorsData;
+import il.ac.bgu.cs.bp.bprobot.util.robotdata.RobotSensorsData;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.internal.LinkedTreeMap;

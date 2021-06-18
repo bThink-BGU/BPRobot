@@ -1,8 +1,8 @@
 package il.ac.bgu.cs.bp.bprobot.robot.boards;
 
-import il.ac.bgu.cs.bp.bprobot.robot.Enums.GrovePiPort;
-import il.ac.bgu.cs.bp.bprobot.robot.GroveWrappers.GetWrappers.IGroveSensorGetWrapper;
-import il.ac.bgu.cs.bp.bprobot.robot.GroveWrappers.SetWrappers.IGroveSensorSetWrapper;
+import il.ac.bgu.cs.bp.bprobot.robot.enums.GrovePiPort;
+import il.ac.bgu.cs.bp.bprobot.robot.grovewrappers.get.IGroveSensorGetWrapper;
+import il.ac.bgu.cs.bp.bprobot.robot.grovewrappers.set.IGroveSensorSetWrapper;
 import org.iot.raspberry.grovepi.pi4j.GrovePi4J;
 
 import java.io.IOException;

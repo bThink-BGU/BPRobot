@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class LightWrapper implements IGroveSensorGetWrapper{
+public class LightWrapper implements IGroveSensorGetWrapper {
     private Logger logger = Logger.getLogger(LightWrapper.class.getName());
     private final GroveLightSensor lightSensor;
 

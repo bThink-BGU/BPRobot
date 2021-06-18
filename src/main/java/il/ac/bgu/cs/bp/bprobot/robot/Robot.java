@@ -1,18 +1,11 @@
 package il.ac.bgu.cs.bp.bprobot.robot;
 
-import il.ac.bgu.cs.bp.bprobot.Ev3Control.EV3;
-import il.ac.bgu.cs.bp.bprobot.robot.Boards.Ev3Board;
-import il.ac.bgu.cs.bp.bprobot.robot.Boards.GrovePiBoard;
-import il.ac.bgu.cs.bp.bprobot.robot.Boards.IBoard;
-import il.ac.bgu.cs.bp.bprobot.robot.Enums.BoardTypeEnum;
-import il.ac.bgu.cs.bp.bprobot.robot.Enums.GrovePiPort;
-import il.ac.bgu.cs.bp.bprobot.robot.Enums.IEv3Port;
-import il.ac.bgu.cs.bp.bprobot.robot.GroveWrappers.GetWrappers.*;
-import il.ac.bgu.cs.bp.bprobot.robot.GroveWrappers.SetWrappers.BuzzerWrapper;
-import il.ac.bgu.cs.bp.bprobot.robot.GroveWrappers.SetWrappers.IGroveSensorSetWrapper;
-import il.ac.bgu.cs.bp.bprobot.robot.GroveWrappers.SetWrappers.LedWrapper;
-import il.ac.bgu.cs.bp.bprobot.robot.GroveWrappers.SetWrappers.RelayWrapper;
 import com.google.gson.Gson;
+import il.ac.bgu.cs.bp.bprobot.Ev3Control.EV3;
+import il.ac.bgu.cs.bp.bprobot.robot.Boards.*;
+import il.ac.bgu.cs.bp.bprobot.robot.Enums.*;
+import il.ac.bgu.cs.bp.bprobot.robot.GroveWrappers.GetWrappers.*;
+import il.ac.bgu.cs.bp.bprobot.robot.GroveWrappers.SetWrappers.*;
 import org.iot.raspberry.grovepi.GroveDigitalOut;
 import org.iot.raspberry.grovepi.GrovePi;
 import org.iot.raspberry.grovepi.devices.*;
@@ -39,13 +32,13 @@ public class Robot {
     }).collect(Collectors.toMap(data -> (String) data[0], data -> (IParser) data[1]));
 //    public static void main(String[] args) throws IOException, InterruptedException {
 //
-////        InputStream inputStream = new FileInputStream("./classes/il.ac.bgu.cs.bp.bprobot.robot.Robot.json");
+////        InputStream inputStream = new FileInputStream("./classes/Robot.json");
 ////        byte[] data = inputStream.readAllBytes();
 ////        String jsonString = new String(data);
 ////        Map<BoardTypeEnum, Map<Integer, IBoard>> boards = JsonToRobot(jsonString);
 ////
-////        il.ac.bgu.cs.bp.bprobot.robot.Boards.Ev3Board ev3B = (il.ac.bgu.cs.bp.bprobot.robot.Boards.Ev3Board) boards.get(BoardTypeEnum.EV3).get(1);
-////        il.ac.bgu.cs.bp.bprobot.robot.Boards.GrovePiBoard grovePi = (il.ac.bgu.cs.bp.bprobot.robot.Boards.GrovePiBoard) boards.get(BoardTypeEnum.GrovePi).get(1);
+////        Boards.Ev3Board ev3B = (Boards.Ev3Board) boards.get(BoardTypeEnum.EV3).get(1);
+////        Boards.GrovePiBoard grovePi = (Boards.GrovePiBoard) boards.get(BoardTypeEnum.GrovePi).get(1);
 ////        while (true){
 ////            ev3B.getDoubleSensorData(Ev3SensorPort._1);
 ////            System.out.print(" ; ");

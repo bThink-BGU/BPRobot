@@ -5,6 +5,7 @@ import il.ac.bgu.cs.bp.bprobot.robot.Enums.Ev3DrivePort;
 import il.ac.bgu.cs.bp.bprobot.robot.Enums.Ev3SensorPort;
 import il.ac.bgu.cs.bp.bprobot.robot.Enums.IEv3Port;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +20,8 @@ public class Ev3Board implements IBoard<IEv3Port> {
 
     private final Map<IEv3Port, Integer> sensorModes = new HashMap<>();
 
+    private int[] previousSpin = new int[4];
+
     public Ev3Board(EV3 ev3) {
         sensorModes.putAll(Map.of(
                 Ev3SensorPort._1, 0,
@@ -31,7 +34,7 @@ public class Ev3Board implements IBoard<IEv3Port> {
                 Ev3DrivePort.D, 0
         ));
         this.ev3 = ev3;
-        this.ev3.setDelay(150);
+        this.ev3.setDelay(250);
         logger.setLevel(Level.SEVERE);
     }
 
@@ -108,7 +111,10 @@ public class Ev3Board implements IBoard<IEv3Port> {
                     break;
             }
         });
-
+        if (Arrays.equals(previousSpin, motorSpeed)) {
+            return;
+        }
+        previousSpin = motorSpeed;
         ev3.spin(motorSpeed[0], motorSpeed[1], motorSpeed[2], motorSpeed[3]);
     }
 

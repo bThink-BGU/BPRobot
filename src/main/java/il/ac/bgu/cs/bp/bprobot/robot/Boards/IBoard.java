@@ -3,6 +3,7 @@ package il.ac.bgu.cs.bp.bprobot.robot.Boards;
 import il.ac.bgu.cs.bp.bprobot.robot.Enums.IPortEnums;
 
 import java.util.List;
+
 @SuppressWarnings("unused")
 public interface IBoard<BoardPortType extends IPortEnums> {
 

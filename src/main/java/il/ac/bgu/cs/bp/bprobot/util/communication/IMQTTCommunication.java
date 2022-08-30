@@ -1,11 +1,7 @@
 package il.ac.bgu.cs.bp.bprobot.util.communication;
 
 import org.eclipse.paho.client.mqttv3.IMqttMessageListener;
-import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttException;
-
-import java.io.IOException;
-import java.util.concurrent.TimeoutException;
 
 public interface IMQTTCommunication {
 
@@ -16,7 +12,7 @@ public interface IMQTTCommunication {
      * @param queue name of queue to listen to
      * @param callback to execute when messages arrive
      */
-    void consumeFromTopic(QueueNameEnum queue, IMqttMessageListener callback) throws MqttException;
+    void subscribe(QueueNameEnum queue, IMqttMessageListener callback) throws MqttException;
 
     void closeConnection() throws MqttException;
 

@@ -15,7 +15,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -47,9 +46,9 @@ public class RobotBProgramRunnerListener extends BProgramRunnerListenerAdapter {
     RobotBProgramRunnerListener(IMQTTCommunication communication, BProgram bp) throws MqttException {
         com = communication;
         com.connect();
-        com.consumeFromTopic(QueueNameEnum.Data, (topic, message) ->
+        com.subscribe(QueueNameEnum.Data, (topic, message) ->
                 robotData.updateBoardMapValues(new String(message.getPayload(), StandardCharsets.UTF_8)));
-        com.consumeFromTopic(QueueNameEnum.Free, (topic, message) ->
+        com.subscribe(QueueNameEnum.Free, (topic, message) ->
                 bp.enqueueExternalEvent(new BEvent("GetAlgorithmResult", new String(message.getPayload(), StandardCharsets.UTF_8))));
     }
 

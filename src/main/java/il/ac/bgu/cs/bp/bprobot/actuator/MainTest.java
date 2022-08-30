@@ -1,6 +1,5 @@
 package il.ac.bgu.cs.bp.bprobot.actuator;
 
-import il.ac.bgu.cs.bp.bprobot.util.communication.AMPQCommunicationHandler;
 import il.ac.bgu.cs.bp.bprobot.util.communication.IMQTTCommunication;
 import il.ac.bgu.cs.bp.bprobot.util.communication.MQTTCommunication;
 import il.ac.bgu.cs.bp.bprobot.util.communication.QueueNameEnum;
@@ -8,13 +7,11 @@ import il.ac.bgu.cs.bp.bprobot.util.robotdata.RobotSensorsData;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.rabbitmq.client.AlreadyClosedException;
-import com.rabbitmq.client.Delivery;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.concurrent.TimeoutException;
 
 public class MainTest {
 
@@ -40,8 +37,8 @@ public class MainTest {
 
         // Sending on Data and Free.
         // Listening on Commands and SOS.
-        communicationHandler.consumeFromTopic(QueueNameEnum.Commands, MainTest::onReceiveCallback);
-        communicationHandler.consumeFromTopic(QueueNameEnum.SOS, MainTest::onReceiveCallback);
+        communicationHandler.subscribe(QueueNameEnum.Commands, MainTest::onReceiveCallback);
+        communicationHandler.subscribe(QueueNameEnum.SOS, MainTest::onReceiveCallback);
 
         //noinspection InfiniteLoopStatement
         while (true){

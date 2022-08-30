@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.TimeoutException;
 
-public class CommunicationHandler implements ICommunication {
+public class AMPQCommunicationHandler implements ICommunication {
     private Channel commandsChannel;
     private Channel dataChannel;
     private Channel freeChannel;
@@ -176,12 +176,7 @@ public class CommunicationHandler implements ICommunication {
         }
     }
 
-    /**
-     * Set credentials of RabbitMQ service location
-     * @param host name/IP address of target machine
-     * @param username to log in with
-     * @param password to log in with
-     */
+
     public void setCredentials(String host, String username, String password){
         factory.setHost(host);
         factory.setUsername(username);

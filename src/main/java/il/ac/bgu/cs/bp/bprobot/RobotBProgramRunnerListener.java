@@ -2,13 +2,13 @@ package il.ac.bgu.cs.bp.bprobot;
 
 import com.google.gson.*;
 import com.google.gson.internal.LinkedTreeMap;
-import com.rabbitmq.client.AlreadyClosedException;
 import il.ac.bgu.cs.bp.bpjs.execution.listeners.BProgramRunnerListenerAdapter;
 import il.ac.bgu.cs.bp.bpjs.model.BEvent;
 import il.ac.bgu.cs.bp.bpjs.model.BProgram;
-import il.ac.bgu.cs.bp.bprobot.util.communication.ICommunication;
+import il.ac.bgu.cs.bp.bprobot.util.communication.IMQTTCommunication;
 import il.ac.bgu.cs.bp.bprobot.util.communication.QueueNameEnum;
 import il.ac.bgu.cs.bp.bprobot.util.robotdata.RobotSensorsData;
+import org.eclipse.paho.client.mqttv3.MqttException;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -22,7 +22,7 @@ import java.util.stream.Stream;
 public class RobotBProgramRunnerListener extends BProgramRunnerListenerAdapter {
 
     private final RobotSensorsData robotData = new RobotSensorsData();
-    private final ICommunication com;
+    private final IMQTTCommunication com;
     private final ICommand subscribe = this::subscribe;
     private final ICommand unsubscribe = this::unsubscribe;
     private final ICommand build = this::build;
@@ -44,17 +44,13 @@ public class RobotBProgramRunnerListener extends BProgramRunnerListenerAdapter {
             {"Test", test}
     }).collect(Collectors.toMap(data -> (String) data[0], data -> (ICommand) data[1]));
 
-    RobotBProgramRunnerListener(ICommunication communication, BProgram bp) throws IOException, TimeoutException {
+    RobotBProgramRunnerListener(IMQTTCommunication communication, BProgram bp) throws MqttException {
         com = communication;
         com.connect();
-        com.purgeQueue(QueueNameEnum.Commands);
-        com.purgeQueue(QueueNameEnum.SOS);
-        com.purgeQueue(QueueNameEnum.Data);
-        com.purgeQueue(QueueNameEnum.Free);
-        com.consumeFromQueue(QueueNameEnum.Data, (consumerTag, delivery) ->
-                robotData.updateBoardMapValues(new String(delivery.getBody(), StandardCharsets.UTF_8)));
-        com.consumeFromQueue(QueueNameEnum.Free, (consumerTag, delivery) ->
-                bp.enqueueExternalEvent(new BEvent("GetAlgorithmResult", new String(delivery.getBody(), StandardCharsets.UTF_8))));
+        com.consumeFromTopic(QueueNameEnum.Data, (topic, message) ->
+                robotData.updateBoardMapValues(new String(message.getPayload(), StandardCharsets.UTF_8)));
+        com.consumeFromTopic(QueueNameEnum.Free, (topic, message) ->
+                bp.enqueueExternalEvent(new BEvent("GetAlgorithmResult", new String(message.getPayload(), StandardCharsets.UTF_8))));
     }
 
     @Override
@@ -79,11 +75,11 @@ public class RobotBProgramRunnerListener extends BProgramRunnerListenerAdapter {
 
     private String eventDataToJson(BEvent theEvent, String command) {
         String jsonString = parseObjectToJsonString(theEvent.maybeData);
-        switch (command){
+        switch (command) {
             case "Build":
                 try {
                     robotData.buildNicknameMaps(jsonString);
-                } catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
                 jsonString = cleanNicknames(jsonString);
@@ -161,15 +157,15 @@ public class RobotBProgramRunnerListener extends BProgramRunnerListenerAdapter {
         send(message, QueueNameEnum.SOS);
     }
 
-    private void send(String message, QueueNameEnum queue){
+    private void send(String message, QueueNameEnum queue) {
         try {
             com.send(message, queue);
-        } catch (IOException e) {
+        } catch (MqttException e) {
             e.printStackTrace();
-        } catch (AlreadyClosedException ignore) { }
+        }
     }
 
-    private String cleanNicknames(String jsonString){
+    private String cleanNicknames(String jsonString) {
         Gson gson = new Gson();
         Map<?, ?> element = gson.fromJson(jsonString, Map.class); // json String to Map
         for (Object boardNameKey : element.keySet()) { // Iterate over board types

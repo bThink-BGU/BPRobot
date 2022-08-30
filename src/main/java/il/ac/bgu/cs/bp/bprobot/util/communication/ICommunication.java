@@ -1,11 +1,12 @@
 package il.ac.bgu.cs.bp.bprobot.util.communication;
 
 import com.rabbitmq.client.DeliverCallback;
+import org.eclipse.paho.client.mqttv3.MqttException;
 
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
-public interface ICommunication {
+interface ICommunication {
 
     void purgeQueue(QueueNameEnum queue) throws IOException;
 

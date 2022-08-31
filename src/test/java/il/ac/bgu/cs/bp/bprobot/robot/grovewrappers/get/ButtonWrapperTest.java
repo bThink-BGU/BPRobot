@@ -1,14 +1,13 @@
 package il.ac.bgu.cs.bp.bprobot.robot.grovewrappers.get;
 
 import org.iot.raspberry.grovepi.GroveDigitalIn;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.logging.Logger;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 public class ButtonWrapperTest {
@@ -16,7 +15,7 @@ public class ButtonWrapperTest {
     private ButtonWrapper buttonWrapper;
     private final GroveDigitalIn button = mock(GroveDigitalIn.class);
 
-    @Before
+    @BeforeEach
     public void setUp() {
         buttonWrapper = new ButtonWrapper(button);
         buttonWrapper.setLogger(mock(Logger.class));

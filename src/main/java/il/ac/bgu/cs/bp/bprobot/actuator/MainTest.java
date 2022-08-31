@@ -6,7 +6,6 @@ import il.ac.bgu.cs.bp.bprobot.util.communication.QueueNameEnum;
 import il.ac.bgu.cs.bp.bprobot.util.robotdata.RobotSensorsData;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.rabbitmq.client.AlreadyClosedException;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
@@ -27,7 +26,7 @@ public class MainTest {
             try {
                 communicationHandler.closeConnection();
                 commandHandler.closeBoards();
-            } catch (AlreadyClosedException | MqttException ignore) { }
+            } catch (MqttException ignore) { }
             System.out.println("Connection Closed!");
 
         }));

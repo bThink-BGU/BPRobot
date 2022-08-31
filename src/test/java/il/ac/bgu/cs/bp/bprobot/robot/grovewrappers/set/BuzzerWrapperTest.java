@@ -1,16 +1,15 @@
 package il.ac.bgu.cs.bp.bprobot.robot.grovewrappers.set;
 
 import org.iot.raspberry.grovepi.GroveDigitalOut;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 
 import java.io.IOException;
 import java.util.logging.Logger;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 
 @PrepareForTest({GroveDigitalOut.class})
@@ -19,7 +18,7 @@ public class BuzzerWrapperTest {
     private BuzzerWrapper buzzerWrapperMock;
     private GroveDigitalOut buzzerMock;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         buzzerMock = Mockito.mock(GroveDigitalOut.class);
         buzzerWrapperMock = Mockito.spy(new BuzzerWrapper(buzzerMock));

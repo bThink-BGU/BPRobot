@@ -2,14 +2,13 @@ package il.ac.bgu.cs.bp.bprobot.robot.grovewrappers.get;
 
 import org.iot.raspberry.grovepi.devices.GroveRotarySensor;
 import org.iot.raspberry.grovepi.devices.GroveRotaryValue;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.logging.Logger;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
@@ -18,7 +17,7 @@ public class RotaryWrapperTest {
     private RotaryWrapper rotaryWrapper;
     private GroveRotarySensor rotarySensor = mock(GroveRotarySensor.class);
 
-    @Before
+    @BeforeEach
     public void setUp() {
         rotaryWrapper = new RotaryWrapper(rotarySensor);
         rotaryWrapper.setLogger(mock(Logger.class));

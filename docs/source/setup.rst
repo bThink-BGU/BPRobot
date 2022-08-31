@@ -48,32 +48,17 @@ Select the model you want and follow his instructions.
 
 In the project, there is communication between the commands that send to the robot from the user and the data that back from the robot.
 
-The communication implemented in platform who called: RabbitMQ. Is famous IOT communication protocol.
+The communication implemented in platform who called: MQTT, a famous IOT communication protocol.
 
-To download RabbitMQ on the raspberry pi follow the introductions `here <http://pont.ist/rabbit-mq/>`__.
+To use this protocol, we need an MQTT server (a.k.a broker). We will use NanoMQ. To install it on your raspberry pi follow the introductions `here <https://nanomq.io/downloads?os=Linux>`__.
 
 5. Download the code from github
 ----------------------------------
 
-link to Robot repo: https://github.com/Dave-Zi/Robot
-
-link to RobotActuator repo: https://github.com/Dave-Zi/RobotActuator
-
-link to BPjsRobotProject repo: https://github.com/Dave-Zi/BPjsRobotProject
-
-link to RobotUtils repo: https://github.com/Dave-Zi/RobotUtils
-
-link to MindCtrlJava repo: https://github.com/Dave-Zi/MindCtrlJava
-
-link to RobotBPDocs repo: https://github.com/pelegavraham/RobotBPDocs
+link to Robot repo: https://github.com/bThink-BGU/BPRobot
 
 Make sure there is no compilation errors, the project opens as Maven project and the jdk version at least 11.0.9.
 
-.. admonition:: Note
-
-   You don't need to download all the repos. For your first steps in the project you can download
-   BPjsRobotProject and RobotActuator repos.
-   If you later want to expand the project, you will need to download the other repos.
 
 6. Prepare your coding environment
 -------------------------------------

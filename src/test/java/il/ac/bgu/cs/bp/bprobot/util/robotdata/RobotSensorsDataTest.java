@@ -1,16 +1,14 @@
 package il.ac.bgu.cs.bp.bprobot.util.robotdata;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import static org.junit.Assert.*;
-
+import static org.junit.jupiter.api.Assertions.*;
 
 public class RobotSensorsDataTest {
 
@@ -23,14 +21,10 @@ public class RobotSensorsDataTest {
     private final Map<String, Double> ev3InsideMap2 = new HashMap<>();
 
 
-    @Before
+    @BeforeEach
     public void setUp() {
         // String dataForBoardsMap = "{\"EV3\": {\"1\": [\"B\"],\"4\": [\"3\", \"A\"]},\"GrovePi\": [\"D3\"]}";
         // robotSensorsData.addToBoardsMap(dataForBoardsMap);
-    }
-
-    @After
-    public void tearDown() {
     }
 
     @Test

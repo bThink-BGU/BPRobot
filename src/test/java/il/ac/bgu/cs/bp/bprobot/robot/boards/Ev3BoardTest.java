@@ -3,13 +3,13 @@ package il.ac.bgu.cs.bp.bprobot.robot.boards;
 import il.ac.bgu.cs.bp.bprobot.ev3control.EV3;
 import il.ac.bgu.cs.bp.bprobot.robot.enums.Ev3DrivePort;
 import il.ac.bgu.cs.bp.bprobot.robot.enums.Ev3SensorPort;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Collections;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 public class Ev3BoardTest {
@@ -17,7 +17,7 @@ public class Ev3BoardTest {
     private EV3 ev3Mock;
     private Ev3Board ev3Board;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         ev3Mock = mock(EV3.class);
         ev3Board = new Ev3Board(ev3Mock);

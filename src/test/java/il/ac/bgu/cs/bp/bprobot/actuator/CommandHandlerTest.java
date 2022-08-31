@@ -5,13 +5,14 @@ import il.ac.bgu.cs.bp.bprobot.robot.boards.TestBoard;
 import il.ac.bgu.cs.bp.bprobot.robot.enums.*;
 import il.ac.bgu.cs.bp.bprobot.util.robotdata.RobotSensorsData;
 import com.google.gson.JsonObject;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import static junit.framework.TestCase.assertTrue;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
+
 
 public class CommandHandlerTest {
     private TestCommandHandler emptyCommandHandler;
@@ -20,7 +21,7 @@ public class CommandHandlerTest {
 
     // ------------- Subscribe -------------
 
-    @org.junit.Test
+    @Test
     public void subscribeTest() {
         try {
 
@@ -45,7 +46,7 @@ public class CommandHandlerTest {
     }
 
 
-    @org.junit.Test
+    @Test
     public void subscribeWithoutIndexTest() {
         try {
             robotSensorsData = new RobotSensorsData();
@@ -72,7 +73,7 @@ public class CommandHandlerTest {
 
 // ------------- Unsubscribe -------------
 
-    @org.junit.Test
+    @Test
     public void unsubscribeTest() throws IOException {
         robotSensorsData = new RobotSensorsData();
         commandHandler = new TestCommandHandler(robotSensorsData);
@@ -105,7 +106,7 @@ public class CommandHandlerTest {
     }
 
 
-    @org.junit.Test
+    @Test
     public void unsubscribeWithoutIndexTest() throws IOException {
         robotSensorsData = new RobotSensorsData();
         commandHandler = new TestCommandHandler(robotSensorsData);
@@ -134,7 +135,7 @@ public class CommandHandlerTest {
     }
 
     // -------------------- Drive -----------------
-    @org.junit.Test
+    @Test
     public void driveTest() throws IOException {
         robotSensorsData = new RobotSensorsData();
         emptyCommandHandler = new TestCommandHandler(robotSensorsData);
@@ -170,7 +171,7 @@ public class CommandHandlerTest {
     }
 
 
-    @org.junit.Test
+    @Test
     public void driveWithoutIndexTest() throws IOException {
         robotSensorsData = new RobotSensorsData();
         emptyCommandHandler = new TestCommandHandler(robotSensorsData);
@@ -199,7 +200,7 @@ public class CommandHandlerTest {
 
 
     // -------------------- Rotate -----------------
-    @org.junit.Test
+    @Test
     public void rotateTest() throws IOException {
         robotSensorsData = new RobotSensorsData();
         emptyCommandHandler = new TestCommandHandler(robotSensorsData);
@@ -235,7 +236,7 @@ public class CommandHandlerTest {
     }
 
 
-    @org.junit.Test
+    @Test
     public void rotateWithoutIndexTest() throws IOException {
         robotSensorsData = new RobotSensorsData();
         emptyCommandHandler = new TestCommandHandler(robotSensorsData);
@@ -265,7 +266,7 @@ public class CommandHandlerTest {
 
 
     // -------------------- Set Sensor Mode -----------------
-    @org.junit.Test
+    @Test
     public void setSensorModeTest() throws IOException {
         robotSensorsData = new RobotSensorsData();
         emptyCommandHandler = new TestCommandHandler(robotSensorsData);
@@ -312,7 +313,7 @@ public class CommandHandlerTest {
         assertEquals(portsAndValues.get("D2"), 1.0, 0.01);
     }
 
-    @org.junit.Test
+    @Test
     public void setSensorModeWithoutIndexTest() throws IOException {
         robotSensorsData = new RobotSensorsData();
         emptyCommandHandler = new TestCommandHandler(robotSensorsData);
@@ -352,7 +353,7 @@ public class CommandHandlerTest {
 
 
     // -------------------- Set Sensor -----------------
-    @org.junit.Test
+    @Test
     public void setActuatorDataTest() throws IOException {
         robotSensorsData = new RobotSensorsData();
         emptyCommandHandler = new TestCommandHandler(robotSensorsData);
@@ -399,7 +400,7 @@ public class CommandHandlerTest {
     }
 
 
-    @org.junit.Test
+    @Test
     public void setActuatorDataWithoutIndexTest() throws IOException {
         robotSensorsData = new RobotSensorsData();
         emptyCommandHandler = new TestCommandHandler(robotSensorsData);

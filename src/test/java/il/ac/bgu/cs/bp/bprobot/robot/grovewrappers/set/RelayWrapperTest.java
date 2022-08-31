@@ -1,16 +1,15 @@
 package il.ac.bgu.cs.bp.bprobot.robot.grovewrappers.set;
 
 import org.iot.raspberry.grovepi.devices.GroveRelay;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 
 import java.io.IOException;
 import java.util.logging.Logger;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 
 @PrepareForTest({GroveRelay.class})
@@ -19,7 +18,7 @@ public class RelayWrapperTest {
     private RelayWrapper relayWrapperMock;
     private GroveRelay relayMock;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         relayMock = Mockito.mock(GroveRelay.class);
         relayWrapperMock = Mockito.spy(new RelayWrapper(relayMock));

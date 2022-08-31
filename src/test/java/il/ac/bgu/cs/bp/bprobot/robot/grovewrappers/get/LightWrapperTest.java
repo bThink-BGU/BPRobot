@@ -1,14 +1,13 @@
 package il.ac.bgu.cs.bp.bprobot.robot.grovewrappers.get;
 
 import org.iot.raspberry.grovepi.devices.GroveLightSensor;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.logging.Logger;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
@@ -17,7 +16,7 @@ public class LightWrapperTest {
     private LightWrapper lightWrapper;
     private final GroveLightSensor lightSensor = mock(GroveLightSensor.class);
 
-    @Before
+    @BeforeEach
     public void setUp() {
         lightWrapper = new LightWrapper(lightSensor);
         lightWrapper.setLogger(mock(Logger.class));

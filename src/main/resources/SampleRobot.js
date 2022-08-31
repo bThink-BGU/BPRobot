@@ -1,12 +1,12 @@
-var allEventsButBuildEventSet = bp.EventSet("Block all for build", function (e) {
+const allEventsButBuildEventSet = bp.EventSet("Block all for build", function (e) {
     return !e.name.equals("Build");
 });
 
-var dataEventSet = bp.EventSet("", function (e) {
+const dataEventSet = bp.EventSet("", function (e) {
     return e.name.equals("GetSensorsData");
 });
 
-var AlgorithmEventSet = bp.EventSet("", function (e) {
+const AlgorithmEventSet = bp.EventSet("", function (e) {
     return e.name.equals("GetAlgorithmResult");
 });
 

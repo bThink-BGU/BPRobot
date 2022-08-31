@@ -3,15 +3,15 @@ package il.ac.bgu.cs.bp.bprobot.robot.boards;
 import il.ac.bgu.cs.bp.bprobot.robot.enums.GrovePiPort;
 import il.ac.bgu.cs.bp.bprobot.robot.grovewrappers.get.IGroveSensorGetWrapper;
 import il.ac.bgu.cs.bp.bprobot.robot.grovewrappers.set.IGroveSensorSetWrapper;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @PrepareForTest({GrovePiBoard.class})
@@ -19,7 +19,7 @@ public class GrovePiBoardTest {
 
     private GrovePiBoard grovePiBoard;
 
-    @Before
+    @BeforeEach
     public void setUp() {
 
         Map<String, IGroveSensorGetWrapper> sensorGetMap = new HashMap<>();

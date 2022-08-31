@@ -1,16 +1,15 @@
 package il.ac.bgu.cs.bp.bprobot.robot.grovewrappers.set;
 
 import org.iot.raspberry.grovepi.devices.GroveLed;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 
 import java.io.IOException;
 import java.util.logging.Logger;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 
 @PrepareForTest({GroveLed.class})
@@ -19,7 +18,7 @@ public class LedWrapperTest {
     private LedWrapper ledWrapperMock;
     private GroveLed ledMock;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         ledMock = Mockito.mock(GroveLed.class);
         ledWrapperMock = Mockito.spy(new LedWrapper(ledMock));

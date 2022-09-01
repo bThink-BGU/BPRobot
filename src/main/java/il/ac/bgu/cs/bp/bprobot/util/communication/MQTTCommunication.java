@@ -3,16 +3,18 @@ package il.ac.bgu.cs.bp.bprobot.util.communication;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
+import java.util.UUID;
+
 import static il.ac.bgu.cs.bp.bprobot.util.communication.QueueNameEnum.Commands;
 import static il.ac.bgu.cs.bp.bprobot.util.communication.QueueNameEnum.SOS;
 import static il.ac.bgu.cs.bp.bprobot.util.communication.QueueNameEnum.Data;
 import static il.ac.bgu.cs.bp.bprobot.util.communication.QueueNameEnum.Free;
 
 public class MQTTCommunication implements IMQTTCommunication {
-    private String host = "tcp://broker.emqx.io:1883";
-    private String username = "emqx_test";
-    private String password = "emqx_test_password";
-    private final String clientId = "emqx_test";
+    private String host = "tcp://localhost:1883";
+    private String username = "";
+    private String password = "";
+    private final String clientId = UUID.randomUUID().toString();;
     private final MemoryPersistence persistence = new MemoryPersistence();
     private MqttClient client;
 

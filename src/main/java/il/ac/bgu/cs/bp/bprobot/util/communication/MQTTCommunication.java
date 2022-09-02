@@ -38,7 +38,7 @@ public class MQTTCommunication implements IMQTTCommunication {
     }
 
     @Override
-    public void subscribe(QueueNameEnum queue, IMqttMessageListener callback) throws MqttException {
+    public void consumeFromQueue(QueueNameEnum queue, IMqttMessageListener callback) throws MqttException {
         client.subscribe(queue.name(), callback);
     }
 

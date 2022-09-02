@@ -36,8 +36,8 @@ public class MainTest {
 
         // Sending on Data and Free.
         // Listening on Commands and SOS.
-        communicationHandler.subscribe(QueueNameEnum.Commands, MainTest::onReceiveCallback);
-        communicationHandler.subscribe(QueueNameEnum.SOS, MainTest::onReceiveCallback);
+        communicationHandler.consumeFromQueue(QueueNameEnum.Commands, MainTest::onReceiveCallback);
+        communicationHandler.consumeFromQueue(QueueNameEnum.SOS, MainTest::onReceiveCallback);
 
         //noinspection InfiniteLoopStatement
         while (true){

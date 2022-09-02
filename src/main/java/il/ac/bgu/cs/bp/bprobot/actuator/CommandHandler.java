@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-class CommandHandler {
+public class CommandHandler {
     RobotSensorsData robotSensorsData;
 
     Map<BoardTypeEnum, Map<Integer, IBoard>> robot;
@@ -49,12 +49,12 @@ class CommandHandler {
 
     }).collect(Collectors.toMap(data -> (String) data[0], data -> (ICommand) data[1]));
 
-    CommandHandler(RobotSensorsData robotSensorsData) {
+    public CommandHandler(RobotSensorsData robotSensorsData) {
         this.robotSensorsData = robotSensorsData;
     }
 
     // Parse & execute command from message that arrived from BPjs
-    void executeCommand(String command, String dataJsonString) throws IOException {
+    public void executeCommand(String command, String dataJsonString) throws IOException {
 
         ICommand commandToExecute = commandToMethod.get(command);
         commandToExecute.executeCommand(dataJsonString);

@@ -12,7 +12,7 @@ public interface IMQTTCommunication {
      * @param queue name of queue to listen to
      * @param callback to execute when messages arrive
      */
-    void subscribe(QueueNameEnum queue, IMqttMessageListener callback) throws MqttException;
+    void consumeFromQueue(QueueNameEnum queue, IMqttMessageListener callback) throws MqttException;
 
     void closeConnection() throws MqttException;
 

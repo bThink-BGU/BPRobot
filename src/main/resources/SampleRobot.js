@@ -40,9 +40,10 @@ bp.registerBThread("Just Right", function () {
 
 bp.registerBThread("Too Far Right", function () {
     bp.sync({request: bp.Event("Subscribe", {"EV3": ["2"]})});
-
     while (true) {
         var e = bp.sync({waitFor: dataEventSet});
+        bp.log.info("asdfasdfdsf")
+      bp.sync({request: bp.Event("Rotate", {"EV3": {"B": 60, "C": 30, "speed": 15}})});
         var data = JSON.parse(e.data);
         var distance  = data.EV3._1._2;
         if (distance > 20){

@@ -21,7 +21,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class RobotBProgramRunnerListener extends BProgramRunnerListenerAdapter {
-  private final CommandHandler commandHandler;
   private final RobotSensorsData robotData = new RobotSensorsData();
   private final IMQTTCommunication com;
   private final ICommand subscribe = this::subscribe;
@@ -47,22 +46,11 @@ public class RobotBProgramRunnerListener extends BProgramRunnerListenerAdapter {
 
   RobotBProgramRunnerListener(IMQTTCommunication communication, BProgram bp) throws MqttException {
     com = communication;
-    commandHandler = new CommandHandler(robotData);
     com.connect();
     com.consumeFromQueue(QueueNameEnum.Data, (topic, message) ->
         robotData.updateBoardMapValues(new String(message.getPayload(), StandardCharsets.UTF_8)));
     com.consumeFromQueue(QueueNameEnum.Free, (topic, message) ->
         bp.enqueueExternalEvent(new BEvent("GetAlgorithmResult", new String(message.getPayload(), StandardCharsets.UTF_8))));
-    com.consumeFromQueue(QueueNameEnum.Commands, (topic, message) -> onReceiveCommandCallback(commandHandler, topic, message));
-    com.consumeFromQueue(QueueNameEnum.SOS, (topic, message) -> onReceiveCommandCallback(commandHandler, topic, message));
-  }
-
-  private static void onReceiveCommandCallback(CommandHandler commandHandler, String topic, MqttMessage message) throws IOException {
-    String msg = new String(message.getPayload(), StandardCharsets.UTF_8);
-    JsonObject obj = new JsonParser().parse(msg).getAsJsonObject();
-    String command = String.valueOf(obj.get("Command"));
-    String dataJsonString = String.valueOf(obj.get("Data"));
-    commandHandler.executeCommand(command, dataJsonString);
   }
 
   @Override

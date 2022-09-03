@@ -1,0 +1,20 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="ev3dev-bp" type="Run as an Embedded Java application" factoryName="Run as an Embedded Java application">
+    <option name="classesDirectory" />
+    <option name="hostname" value="raspberrypi.local" />
+    <option name="keyPath" value="" />
+    <option name="password" value="pi" />
+    <option name="port" value="5006" />
+    <option name="programArguments" value="" />
+    <option name="runAsRoot" value="false" />
+    <option name="sshPort" value="22" />
+    <option name="username" value="pi" />
+    <option name="usingKey" value="false" />
+    <option name="vmParameters" value="" />
+    <option name="moduleName" value="BPRobot" />
+    <option name="mainclass" value="il.ac.bgu.cs.bp.bprobot.actuator.MainTest" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

@@ -1,13 +1,14 @@
 package il.ac.bgu.cs.bp.bprobot.robot.boards;
 
-import il.ac.bgu.cs.bp.bprobot.robot.enums.IPortEnums;
+
+import lejos.hardware.port.MotorPort;
 
 public class DriveDataObject {
-    private IPortEnums port;
+    private MotorPort port;
     private double speed;
     private int angle;
 
-    public DriveDataObject(IPortEnums port, double speed, int angle) {
+    public DriveDataObject(MotorPort port, double speed, int angle) {
         this.port = port;
         this.speed = speed;
         this.angle = angle;
@@ -21,7 +22,7 @@ public class DriveDataObject {
         return speed;
     }
 
-    public IPortEnums getPort() {
+    public MotorPort getPort() {
         return port;
     }
 
@@ -29,7 +30,7 @@ public class DriveDataObject {
         this.angle = angle;
     }
 
-    public void setPort(IPortEnums port) {
+    public void setPort(MotorPort port) {
         this.port = port;
     }
 

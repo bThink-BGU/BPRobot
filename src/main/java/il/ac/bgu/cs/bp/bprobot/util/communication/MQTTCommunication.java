@@ -5,10 +5,7 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
 import java.util.UUID;
 
-import static il.ac.bgu.cs.bp.bprobot.util.communication.QueueNameEnum.Commands;
-import static il.ac.bgu.cs.bp.bprobot.util.communication.QueueNameEnum.SOS;
-import static il.ac.bgu.cs.bp.bprobot.util.communication.QueueNameEnum.Data;
-import static il.ac.bgu.cs.bp.bprobot.util.communication.QueueNameEnum.Free;
+import static il.ac.bgu.cs.bp.bprobot.util.communication.QueueNameEnum.*;
 
 public class MQTTCommunication implements IMQTTCommunication {
     private String host = "tcp://localhost:1883";

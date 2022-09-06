@@ -27,8 +27,7 @@ public class RobotSensorsData implements Cloneable {
             Map<String, Map<String, Double>> mapForBoard = new HashMap<>();
             mappedValue.forEach((index, currentPortsMap) ->
             {
-                Map<String, Double> mapForIndexes = new HashMap<>();
-                currentPortsMap.forEach(mapForIndexes::put);
+                Map<String, Double> mapForIndexes = new HashMap<>(currentPortsMap);
                 mapForBoard.put(index, mapForIndexes);
             });
             robotSensorsData.portsMap.put(boardName, mapForBoard);

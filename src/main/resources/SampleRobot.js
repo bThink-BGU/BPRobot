@@ -34,13 +34,13 @@ bthread('Initiation', function () {
   sync({
     block: allEventsButBuildEventSet, request: command('Build', [
       {
-        Name: 'EV3_1',
-        Type: 'EV3',
-        Ports: [
+        name: 'EV3_1',
+        type: 'EV3',
+        ports: [
           {
-            Port: 2,
-            Name: 'UV3',
-            Type: 'Ultrasonic'
+            port: 2,
+            name: 'UV3',
+            type: 'Ultrasonic'
           }
         ]
       }

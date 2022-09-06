@@ -5,11 +5,16 @@ import com.github.yafna.raspberry.grovepi.GrovePi;
 import com.github.yafna.raspberry.grovepi.devices.*;
 import com.github.yafna.raspberry.grovepi.pi4j.GrovePi4J;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonParser;
 import ev3dev.hardware.EV3DevDevice;
 import ev3dev.hardware.EV3DevPlatform;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.Ev3Board;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.grovepi.GrovePiBoard;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.Board;
+import il.ac.bgu.cs.bp.bprobot.robot.boards.grovepi.GrovePiPort;
+import il.ac.bgu.cs.bp.bprobot.robot.boards.grovepi.grovewrappers.GroveDeviceWrapper;
+import il.ac.bgu.cs.bp.bprobot.robot.boards.grovepi.grovewrappers.IGroveDeviceSensorWrapper;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.grovepi.grovewrappers.get.*;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.grovepi.grovewrappers.set.BuzzerWrapper;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.grovepi.grovewrappers.set.LedWrapper;
@@ -53,12 +58,14 @@ public class Robot {
      * @param jsonString of the json file
      * @return HashMap of all the boards from the json
      */
-    public static Map<EV3DevPlatform, Map<Integer, Board>> JsonToRobot(String jsonString) {
-
-        Map<EV3DevPlatform, Map<Integer, Board>> retMap = new HashMap<>();
-        Gson gson = new Gson();
-        Map<?, ?> element = gson.fromJson(jsonString, Map.class); // json String to Map
-
+    public static Map<String, Board> JsonToRobot(JsonArray robots) {
+        Map<String, Board> retMap = new HashMap<>();
+        for (int i = 0; i < robots.size(); i++) {
+            var robot = robots.get(i).getAsJsonObject();
+            var name = robot.get("name").getAsString();
+            var type = robot.get("type").getAsString();
+            var ports = robot.getAsJsonArray("ports");
+        }
         for (Object key : element.keySet()) { // Iterate over board types
 
             String boardName = (String) key;
@@ -91,42 +98,41 @@ public class Robot {
     private static GrovePiBoard grovePiParser(Map<String, String> config) throws IOException {
         GrovePi grovePi = new GrovePi4J();
 
-        Map<String, IGroveDeviceSensorWrapper> sensorSetMap = new HashMap<>();
-        Map<String, IGroveDeviceSensorWrapper> sensorGetMap = new HashMap<>();
+        Map<GrovePiPort, GroveDeviceWrapper> deviceWrappers = new HashMap<>();
 
         for (Map.Entry<String, String> sensorData : config.entrySet()) {
             int portNumber = Integer.parseInt(sensorData.getKey().substring(1));
             switch (sensorData.getValue()) {
                 case "Led":
-                    sensorSetMap.put(sensorData.getKey(), new LedWrapper(new GroveLed(grovePi, portNumber)));
+                    deviceWrappers.put(sensorData.getKey(), new LedWrapper(new GroveLed(grovePi, portNumber)));
                     continue;
 
                 case "Ultrasonic":
-                    sensorGetMap.put(sensorData.getKey(), new UltrasonicWrapper(new GroveUltrasonicRanger(grovePi, portNumber)));
+                    deviceWrappers.put(sensorData.getKey(), new UltrasonicWrapper(new GroveUltrasonicRanger(grovePi, portNumber)));
                     continue;
 
                 case "Sound":
-                    sensorGetMap.put(sensorData.getKey(), new SoundWrapper(new GroveSoundSensor(grovePi, portNumber)));
+                    deviceWrappers.put(sensorData.getKey(), new SoundWrapper(new GroveSoundSensor(grovePi, portNumber)));
                     continue;
 
                 case "Button":
-                    sensorGetMap.put(sensorData.getKey(), new ButtonWrapper(grovePi.getDigitalIn(portNumber)));
+                    deviceWrappers.put(sensorData.getKey(), new ButtonWrapper(grovePi.getDigitalIn(portNumber)));
                     continue;
 
                 case "Rotary":
-                    sensorGetMap.put(sensorData.getKey(), new RotaryWrapper(new GroveRotarySensor(grovePi, portNumber)));
+                    deviceWrappers.put(sensorData.getKey(), new RotaryWrapper(new GroveRotarySensor(grovePi, portNumber)));
                     continue;
 
                 case "Relay":
-                    sensorSetMap.put(sensorData.getKey(), new RelayWrapper(new GroveRelay(grovePi, portNumber)));
+                    deviceWrappers.put(sensorData.getKey(), new RelayWrapper(new GroveRelay(grovePi, portNumber)));
                     continue;
 
                 case "Light":
-                    sensorGetMap.put(sensorData.getKey(), new LightWrapper(new GroveLightSensor(grovePi, portNumber)));
+                    deviceWrappers.put(sensorData.getKey(), new LightWrapper(new GroveLightSensor(grovePi, portNumber)));
                     continue;
 
                 case "Buzzer":
-                    sensorSetMap.put(sensorData.getKey(), new BuzzerWrapper(new GroveDigitalOut(grovePi, portNumber)));
+                    deviceWrappers.put(sensorData.getKey(), new BuzzerWrapper(new GroveDigitalOut(grovePi, portNumber)));
                     continue;
 
             }
@@ -138,11 +144,11 @@ public class Robot {
                 GroveTemperatureAndHumiditySensor.Type dhtType =
                         GroveTemperatureAndHumiditySensor.Type.valueOf(tempType);
 
-                sensorGetMap.put(sensorData.getKey(),
+                deviceWrappers.put(sensorData.getKey(),
                         new TemperatureWrapper(new GroveTemperatureAndHumiditySensor(grovePi, portNumber, dhtType)));
             }
         }
-        return new GrovePiBoard(sensorGetMap, sensorSetMap);
+        return new GrovePiBoard(deviceWrappers);
     }
 
     /**

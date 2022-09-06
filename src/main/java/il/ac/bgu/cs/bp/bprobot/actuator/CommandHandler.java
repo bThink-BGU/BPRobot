@@ -106,7 +106,7 @@ public class CommandHandler {
    *
    * @param json info on boards, ports and values to call 'drive' on.
    */
-  private void ev3Command(String json) throws InvocationTargetException, IllegalAccessException {
+  private void ev3Command(String json) {
     if (robot == null) {
       throw new RuntimeException("Robot is not initialized");
     }
@@ -150,7 +150,11 @@ public class CommandHandler {
       if (method == null) {
         throw new IllegalArgumentException("No such method " + act.function + " with params " + act.params.toString());
       }
-      method.invoke(device, params);
+      try {
+        method.invoke(device, params);
+      } catch (IllegalAccessException | InvocationTargetException e) {
+        throw new RuntimeException(e);
+      }
     }
   }
 

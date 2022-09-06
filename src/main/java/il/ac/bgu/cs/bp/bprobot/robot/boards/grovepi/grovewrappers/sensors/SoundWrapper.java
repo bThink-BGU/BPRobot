@@ -1,24 +1,25 @@
-package il.ac.bgu.cs.bp.bprobot.robot.boards.grovepi.grovewrappers.get;
+package il.ac.bgu.cs.bp.bprobot.robot.boards.grovepi.grovewrappers.sensors;
 
-import com.github.yafna.raspberry.grovepi.devices.GroveLightSensor;
+import com.github.yafna.raspberry.grovepi.devices.GroveSoundSensor;
 
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class LightWrapper implements IGroveSensorGetWrapper {
-    private Logger logger = Logger.getLogger(LightWrapper.class.getName());
-    private final GroveLightSensor lightSensor;
+public class SoundWrapper implements IGroveSensorGetWrapper {
 
-    public LightWrapper(GroveLightSensor lightSensor) {
-        this.lightSensor = lightSensor;
+    private Logger logger = Logger.getLogger(SoundWrapper.class.getName());
+    private final GroveSoundSensor soundSensor;
+
+    public SoundWrapper(GroveSoundSensor soundSensor){
+        this.soundSensor = soundSensor;
         logger.setLevel(Level.SEVERE);
     }
 
     @Override
     public Double get(int mode) {
         try {
-            return lightSensor.get();
+            return soundSensor.get();
         } catch (IOException e) {
             logger.severe("Error when reading data from port");
             return null;

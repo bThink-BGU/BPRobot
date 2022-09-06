@@ -32,18 +32,25 @@ bthread('Drive', function () {
 
 bthread('Initiation', function () {
   sync({
-    block: allEventsButBuildEventSet, request: command('Build', [
-      {
-        name: 'EV3_1',
-        type: 'EV3',
-        ports: [
-          {
-            port: 2,
-            name: 'UV3',
-            type: 'Ultrasonic'
-          }
-        ]
-      }
-    ])
+    block: allEventsButBuildEventSet, request: command('Build', {
+      mqtt: {
+        address: 'localhost',
+        port: 1833
+      },
+      devices: [
+        {
+          name: 'EV3_1',
+          type: 'EV3BRICK', //corresponds to GROVEPI or ev3dev.hardware.EV3DevPlatform.*
+          ports: [
+            {
+              address: 'S2',
+              name: 'UV3',
+              type: 'Sensor',
+              subType: 'Ultrasonic'
+            }
+          ]
+        }
+      ]
+    })
   })
 })

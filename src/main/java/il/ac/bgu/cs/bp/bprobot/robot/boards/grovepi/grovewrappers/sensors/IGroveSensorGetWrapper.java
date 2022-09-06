@@ -1,4 +1,4 @@
-package il.ac.bgu.cs.bp.bprobot.robot.boards.grovepi.grovewrappers.get;
+package il.ac.bgu.cs.bp.bprobot.robot.boards.grovepi.grovewrappers.sensors;
 
 import il.ac.bgu.cs.bp.bprobot.robot.boards.grovepi.grovewrappers.IGroveDeviceSensorWrapper;
 

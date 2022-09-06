@@ -4,103 +4,64 @@ import com.github.yafna.raspberry.grovepi.GroveDigitalOut;
 import com.github.yafna.raspberry.grovepi.GrovePi;
 import com.github.yafna.raspberry.grovepi.devices.*;
 import com.github.yafna.raspberry.grovepi.pi4j.GrovePi4J;
-import com.google.gson.Gson;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonParser;
-import ev3dev.hardware.EV3DevDevice;
-import ev3dev.hardware.EV3DevPlatform;
+import com.google.gson.JsonObject;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.Ev3Board;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.grovepi.GrovePiBoard;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.Board;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.grovepi.GrovePiPort;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.grovepi.grovewrappers.GroveDeviceWrapper;
-import il.ac.bgu.cs.bp.bprobot.robot.boards.grovepi.grovewrappers.IGroveDeviceSensorWrapper;
-import il.ac.bgu.cs.bp.bprobot.robot.boards.grovepi.grovewrappers.get.*;
-import il.ac.bgu.cs.bp.bprobot.robot.boards.grovepi.grovewrappers.set.BuzzerWrapper;
-import il.ac.bgu.cs.bp.bprobot.robot.boards.grovepi.grovewrappers.set.LedWrapper;
-import il.ac.bgu.cs.bp.bprobot.robot.boards.grovepi.grovewrappers.set.RelayWrapper;
+import il.ac.bgu.cs.bp.bprobot.robot.boards.grovepi.grovewrappers.sensors.*;
+import il.ac.bgu.cs.bp.bprobot.robot.boards.grovepi.grovewrappers.actuators.BuzzerWrapper;
+import il.ac.bgu.cs.bp.bprobot.robot.boards.grovepi.grovewrappers.actuators.LedWrapper;
+import il.ac.bgu.cs.bp.bprobot.robot.boards.grovepi.grovewrappers.actuators.RelayWrapper;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class Robot {
     private static final IParser ev3Parser = Robot::ev3Parser;
     private static final IParser grovePiParser = Robot::grovePiParser;
-    private static final Map<String, IParser> boardToParser = Stream.of(new Object[][]{
-            {"EV3", ev3Parser},
-            {"GrovePi", grovePiParser}
+    private static final Map<String, IParser> parsers = Map.of(
+        "EV3BRICK", ev3Parser,
+        "GROVEPI", grovePiParser
+    );
+    private String mqttAddress = "localhost";
+    private int mqttPort = 1833;
+    private Map<String, Board> boards = new HashMap<>();
 
-    }).collect(Collectors.toMap(data -> (String) data[0], data -> (IParser) data[1]));
-//    public static void main(String[] args) throws IOException, InterruptedException {
-//
-////        InputStream inputStream = new FileInputStream("./classes/Robot.json");
-////        byte[] data = inputStream.readAllBytes();
-////        String jsonString = new String(data);
-////        Map<BoardTypeEnum, Map<Integer, IBoard>> boards = JsonToRobot(jsonString);
-////
-////        Boards.Ev3Board ev3B = (Boards.Ev3Board) boards.get(BoardTypeEnum.EV3).get(1);
-////        Boards.GrovePiBoard grovePi = (Boards.GrovePiBoard) boards.get(BoardTypeEnum.GrovePi).get(1);
-////        while (true){
-////            ev3B.getDoubleSensorData(Ev3SensorPort._1);
-////            System.out.print(" ; ");
-////            ev3B.getDoubleSensorData(Ev3SensorPort._4);
-////            System.out.println();
-////        }
-//    }
-
-    /**
-     * reads a json file with the existing boards and their sensors.
-     *
-     * @param jsonString of the json file
-     * @return HashMap of all the boards from the json
-     */
-    public static Map<String, Board> JsonToRobot(JsonArray robots) {
-        Map<String, Board> retMap = new HashMap<>();
-        for (int i = 0; i < robots.size(); i++) {
-            var robot = robots.get(i).getAsJsonObject();
-            var name = robot.get("name").getAsString();
-            var type = robot.get("type").getAsString();
-            var ports = robot.getAsJsonArray("ports");
+    public void JsonToRobot(JsonObject json) {
+        if(json.has("mqtt")) {
+            var mqtt = json.getAsJsonObject("mqtt");
+            mqttAddress = mqtt.get("address").getAsString();
+            mqttPort = mqtt.get("port").getAsInt();
         }
-        for (Object key : element.keySet()) { // Iterate over board types
-
-            String boardName = (String) key;
-            Object value = element.get(key);
-
-            @SuppressWarnings("unchecked")
-            ArrayList<Map<String, String>> boardConfigsList = (ArrayList<Map<String, String>>) value;
-            Map<Integer, Board> boardsMap = new HashMap<>();
-
-            for (int i = 0; i < boardConfigsList.size(); i++) {
-                Map<String, String> config = boardConfigsList.get(i);
-                try {
-                    @SuppressWarnings("rawtypes")
-                    Board configsBoard = boardToParser.get(boardName).executeParser(config);
-                    boardsMap.put(i + 1, configsBoard);
-                } catch (IOException e) {
-                    System.out.println("Failed to initiate board " + boardName + " configs number " + (i + 1));
-                }
-            } // Go over each config and create a board from it.
-
-            retMap.put(EV3DevPlatform.valueOf(boardName), boardsMap); // Add board type to map
+        var devices = json.getAsJsonArray("devices");
+        for (int i = 0; i < devices.size(); i++) {
+            var deviceJson = devices.get(i).getAsJsonObject();
+            var type = deviceJson.get("type").getAsString();
+            var name = deviceJson.get("name").getAsString();
+            var ports = deviceJson.getAsJsonArray("ports");
+            boards.put(name, parsers.get(type).executeParser(name, ports));
         }
-        return retMap;
     }
 
-    private static Ev3Board ev3Parser(Map<String, String> config) {
+    private static Ev3Board ev3Parser(String name, JsonArray ports) {
         return new Ev3Board();
     }
 
-    private static GrovePiBoard grovePiParser(Map<String, String> config) throws IOException {
+    private static GrovePiBoard grovePiParser(String boardName, JsonArray ports) throws IOException {
         GrovePi grovePi = new GrovePi4J();
-
         Map<GrovePiPort, GroveDeviceWrapper> deviceWrappers = new HashMap<>();
 
-        for (Map.Entry<String, String> sensorData : config.entrySet()) {
+        for (int i = 0; i < ports.size(); i++) {
+            var port = ports.get(i).getAsJsonObject();
+            var address = port.get("address").getAsString();
+            var name = port.get("name").getAsString();
+            var type = port.get("type").getAsString();
+            var subType = port.get("subType").getAsString();
+        }
             int portNumber = Integer.parseInt(sensorData.getKey().substring(1));
             switch (sensorData.getValue()) {
                 case "Led":
@@ -157,6 +118,6 @@ public class Robot {
     @FunctionalInterface
     public interface IParser {
         @SuppressWarnings("rawtypes")
-        Board executeParser(Map<String, String> config) throws IOException;
+        Board executeParser(String name, JsonArray ports) throws IOException;
     }
 }

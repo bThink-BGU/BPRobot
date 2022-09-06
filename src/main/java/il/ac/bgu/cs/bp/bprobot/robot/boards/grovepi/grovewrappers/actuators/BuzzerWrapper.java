@@ -1,4 +1,4 @@
-package il.ac.bgu.cs.bp.bprobot.robot.boards.grovepi.grovewrappers.set;
+package il.ac.bgu.cs.bp.bprobot.robot.boards.grovepi.grovewrappers.actuators;
 
 import com.github.yafna.raspberry.grovepi.GroveDigitalOut;
 
@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class BuzzerWrapper implements IGroveSensorSetWrapper {
+public class BuzzerWrapper implements GroveSensorActuatorWrapper {
 
     private Logger logger = Logger.getLogger(BuzzerWrapper.class.getName());
     private final GroveDigitalOut buzzer;

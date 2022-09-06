@@ -1,4 +1,4 @@
-package il.ac.bgu.cs.bp.bprobot.robot.boards.grovepi.grovewrappers.get;
+package il.ac.bgu.cs.bp.bprobot.robot.boards.grovepi.grovewrappers.sensors;
 
 import com.github.yafna.raspberry.grovepi.devices.GroveRotarySensor;
 import com.github.yafna.raspberry.grovepi.devices.GroveRotaryValue;

@@ -1,4 +1,4 @@
-package il.ac.bgu.cs.bp.bprobot.robot.boards.grovepi.grovewrappers.set;
+package il.ac.bgu.cs.bp.bprobot.robot.boards.grovepi.grovewrappers.actuators;
 
 import com.github.yafna.raspberry.grovepi.devices.GroveRelay;
 
@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class RelayWrapper implements IGroveSensorSetWrapper {
+public class RelayWrapper implements GroveSensorActuatorWrapper {
   private Logger logger = Logger.getLogger(RelayWrapper.class.getName());
   private final GroveRelay relay;
 

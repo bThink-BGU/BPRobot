@@ -1,4 +1,4 @@
-package il.ac.bgu.cs.bp.bprobot.robot.boards.grovepi.grovewrappers.get;
+package il.ac.bgu.cs.bp.bprobot.robot.boards.grovepi.grovewrappers.sensors;
 
 import com.github.yafna.raspberry.grovepi.devices.GroveUltrasonicRanger;
 
@@ -8,7 +8,7 @@ import java.util.logging.Logger;
 
 public class UltrasonicWrapper implements IGroveSensorGetWrapper {
 
-    private Logger logger = Logger.getLogger(UltrasonicWrapper.class.getName());
+    private static final Logger logger = Logger.getLogger(UltrasonicWrapper.class.getName());
     private final GroveUltrasonicRanger ultrasonicRanger;
 
     public UltrasonicWrapper(GroveUltrasonicRanger ultrasonicRanger){
@@ -25,8 +25,4 @@ public class UltrasonicWrapper implements IGroveSensorGetWrapper {
             return null;
         }
     }
-
-    public void setLogger(Logger logger){ this.logger=logger; }
-
-    public Logger getLogger(){ return this.logger; }
 }

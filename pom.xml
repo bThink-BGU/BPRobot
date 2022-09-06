@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        <exec.mainClass>il.ac.bgu.cs.bp.bprobot.RobotCliRunner</exec.mainClass>
+    </properties>
+
+    <groupId>com.github.bthink-bgu</groupId>
+    <artifactId>BPRobot</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.2.0</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>${exec.mainClass}</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <!-- Making uber jar for easy execution. -->
+            <id>uber-jar</id>
+            <build>
+                <finalName>BPStateSpaceMapper-${project.version}.uber</finalName>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-shade-plugin</artifactId>
+                        <version>3.2.4</version>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>shade</goal>
+                                </goals>
+                                <configuration>
+                                    <transformers>
+                                        <transformer
+                                                implementation="org.apache.maven.plugins.shade.resource.ComponentsXmlResourceTransformer"/>
+                                    </transformers>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.github.bthink-bgu</groupId>
+            <artifactId>BPjs-Context</artifactId>
+            <version>0.6.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.yafna.raspberry</groupId>
+            <artifactId>grovepi-spec</artifactId>
+            <version>0.1.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.yafna.raspberry</groupId>
+            <artifactId>grovepi-pi4j</artifactId>
+            <version>0.1.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.9.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.ev3dev-lang-java</groupId>
+            <artifactId>ev3dev-lang-java</artifactId>
+            <version>2.6.2-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.ev3dev-lang-java</groupId>
+            <artifactId>lejos-commons</artifactId>
+            <version>0.7.3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.paho</groupId>
+            <artifactId>org.eclipse.paho.client.mqttv3</artifactId>
+            <version>1.2.5</version>
+        </dependency>
+    </dependencies>
+
+</project>

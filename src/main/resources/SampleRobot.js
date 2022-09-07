@@ -53,6 +53,19 @@ bthread('Drive', function () {
   }
 })
 
+bthread('Stop on red', function () {
+  command('subscribe', 'EV3_1.S3')
+  while (true) {
+    sync({
+      request: [
+        command('rotate', [portParams('EV3_1.B', [60, true]), portParams('EV3_1.C', [60, true])]),
+        portCommand('rotate', 'EV3_1.B', [0, true]),
+        portCommand('rotate', 'EV3_1.C', [0, true])
+      ]
+    })
+  }
+})
+
 bthread('Initiation', function () {
 
   sync({ block: config.not(), request: config })

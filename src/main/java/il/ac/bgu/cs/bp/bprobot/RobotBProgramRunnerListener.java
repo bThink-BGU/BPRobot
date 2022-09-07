@@ -7,7 +7,7 @@ import il.ac.bgu.cs.bp.bpjs.model.BEvent;
 import il.ac.bgu.cs.bp.bpjs.model.BProgram;
 import il.ac.bgu.cs.bp.bprobot.util.communication.IMQTTCommunication;
 import il.ac.bgu.cs.bp.bprobot.util.communication.QueueNameEnum;
-import il.ac.bgu.cs.bp.bprobot.util.robotdata.RobotSensorsDataCollector;
+import il.ac.bgu.cs.bp.bprobot.actuator.RobotSensorsDataCollector;
 import org.eclipse.paho.client.mqttv3.MqttException;
 
 import java.io.IOException;

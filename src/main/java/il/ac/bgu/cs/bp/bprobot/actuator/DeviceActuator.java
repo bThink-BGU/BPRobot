@@ -6,7 +6,6 @@ import com.google.gson.JsonParser;
 import il.ac.bgu.cs.bp.bprobot.util.communication.IMQTTCommunication;
 import il.ac.bgu.cs.bp.bprobot.util.communication.MQTTCommunication;
 import il.ac.bgu.cs.bp.bprobot.util.communication.QueueNameEnum;
-import il.ac.bgu.cs.bp.bprobot.util.robotdata.RobotSensorsDataCollector;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 

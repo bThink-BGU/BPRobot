@@ -1,13 +1,14 @@
-package il.ac.bgu.cs.bp.bprobot.robot.boards.grovepi.grovewrappers.sensors;
+package il.ac.bgu.cs.bp.bprobot.robot.boards.grovepi.devices.sensors;
 
 import com.github.yafna.raspberry.grovepi.devices.GroveTemperatureAndHumiditySensor;
 import com.github.yafna.raspberry.grovepi.devices.GroveTemperatureAndHumidityValue;
+import il.ac.bgu.cs.bp.bprobot.robot.boards.SensorWrapper;
 
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class TemperatureWrapper implements IGroveSensorGetWrapper {
+public class TemperatureWrapper implements SensorWrapper {
     private Logger logger = Logger.getLogger(TemperatureWrapper.class.getName());
     private final GroveTemperatureAndHumiditySensor temperatureAndHumiditySensor;
 

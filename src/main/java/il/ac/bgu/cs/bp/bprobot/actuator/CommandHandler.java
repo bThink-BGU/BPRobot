@@ -1,13 +1,12 @@
 package il.ac.bgu.cs.bp.bprobot.actuator;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import ev3dev.hardware.EV3DevPlatform;
 import il.ac.bgu.cs.bp.bprobot.robot.Robot;
-import il.ac.bgu.cs.bp.bprobot.robot.boards.DriveDataObject;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.Board;
-import il.ac.bgu.cs.bp.bprobot.util.robotdata.RobotSensorsData;
+import il.ac.bgu.cs.bp.bprobot.util.robotdata.RobotSensorsDataCollector;
 import lejos.hardware.port.Port;
 
 import java.io.IOException;
@@ -18,13 +17,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class CommandHandler {
-  RobotSensorsData robotSensorsData;
-
-  Map<String, Board> robot;
+  RobotSensorsDataCollector robotSensorsData;
+  private Robot robot = null;
 
   // Uniform Interface for commands arriving from BPjs
   private final ICommand subscribe = this::subscribe;
@@ -35,24 +31,25 @@ public class CommandHandler {
   // Thread for data collection from robot sensors
   private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
   private ScheduledFuture<?> dataCollectionFuture;
+  private final Map<String, ICommand> commandToMethod = Map.of(
+      "Subscribe", subscribe,
+      "Unsubscribe", unsubscribe,
+      "Build", build
+  );
 
-  private final Map<String, ICommand> commandToMethod = Stream.of(new Object[][]{{"\"Subscribe\"", subscribe}, {"\"Unsubscribe\"", unsubscribe}, {"\"Build\"", build}}).collect(Collectors.toMap(data -> (String) data[0], data -> (ICommand) data[1]));
-
-  public CommandHandler(RobotSensorsData robotSensorsData) {
+  public CommandHandler(RobotSensorsDataCollector robotSensorsData) {
     this.robotSensorsData = robotSensorsData;
   }
 
   // Parse & execute command from message that arrived from BPjs
-  public void executeCommand(String command, String dataJsonString) throws IOException {
-    ICommand commandToExecute = commandToMethod.getOrDefault(command, defaultCommand);
-    commandToExecute.executeCommand(dataJsonString);
+  public void executeCommand(String action, JsonElement params) throws IOException {
+    ICommand commandToExecute = commandToMethod.getOrDefault(action, defaultCommand);
+    commandToExecute.executeCommand(action, params);
   }
 
   void closeBoards() {
-    if (robot == null) {
-      return;
-    }
-    robot.values().forEach(Board::close);
+    if (robot != null)
+      robot.close();
   }
 
   /**
@@ -62,10 +59,10 @@ public class CommandHandler {
    * 2. Add new ports to Robot Sensor Data Object.
    * 3. Restart Data Collection Thread.
    *
-   * @param json string from BPjs messages
+   * @param params json element from BPjs messages
    */
-  void subscribe(String json) {
-    robotSensorsData.addToBoardsMap(json);
+  void subscribe(String commandName, JsonElement params) {
+    robotSensorsData.addToBoardsMap(params);
     startExecutor();
   }
 
@@ -76,21 +73,21 @@ public class CommandHandler {
    * 2. Remove ports from Robot Sensor Data Object.
    * 3. Restart Data Collection Thread.
    *
-   * @param json string from BPjs messages
+   * @param params  from BPjs messages
    */
-  void unsubscribe(String json) {
-    robotSensorsData.removeFromBoardsMap(json);
+  void unsubscribe(String commandName, JsonElement params) {
+    robotSensorsData.removeFromBoardsMap(params);
     startExecutor();
   }
 
   /**
    * Build IBoards according to json data from BPjs Build event.
    *
-   * @param json instructions on which IBoards to build.
+   * @param params instructions on which IBoards to build.
    */
-  void build(String json) {
+  void build(String action, JsonElement params) {
     try {
-      robot = Robot.JsonToRobot(json);
+      robot = Robot.parse(params.getAsJsonObject());
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -106,11 +103,11 @@ public class CommandHandler {
    *
    * @param json info on boards, ports and values to call 'drive' on.
    */
-  private void ev3Command(String json) {
+  private void ev3Command(String commandName, JsonElement json) {
     if (robot == null) {
       throw new RuntimeException("Robot is not initialized");
     }
-    for (var act : buildActivationMap(json)) {
+    for (var act : buildActivationMap(commandName, json.getAsJsonArray())) {
       var device = act.board.getDevice(act.port);
       var methods = device.getClass().getMethods();
       Method method = null;
@@ -162,24 +159,22 @@ public class CommandHandler {
    * Build Map of Board Types -> Board Index -> (Port, value)
    * This map is used to call 'drive' on each IBoard that is indexed on the result
    *
-   * @param json build map according to this json
+   * @param command the name of the function to execute
+   * @param params build map according to this json
    * @return Map with boards, their indexes, and the data to call 'drive' on.
    */
-  private List<Act> buildActivationMap(String json) {
+  private List<Act> buildActivationMap(String command, JsonArray params) {
     List<Act> result = new ArrayList<>();
-    var element = JsonParser.parseString(json).getAsJsonObject();
-    String action = element.getAsJsonPrimitive("action").getAsString();
-    var params = element.getAsJsonArray("params");
     for (var param : params) {
       if (param.isJsonObject()) {
         var paramObj = param.getAsJsonObject();
         if (paramObj.has("address")) {
           var address = paramObj.getAsJsonPrimitive("address").getAsString();
-          var board = robot.get(address.substring(0, address.indexOf(".")));
+          var board = robot.getBoard(address.substring(0, address.indexOf(".")));
           var port = board.getPort(address.substring(address.indexOf(".") + 1));
           var actionParams = new JsonArray();
           if (paramObj.has("params")) actionParams = paramObj.getAsJsonArray("params");
-          result.add(new Act(board, port, action, actionParams));
+          result.add(new Act(board, port, command, actionParams));
         }
       }
     }
@@ -194,7 +189,7 @@ public class CommandHandler {
   private final Runnable dataCollector = () -> {
 
     try {
-      RobotSensorsData robotSensorsDataCopy = robotSensorsData.deepCopy();
+      RobotSensorsDataCollector robotSensorsDataCopy = robotSensorsData.deepCopy();
 
       JsonObject jsonBoards = new JsonObject();
       robotSensorsDataCopy.getBoardNames().forEach(boardString -> {
@@ -239,7 +234,7 @@ public class CommandHandler {
    */
   @FunctionalInterface
   public interface ICommand {
-    void executeCommand(String json) throws IOException;
+    void executeCommand(String commandName, JsonElement params) throws IOException;
   }
 
   public static class Act {

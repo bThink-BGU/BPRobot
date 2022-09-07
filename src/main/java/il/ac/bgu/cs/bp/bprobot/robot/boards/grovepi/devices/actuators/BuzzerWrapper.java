@@ -1,13 +1,13 @@
-package il.ac.bgu.cs.bp.bprobot.robot.boards.grovepi.grovewrappers.actuators;
+package il.ac.bgu.cs.bp.bprobot.robot.boards.grovepi.devices.actuators;
 
 import com.github.yafna.raspberry.grovepi.GroveDigitalOut;
+import il.ac.bgu.cs.bp.bprobot.robot.boards.ActuatorWrapper;
 
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class BuzzerWrapper implements GroveSensorActuatorWrapper {
-
+public class BuzzerWrapper implements ActuatorWrapper {
     private Logger logger = Logger.getLogger(BuzzerWrapper.class.getName());
     private final GroveDigitalOut buzzer;
 
@@ -17,7 +17,7 @@ public class BuzzerWrapper implements GroveSensorActuatorWrapper {
     }
 
     @Override
-    public boolean set(boolean value) {
+    public boolean setBooleanValue(boolean value) {
         try {
             buzzer.set(value);
             return true;

@@ -1,12 +1,13 @@
-package il.ac.bgu.cs.bp.bprobot.robot.boards.grovepi.grovewrappers.actuators;
+package il.ac.bgu.cs.bp.bprobot.robot.boards.grovepi.devices.actuators;
 
 import com.github.yafna.raspberry.grovepi.devices.GroveLed;
+import il.ac.bgu.cs.bp.bprobot.robot.boards.ActuatorWrapper;
 
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class LedWrapper implements GroveSensorActuatorWrapper {
+public class LedWrapper implements ActuatorWrapper {
     private Logger logger = Logger.getLogger(LedWrapper.class.getName());
     private final GroveLed led;
 
@@ -16,7 +17,7 @@ public class LedWrapper implements GroveSensorActuatorWrapper {
     }
 
     @Override
-    public boolean set(boolean value) {
+    public boolean setBooleanValue(boolean value) {
         try {
             led.set(value);
             return true;

@@ -1,11 +1,12 @@
 package il.ac.bgu.cs.bp.bprobot.actuator;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import il.ac.bgu.cs.bp.bprobot.util.communication.IMQTTCommunication;
 import il.ac.bgu.cs.bp.bprobot.util.communication.MQTTCommunication;
 import il.ac.bgu.cs.bp.bprobot.util.communication.QueueNameEnum;
-import il.ac.bgu.cs.bp.bprobot.util.robotdata.RobotSensorsData;
+import il.ac.bgu.cs.bp.bprobot.util.robotdata.RobotSensorsDataCollector;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
@@ -18,7 +19,7 @@ public class DeviceActuator {
   private static IMQTTCommunication communicationHandler;
 
   public static void main(String[] args) throws MqttException {
-    RobotSensorsData robotSensorsData = new RobotSensorsData();
+    RobotSensorsDataCollector robotSensorsData = new RobotSensorsDataCollector();
     commandHandler = new CommandHandler(robotSensorsData);
     communicationHandler = new MQTTCommunication();
     communicationHandler.connect();
@@ -31,9 +32,6 @@ public class DeviceActuator {
       System.out.println("Connection Closed!");
 
     }));
-
-//        String json = "{\"EV3\": {1: {}, 2 : {\"B\": 32, \"C\": 31}}}";
-//        commandHandler.getCommand("\"Drive\"").executeCommand(json);
 
     // Sending on Data and Free.
     // Listening on Commands and SOS.
@@ -53,8 +51,8 @@ public class DeviceActuator {
   private static void onReceiveCallback(String topic, MqttMessage message) throws IOException {
     String msg = new String(message.getPayload(), StandardCharsets.UTF_8);
     JsonObject obj = JsonParser.parseString(msg).getAsJsonObject();
-    String command = String.valueOf(obj.get("Command"));
-    String dataJsonString = String.valueOf(obj.get("Data"));
-    commandHandler.executeCommand(command, dataJsonString);
+    String action = obj.get("action").getAsString();
+    JsonElement params = obj.getAsJsonObject("params");
+    commandHandler.executeCommand(action, params);
   }
 }

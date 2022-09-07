@@ -96,6 +96,12 @@
         </dependency>
 
         <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>31.1-jre</version>
+        </dependency>
+
+        <dependency>
             <groupId>com.github.ev3dev-lang-java</groupId>
             <artifactId>ev3dev-lang-java</artifactId>
             <version>2.6.2-SNAPSHOT</version>

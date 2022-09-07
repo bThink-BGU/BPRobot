@@ -7,7 +7,7 @@ import il.ac.bgu.cs.bp.bpjs.model.BEvent;
 import il.ac.bgu.cs.bp.bpjs.model.BProgram;
 import il.ac.bgu.cs.bp.bprobot.util.communication.IMQTTCommunication;
 import il.ac.bgu.cs.bp.bprobot.util.communication.QueueNameEnum;
-import il.ac.bgu.cs.bp.bprobot.util.robotdata.RobotSensorsData;
+import il.ac.bgu.cs.bp.bprobot.util.robotdata.RobotSensorsDataCollector;
 import org.eclipse.paho.client.mqttv3.MqttException;
 
 import java.io.IOException;
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class RobotBProgramRunnerListener extends BProgramRunnerListenerAdapter {
-  private final RobotSensorsData robotData = new RobotSensorsData();
+  private final RobotSensorsDataCollector robotData = new RobotSensorsDataCollector();
   private final IMQTTCommunication com;
   private final ICommand subscribe = this::subscribe;
   private final ICommand unsubscribe = this::unsubscribe;

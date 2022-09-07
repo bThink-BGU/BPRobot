@@ -1,12 +1,13 @@
-package il.ac.bgu.cs.bp.bprobot.robot.boards.grovepi.grovewrappers.sensors;
+package il.ac.bgu.cs.bp.bprobot.robot.boards.grovepi.devices.sensors;
 
 import com.github.yafna.raspberry.grovepi.devices.GroveLightSensor;
+import il.ac.bgu.cs.bp.bprobot.robot.boards.SensorWrapper;
 
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class LightWrapper implements IGroveSensorGetWrapper {
+public class LightWrapper implements SensorWrapper {
     private Logger logger = Logger.getLogger(LightWrapper.class.getName());
     private final GroveLightSensor lightSensor;
 

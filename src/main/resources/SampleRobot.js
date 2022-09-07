@@ -10,12 +10,35 @@ function portCommand(commandName, address, params) {
   return command(commandName, [portParams(address, params)])
 }
 
-const allEventsButBuildEventSet = bp.EventSet('Block all for build', function (e) {
-  return e.name.equals('Command') && e.data.action.equals('Build')
-})
-
-const dataEventSet = bp.EventSet('', function (e) {
-  return e.name.equals('Command') && e.data.action.equals('GetSensorsData')
+const config = command('Build', {
+  mqtt: {
+    address: 'localhost',
+    port: 1833
+  },
+  devices: [
+    {
+      name: 'EV3_1',
+      type: 'EV3BRICK', //corresponds to GROVEPI or any ev3dev.hardware.EV3DevPlatform.*
+      ports: [
+        {
+          address: 'B',
+          name: 'MotorB',
+          type: 'EV3LargeRegulatedMotor' //corresponds to a class that inherits or ev3dev.hardware.EV3DevDevice (e.g., EV3LargeRegulatedMotor)
+        },
+        {
+          address: 'C',
+          name: 'MotorC',
+          type: 'EV3LargeRegulatedMotor'
+        },
+        {
+          address: 'S3',
+          name: 'Color',
+          type: 'EV3ColorSensor',
+          mode: 0
+        }
+      ]
+    }
+  ]
 })
 
 bthread('Drive', function () {
@@ -31,26 +54,6 @@ bthread('Drive', function () {
 })
 
 bthread('Initiation', function () {
-  sync({
-    block: allEventsButBuildEventSet, request: command('Build', {
-      mqtt: {
-        address: 'localhost',
-        port: 1833
-      },
-      devices: [
-        {
-          name: 'EV3_1',
-          type: 'EV3BRICK', //corresponds to GROVEPI or ev3dev.hardware.EV3DevPlatform.*
-          ports: [
-            {
-              address: 'S2',
-              name: 'UV3',
-              type: 'Sensor',
-              subType: 'Ultrasonic'
-            }
-          ]
-        }
-      ]
-    })
-  })
+
+  sync({ block: config.not(), request: config })
 })

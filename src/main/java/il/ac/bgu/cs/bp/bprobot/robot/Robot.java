@@ -1,24 +1,16 @@
 package il.ac.bgu.cs.bp.bprobot.robot;
 
-import com.github.yafna.raspberry.grovepi.GroveDigitalOut;
-import com.github.yafna.raspberry.grovepi.GrovePi;
-import com.github.yafna.raspberry.grovepi.devices.*;
-import com.github.yafna.raspberry.grovepi.pi4j.GrovePi4J;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import il.ac.bgu.cs.bp.bprobot.robot.boards.Ev3Board;
+import com.google.gson.JsonPrimitive;
+import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.Ev3Board;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.grovepi.GrovePiBoard;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.Board;
-import il.ac.bgu.cs.bp.bprobot.robot.boards.grovepi.GrovePiPort;
-import il.ac.bgu.cs.bp.bprobot.robot.boards.grovepi.grovewrappers.GroveDeviceWrapper;
-import il.ac.bgu.cs.bp.bprobot.robot.boards.grovepi.grovewrappers.sensors.*;
-import il.ac.bgu.cs.bp.bprobot.robot.boards.grovepi.grovewrappers.actuators.BuzzerWrapper;
-import il.ac.bgu.cs.bp.bprobot.robot.boards.grovepi.grovewrappers.actuators.LedWrapper;
-import il.ac.bgu.cs.bp.bprobot.robot.boards.grovepi.grovewrappers.actuators.RelayWrapper;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class Robot {
     private static final IParser ev3Parser = Robot::ev3Parser;
@@ -29,87 +21,58 @@ public class Robot {
     );
     private String mqttAddress = "localhost";
     private int mqttPort = 1833;
-    private Map<String, Board> boards = new HashMap<>();
+    private final Map<String, Board> boards = new HashMap<>();
 
-    public void JsonToRobot(JsonObject json) {
+    private Robot() {}
+
+    public void close() {
+        boards.values().forEach(Board::close);
+    }
+    public static Robot parse(JsonObject json) {
+        Robot robot = new Robot();
         if(json.has("mqtt")) {
             var mqtt = json.getAsJsonObject("mqtt");
-            mqttAddress = mqtt.get("address").getAsString();
-            mqttPort = mqtt.get("port").getAsInt();
+            robot.mqttAddress = mqtt.get("address").getAsString();
+            robot.mqttPort = mqtt.get("port").getAsInt();
         }
         var devices = json.getAsJsonArray("devices");
         for (int i = 0; i < devices.size(); i++) {
             var deviceJson = devices.get(i).getAsJsonObject();
-            var type = deviceJson.get("type").getAsString();
-            var name = deviceJson.get("name").getAsString();
+            var type = Optional.ofNullable(deviceJson.get("type")).orElseThrow(() -> new IllegalArgumentException("Device in build does not include a 'type' parameter")).getAsString();
+            var parser = parsers.computeIfAbsent(type, s -> {throw new IllegalArgumentException("'"+s+"' is not a known type of device (Must be 'GROVEPI' or any ev3dev.hardware.EV3DevPlatform.*)");});
+            var name = Optional.ofNullable(deviceJson.get("name")).orElseThrow(() -> new IllegalArgumentException("Device in build does not include a 'name' parameter")).getAsString();
+            if(robot.boards.containsKey(name)) throw new IllegalArgumentException("There is more than one board with the name "+name);
             var ports = deviceJson.getAsJsonArray("ports");
-            boards.put(name, parsers.get(type).executeParser(name, ports));
+            robot.boards.put(name, parser.executeParser(name, ports));
         }
+        return robot;
     }
 
-    private static Ev3Board ev3Parser(String name, JsonArray ports) {
-        return new Ev3Board();
+    public Board getBoard(String name) {
+        return boards.get(name);
     }
 
-    private static GrovePiBoard grovePiParser(String boardName, JsonArray ports) throws IOException {
-        GrovePi grovePi = new GrovePi4J();
-        Map<GrovePiPort, GroveDeviceWrapper> deviceWrappers = new HashMap<>();
+    private static Ev3Board ev3Parser(String boardName, JsonArray ports) {
+        var board = new Ev3Board();
+        addPorts(board, ports);
+        return board;
+    }
 
+    private static GrovePiBoard grovePiParser(String boardName, JsonArray ports) {
+        var board = new GrovePiBoard();
+        addPorts(board, ports);
+        return board;
+    }
+
+    private static void addPorts(Board board, JsonArray ports) {
         for (int i = 0; i < ports.size(); i++) {
-            var port = ports.get(i).getAsJsonObject();
-            var address = port.get("address").getAsString();
-            var name = port.get("name").getAsString();
-            var type = port.get("type").getAsString();
-            var subType = port.get("subType").getAsString();
+            var portJson = ports.get(i).getAsJsonObject();
+            var name = Optional.ofNullable(portJson.get("name")).orElse(new JsonPrimitive("")).getAsString();
+            var address = portJson.get("address").getAsString();
+            var type = portJson.get("type").getAsString();
+            var mode = Optional.ofNullable(portJson.get("mode")).map(JsonElement::getAsInt).orElse(null);
+            board.putDevice(board.getPort(address), name, type, mode);
         }
-            int portNumber = Integer.parseInt(sensorData.getKey().substring(1));
-            switch (sensorData.getValue()) {
-                case "Led":
-                    deviceWrappers.put(sensorData.getKey(), new LedWrapper(new GroveLed(grovePi, portNumber)));
-                    continue;
-
-                case "Ultrasonic":
-                    deviceWrappers.put(sensorData.getKey(), new UltrasonicWrapper(new GroveUltrasonicRanger(grovePi, portNumber)));
-                    continue;
-
-                case "Sound":
-                    deviceWrappers.put(sensorData.getKey(), new SoundWrapper(new GroveSoundSensor(grovePi, portNumber)));
-                    continue;
-
-                case "Button":
-                    deviceWrappers.put(sensorData.getKey(), new ButtonWrapper(grovePi.getDigitalIn(portNumber)));
-                    continue;
-
-                case "Rotary":
-                    deviceWrappers.put(sensorData.getKey(), new RotaryWrapper(new GroveRotarySensor(grovePi, portNumber)));
-                    continue;
-
-                case "Relay":
-                    deviceWrappers.put(sensorData.getKey(), new RelayWrapper(new GroveRelay(grovePi, portNumber)));
-                    continue;
-
-                case "Light":
-                    deviceWrappers.put(sensorData.getKey(), new LightWrapper(new GroveLightSensor(grovePi, portNumber)));
-                    continue;
-
-                case "Buzzer":
-                    deviceWrappers.put(sensorData.getKey(), new BuzzerWrapper(new GroveDigitalOut(grovePi, portNumber)));
-                    continue;
-
-            }
-
-            if (sensorData.getValue().length() == "Temperature ".length() &&
-                    sensorData.getValue().startsWith("Temperature ")) {
-
-                String tempType = sensorData.getValue().substring("Temperature ".length());
-                GroveTemperatureAndHumiditySensor.Type dhtType =
-                        GroveTemperatureAndHumiditySensor.Type.valueOf(tempType);
-
-                deviceWrappers.put(sensorData.getKey(),
-                        new TemperatureWrapper(new GroveTemperatureAndHumiditySensor(grovePi, portNumber, dhtType)));
-            }
-        }
-        return new GrovePiBoard(deviceWrappers);
     }
 
     /**
@@ -118,6 +81,6 @@ public class Robot {
     @FunctionalInterface
     public interface IParser {
         @SuppressWarnings("rawtypes")
-        Board executeParser(String name, JsonArray ports) throws IOException;
+        Board executeParser(String name, JsonArray ports);
     }
 }

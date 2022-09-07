@@ -1,12 +1,13 @@
-package il.ac.bgu.cs.bp.bprobot.robot.boards.grovepi.grovewrappers.actuators;
+package il.ac.bgu.cs.bp.bprobot.robot.boards.grovepi.devices.actuators;
 
 import com.github.yafna.raspberry.grovepi.devices.GroveRelay;
+import il.ac.bgu.cs.bp.bprobot.robot.boards.ActuatorWrapper;
 
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class RelayWrapper implements GroveSensorActuatorWrapper {
+public class RelayWrapper implements ActuatorWrapper {
   private Logger logger = Logger.getLogger(RelayWrapper.class.getName());
   private final GroveRelay relay;
 
@@ -16,7 +17,7 @@ public class RelayWrapper implements GroveSensorActuatorWrapper {
   }
 
   @Override
-  public boolean set(boolean value) {
+  public boolean setBooleanValue(boolean value) {
     try {
       relay.set(value);
       return true;

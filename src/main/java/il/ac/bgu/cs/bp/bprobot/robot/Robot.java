@@ -39,7 +39,8 @@ public class Robot {
         for (int i = 0; i < devices.size(); i++) {
             var deviceJson = devices.get(i).getAsJsonObject();
             var type = Optional.ofNullable(deviceJson.get("type")).orElseThrow(() -> new IllegalArgumentException("Device in build does not include a 'type' parameter")).getAsString();
-            var parser = parsers.computeIfAbsent(type, s -> {throw new IllegalArgumentException("'"+s+"' is not a known type of device (Must be 'GROVEPI' or any ev3dev.hardware.EV3DevPlatform.*)");});
+            var parser = parsers.get(type);
+            if(parser==null) throw new IllegalArgumentException("'"+type+"' is not a known type of device (Must be 'GROVEPI' or any ev3dev.hardware.EV3DevPlatform.*)");
             var name = Optional.ofNullable(deviceJson.get("name")).orElseThrow(() -> new IllegalArgumentException("Device in build does not include a 'name' parameter")).getAsString();
             if(robot.boards.containsKey(name)) throw new IllegalArgumentException("There is more than one board with the name "+name);
             var ports = deviceJson.getAsJsonArray("ports");

@@ -1,8 +1,8 @@
-package il.ac.bgu.cs.bp.bprobot.robot.boards.grovepi.devices.sensors;
+package il.ac.bgu.cs.bp.bprobot.robot.boards.grove.devices.sensors;
 
 import com.github.yafna.raspberry.grovepi.GrovePi;
 import com.github.yafna.raspberry.grovepi.devices.GroveRotarySensor;
-import il.ac.bgu.cs.bp.bprobot.robot.boards.grovepi.GrovePiPort;
+import il.ac.bgu.cs.bp.bprobot.robot.boards.grove.GrovePiPort;
 
 import java.io.IOException;
 

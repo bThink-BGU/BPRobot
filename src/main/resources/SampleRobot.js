@@ -1,5 +1,5 @@
 function command(commandName, params) {
-  return bp.Event('Command', { action: commandName, params: params })
+  return bp.Event('Command', JSON.stringify({ action: commandName, params: params }))
 }
 
 function portParams(address, params) {
@@ -67,6 +67,5 @@ bthread('Stop on red', function () {
 })
 
 bthread('Initiation', function () {
-
-  sync({ block: config.not(), request: config })
+  sync({ block: config.negate(), request: config })
 })

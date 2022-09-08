@@ -1,4 +1,4 @@
-package il.ac.bgu.cs.bp.bprobot.robot.boards.grovepi.devices.actuators;
+package il.ac.bgu.cs.bp.bprobot.robot.boards.grove.devices.actuators;
 
 import il.ac.bgu.cs.bp.bprobot.robot.boards.ActuatorWrapper;
 import lejos.hardware.port.Port;

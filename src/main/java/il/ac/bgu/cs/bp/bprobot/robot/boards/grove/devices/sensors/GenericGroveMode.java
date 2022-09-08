@@ -1,8 +1,6 @@
-package il.ac.bgu.cs.bp.bprobot.robot.boards.grovepi.devices.sensors;
+package il.ac.bgu.cs.bp.bprobot.robot.boards.grove.devices.sensors;
 
 import lejos.hardware.sensor.SensorMode;
-
-import java.util.function.Consumer;
 
 public class GenericGroveMode implements SensorMode {
   private final String modeName;

@@ -5,7 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.Ev3Board;
-import il.ac.bgu.cs.bp.bprobot.robot.boards.grovepi.GrovePiBoard;
+import il.ac.bgu.cs.bp.bprobot.robot.boards.grove.GrovePiBoard;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.Board;
 
 import java.util.HashMap;

@@ -14,6 +14,7 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import java.lang.reflect.Type;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Logger;
@@ -57,20 +58,24 @@ public class RobotSensorsDataCollector implements Runnable {
 
   @Override
   public void run() {
+    var message = "{}";
     while (!Thread.currentThread().isInterrupted()) {
       var map = update();
-      try {
-        updateQueue(map);
-      } catch (MqttException e) {
-        throw new RuntimeException(e);
+      var newMessage = toJson(map);
+      if(!newMessage.equals(message)) {
+        try {
+          updateQueue(newMessage);
+          message = newMessage;
+        } catch (MqttException e) {
+          throw new RuntimeException(e);
+        }
       }
       Delay.msDelay(msDelay.get());
     }
   }
 
-  private void updateQueue(Map<SensorWrapper<?>, float[]> data) throws MqttException {
-    String json = toJson(data);
-    comm.send(json, QueueNameEnum.Data);
+  private void updateQueue(String message) throws MqttException {
+    comm.send(message, QueueNameEnum.Data);
   }
 
   private String toJson(Map<SensorWrapper<?>,float[]> data) {

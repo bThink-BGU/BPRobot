@@ -1,4 +1,4 @@
-package il.ac.bgu.cs.bp.bprobot.robot.boards.grovepi;
+package il.ac.bgu.cs.bp.bprobot.robot.boards.grove;
 
 import com.github.yafna.raspberry.grovepi.GrovePi;
 import com.github.yafna.raspberry.grovepi.pi4j.GrovePi4J;
@@ -11,7 +11,6 @@ import lejos.hardware.port.Port;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 

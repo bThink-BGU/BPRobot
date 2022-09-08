@@ -1,11 +1,10 @@
-package il.ac.bgu.cs.bp.bprobot.robot.boards.grovepi.devices.sensors;
+package il.ac.bgu.cs.bp.bprobot.robot.boards.grove.devices.sensors;
 
 import ev3dev.sensors.GenericMode;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.SensorWrapper;
 import lejos.hardware.port.Port;
 import lejos.hardware.sensor.SensorMode;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.Collectors;

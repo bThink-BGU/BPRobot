@@ -3,6 +3,7 @@ package il.ac.bgu.cs.bp.bprobot;
 import il.ac.bgu.cs.bp.bpjs.analysis.*;
 import il.ac.bgu.cs.bp.bpjs.analysis.listeners.PrintDfsVerifierListener;
 import il.ac.bgu.cs.bp.bpjs.analysis.violations.Violation;
+import il.ac.bgu.cs.bp.bpjs.context.ContextBProgram;
 import il.ac.bgu.cs.bp.bpjs.execution.BProgramRunner;
 import il.ac.bgu.cs.bp.bpjs.execution.listeners.PrintBProgramRunnerListener;
 import il.ac.bgu.cs.bp.bpjs.model.BProgram;
@@ -78,6 +79,7 @@ public class RobotCliRunner {
             }
         };
 
+        ContextBProgram.initBProgram(bpp);
         bpp.setWaitForExternalEvents(true);
         SimpleEventSelectionStrategy sess = new SimpleEventSelectionStrategy();
         if (switchPresent("--verify", args)) {
@@ -152,26 +154,7 @@ public class RobotCliRunner {
             EventSelectionStrategy ess = switchPresent("-v", args) ? new LoggingEventSelectionStrategyDecorator<>(sess) : sess;
             bpp.setEventSelectionStrategy(ess);
             BProgramRunner bpr = new BProgramRunner(bpp);
-
-            var communication = new MQTTCommunication();
-            String credentials = keyForValue("credentials", args);
-            if (credentials != null) {
-                String[] cred = credentials.split("[,]");
-                if (cred.length != 3) {
-                    printUsageAndExit();
-                }
-                communication.setCredentials(cred[0], cred[1], cred[2]);
-            }
-            bpr.addListener(new RobotBProgramRunnerListener(communication, bpp));
-
-            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-                try {
-                    communication.closeConnection();
-                    System.out.println("Connection Closed!");
-                } catch (MqttException e) {
-                    e.printStackTrace();
-                }
-            }));
+            bpr.addListener(new RobotBProgramRunnerListener());
 
             if (!switchPresent("-v", args)) {
                 bpr.addListener(new PrintBProgramRunnerListener());

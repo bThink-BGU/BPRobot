@@ -1,14 +1,10 @@
-package il.ac.bgu.cs.bp.bprobot.robot.boards.grovepi.devices.actuators;
+package il.ac.bgu.cs.bp.bprobot.robot.boards.grove.devices.actuators;
 
-import com.github.yafna.raspberry.grovepi.GroveDigitalOut;
 import com.github.yafna.raspberry.grovepi.GrovePi;
 import com.github.yafna.raspberry.grovepi.devices.GroveLed;
-import il.ac.bgu.cs.bp.bprobot.robot.boards.ActuatorWrapper;
-import il.ac.bgu.cs.bp.bprobot.robot.boards.grovepi.GrovePiPort;
+import il.ac.bgu.cs.bp.bprobot.robot.boards.grove.GrovePiPort;
 
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class LedWrapper extends GroveActuatorWrapper<GroveLed> {
   public LedWrapper(String name, GrovePiPort port, GrovePi grove) throws IOException {

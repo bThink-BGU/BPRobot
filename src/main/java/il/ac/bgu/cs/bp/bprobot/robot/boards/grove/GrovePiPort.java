@@ -1,4 +1,4 @@
-package il.ac.bgu.cs.bp.bprobot.robot.boards.grovepi;
+package il.ac.bgu.cs.bp.bprobot.robot.boards.grove;
 
 import lejos.hardware.port.Port;
 

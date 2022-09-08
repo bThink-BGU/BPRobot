@@ -31,7 +31,7 @@ public class CommandHandler implements Runnable {
   // Uniform Interface for commands arriving from BPjs
   private final ICommand subscribe = this::subscribe;
   private final ICommand unsubscribe = this::unsubscribe;
-  private final ICommand build = this::build;
+  private final ICommand config = this::config;
   private final ICommand defaultCommand = this::ev3Command;
 
   // Thread for data collection from robot sensors
@@ -40,7 +40,7 @@ public class CommandHandler implements Runnable {
   private final Map<String, ICommand> commandToMethod = Map.of(
       "subscribe", subscribe,
       "unsubscribe", unsubscribe,
-      "build", build
+      "config", config
   );
 
   public CommandHandler() {
@@ -136,11 +136,11 @@ public class CommandHandler implements Runnable {
    *
    * @param params instructions on which IBoards to build.
    */
-  void build(String action, JsonElement params) {
+  void config(String action, JsonElement params) {
     try {
       robot = Robot.parse(params.getAsJsonObject());
     } catch (Exception e) {
-      e.printStackTrace();
+      throw new RuntimeException(e);
     }
 
     if (dataCollectionFuture != null) {

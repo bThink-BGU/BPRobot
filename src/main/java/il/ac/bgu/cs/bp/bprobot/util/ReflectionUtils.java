@@ -5,12 +5,24 @@ import com.google.common.reflect.ClassPath;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Type;
 import java.security.InvalidParameterException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class ReflectionUtils {
+  public static Set<Class<?>> getAllClassesInPackages(List<String> packagePath) throws IOException {
+    final List<String> finalPackagePath = packagePath == null ? List.of("") : packagePath;
+    return ClassPath.from(ClassLoader.getSystemClassLoader())
+        .getAllClasses()
+        .stream()
+        .filter(clazz -> finalPackagePath.stream().anyMatch(p -> clazz.getPackageName().startsWith(p)))
+        .map(ClassPath.ClassInfo::load)
+        .collect(Collectors.toSet());
+  }
+
   public static <T> T create(String name, List<String> packagePath, Object... params) throws IOException, InvocationTargetException, InstantiationException, IllegalAccessException {
     final List<String> finalPackagePath = packagePath == null ? List.of("") : packagePath;
     var classes =
@@ -31,7 +43,11 @@ public class ReflectionUtils {
     return (T) ctor.newInstance(params);
   }
 
-  private static <T> Constructor<T> getCtor(Class<T> cl, Object... params) {
+  public static Constructor<?> getDeclaredCtor(Class<?> cl, Class<?>... params) throws NoSuchMethodException {
+    return cl.getDeclaredConstructor(params);
+  }
+
+  public static Constructor<?> getCtor(Class<?> cl, Object... params) {
     try {
       return cl.getConstructor(Arrays.stream(params).map(Object::getClass).toArray(Class[]::new));
     } catch (NoSuchMethodException e) {

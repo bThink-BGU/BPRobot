@@ -2,22 +2,30 @@ package il.ac.bgu.cs.bp.bprobot.actuator;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import il.ac.bgu.cs.bp.bprobot.robot.Robot;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.Board;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.SensorWrapper;
+import il.ac.bgu.cs.bp.bprobot.util.communication.MQTTCommunication;
+import il.ac.bgu.cs.bp.bprobot.util.communication.QueueNameEnum;
 import lejos.hardware.port.Port;
+import org.eclipse.paho.client.mqttv3.MqttException;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-public class CommandHandler {
-  RobotSensorsDataCollector robotSensorsData;
+public class CommandHandler implements Runnable {
+  private final RobotSensorsDataCollector dataCollector;
+  private final MQTTCommunication comm;
   private Robot robot = null;
 
   // Uniform Interface for commands arriving from BPjs
@@ -30,13 +38,45 @@ public class CommandHandler {
   private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
   private ScheduledFuture<?> dataCollectionFuture;
   private final Map<String, ICommand> commandToMethod = Map.of(
-      "Subscribe", subscribe,
-      "Unsubscribe", unsubscribe,
-      "Build", build
+      "subscribe", subscribe,
+      "unsubscribe", unsubscribe,
+      "build", build
   );
 
-  public CommandHandler(RobotSensorsDataCollector robotSensorsData) {
-    this.robotSensorsData = robotSensorsData;
+  public CommandHandler() {
+    comm = new MQTTCommunication();
+    dataCollector = new RobotSensorsDataCollector(comm);
+  }
+
+  @Override
+  public void run() {
+    try {
+      comm.connect();
+    } catch (MqttException e) {
+      throw new RuntimeException(e);
+    }
+    Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+      try {
+        comm.closeConnection();
+      } catch (MqttException ignore) {
+      }
+      try {
+        closeBoards();
+      } catch (Exception ignore) {
+      }
+      System.out.println("Connection Closed!");
+    }));
+
+    // Sending on Data and Free.
+    // Listening on Commands and SOS.
+    try {
+      comm.consumeFromQueue(QueueNameEnum.Commands, this::onReceiveCallback);
+      comm.consumeFromQueue(QueueNameEnum.SOS, this::onReceiveCallback);
+    } catch (MqttException e) {
+      throw new RuntimeException(e);
+    }
+
+    dataCollector.run();
   }
 
   // Parse & execute command from message that arrived from BPjs
@@ -67,7 +107,7 @@ public class CommandHandler {
   }
 
   private void subscribe(SensorWrapper<?> sensor) {
-    robotSensorsData.subscribe(sensor);
+    dataCollector.subscribe(sensor);
     startExecutor();
   }
 
@@ -88,7 +128,7 @@ public class CommandHandler {
   }
 
   private void unsubscribe(SensorWrapper<?> sensor) {
-    robotSensorsData.unsubscribe(sensor);
+    dataCollector.unsubscribe(sensor);
   }
 
   /**
@@ -106,7 +146,7 @@ public class CommandHandler {
     if (dataCollectionFuture != null) {
       dataCollectionFuture.cancel(true);
     }
-    robotSensorsData.clear();
+    dataCollector.clear();
   }
 
   /**
@@ -197,7 +237,15 @@ public class CommandHandler {
       dataCollectionFuture.cancel(true);
     }
     int commandTimeout = 100;
-    dataCollectionFuture = executor.scheduleWithFixedDelay(robotSensorsData, 0L, commandTimeout, TimeUnit.MILLISECONDS);
+    dataCollectionFuture = executor.scheduleWithFixedDelay(dataCollector, 0L, commandTimeout, TimeUnit.MILLISECONDS);
+  }
+
+  private void onReceiveCallback(String topic, MqttMessage message) throws IOException {
+    String msg = new String(message.getPayload(), StandardCharsets.UTF_8);
+    JsonObject obj = JsonParser.parseString(msg).getAsJsonObject();
+    String action = obj.get("action").getAsString();
+    JsonElement params = obj.getAsJsonObject("params");
+    executeCommand(action, params);
   }
 
 

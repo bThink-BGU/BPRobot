@@ -9,7 +9,6 @@ import il.ac.bgu.cs.bp.bpjs.model.BProgram;
 import il.ac.bgu.cs.bp.bpjs.model.eventselection.EventSelectionStrategy;
 import il.ac.bgu.cs.bp.bpjs.model.eventselection.LoggingEventSelectionStrategyDecorator;
 import il.ac.bgu.cs.bp.bpjs.model.eventselection.SimpleEventSelectionStrategy;
-import il.ac.bgu.cs.bp.bprobot.util.communication.IMQTTCommunication;
 import il.ac.bgu.cs.bp.bprobot.util.communication.MQTTCommunication;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.mozilla.javascript.Context;
@@ -150,11 +149,11 @@ public class RobotCliRunner {
             }
 
         } else {
-            EventSelectionStrategy ess = switchPresent("-v", args) ? new LoggingEventSelectionStrategyDecorator(sess) : sess;
+            EventSelectionStrategy ess = switchPresent("-v", args) ? new LoggingEventSelectionStrategyDecorator<>(sess) : sess;
             bpp.setEventSelectionStrategy(ess);
             BProgramRunner bpr = new BProgramRunner(bpp);
 
-            IMQTTCommunication communication = new MQTTCommunication();
+            var communication = new MQTTCommunication();
             String credentials = keyForValue("credentials", args);
             if (credentials != null) {
                 String[] cred = credentials.split("[,]");

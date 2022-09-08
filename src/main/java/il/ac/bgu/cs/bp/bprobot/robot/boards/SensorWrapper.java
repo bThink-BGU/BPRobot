@@ -7,4 +7,9 @@ public abstract class SensorWrapper<T> extends DeviceWrapper<T> implements Senso
   protected SensorWrapper(String name, Port port, T device) {
     super(name, port, device);
   }
+
+  @Override
+  public String getName() {
+    return name;
+  }
 }

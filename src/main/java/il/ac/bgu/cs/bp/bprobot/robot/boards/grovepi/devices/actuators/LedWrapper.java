@@ -1,33 +1,22 @@
 package il.ac.bgu.cs.bp.bprobot.robot.boards.grovepi.devices.actuators;
 
+import com.github.yafna.raspberry.grovepi.GroveDigitalOut;
+import com.github.yafna.raspberry.grovepi.GrovePi;
 import com.github.yafna.raspberry.grovepi.devices.GroveLed;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.ActuatorWrapper;
+import il.ac.bgu.cs.bp.bprobot.robot.boards.grovepi.GrovePiPort;
 
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class LedWrapper implements ActuatorWrapper {
-    private Logger logger = Logger.getLogger(LedWrapper.class.getName());
-    private final GroveLed led;
+public class LedWrapper extends GroveActuatorWrapper<GroveLed> {
+  public LedWrapper(String name, GrovePiPort port, GrovePi grove) throws IOException {
+    super(name, port, new GroveLed(grove, port.ordinal()));
+  }
 
-    public LedWrapper(GroveLed led){
-        this.led = led;
-        logger.setLevel(Level.SEVERE);
-    }
-
-    @Override
-    public boolean setBooleanValue(boolean value) {
-        try {
-            led.set(value);
-            return true;
-        } catch (IOException e) {
-            logger.severe("Error when writing data to port");
-            return false;
-        }
-    }
-
-    public void setLogger(Logger logger){ this.logger=logger; }
-
-    public Logger getLogger(){ return this.logger; }
+  @Override
+  public void setBooleanValue(boolean value) throws IOException {
+    device.set(value);
+  }
 }

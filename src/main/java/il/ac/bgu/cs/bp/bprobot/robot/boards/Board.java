@@ -9,7 +9,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 public abstract class Board {
-  private final List<String> packages;
+  protected final List<String> packages;
   protected final Map<Port, DeviceWrapper<?>> portDeviceMap = new HashMap<>();
   protected final Map<String, DeviceWrapper<?>> nameDeviceMap = new HashMap<>();
 
@@ -18,7 +18,7 @@ public abstract class Board {
   }
 
   protected Board(List<String> packages) {
-    this.packages = packages;
+    this.packages = Collections.unmodifiableList(packages);
   }
 
   public DeviceWrapper<?> getDevice(Port port) {

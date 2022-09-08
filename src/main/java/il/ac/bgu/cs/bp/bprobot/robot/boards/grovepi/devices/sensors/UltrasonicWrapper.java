@@ -1,29 +1,21 @@
 package il.ac.bgu.cs.bp.bprobot.robot.boards.grovepi.devices.sensors;
 
+import com.github.yafna.raspberry.grovepi.GrovePi;
+import com.github.yafna.raspberry.grovepi.devices.GroveTemperatureAndHumiditySensor;
 import com.github.yafna.raspberry.grovepi.devices.GroveUltrasonicRanger;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.SensorWrapper;
+import il.ac.bgu.cs.bp.bprobot.robot.boards.grovepi.GrovePiPort;
 
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class UltrasonicWrapper implements SensorWrapper {
-
-    private static final Logger logger = Logger.getLogger(UltrasonicWrapper.class.getName());
-    private final GroveUltrasonicRanger ultrasonicRanger;
-
-    public UltrasonicWrapper(GroveUltrasonicRanger ultrasonicRanger){
-        this.ultrasonicRanger = ultrasonicRanger;
-        logger.setLevel(Level.SEVERE);
+public class UltrasonicWrapper extends GroveSensorWrapper<GroveUltrasonicRanger> {
+    public UltrasonicWrapper(String name, GrovePiPort port, GrovePi grove){
+        super(name, port, new GroveUltrasonicRanger(grove, port.ordinal()));
     }
-
     @Override
-    public Double get(int mode) {
-        try {
-            return ultrasonicRanger.get();
-        } catch (IOException e) {
-            logger.severe("Error when reading data from port");
-            return null;
-        }
+    protected void sample(float[] sample) throws Exception {
+        sample[0] = (float) device.get();
     }
 }

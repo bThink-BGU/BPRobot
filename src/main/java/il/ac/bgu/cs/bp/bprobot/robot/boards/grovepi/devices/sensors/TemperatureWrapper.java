@@ -1,40 +1,27 @@
 package il.ac.bgu.cs.bp.bprobot.robot.boards.grovepi.devices.sensors;
 
+import com.github.yafna.raspberry.grovepi.GrovePi;
+import com.github.yafna.raspberry.grovepi.devices.GroveSoundSensor;
 import com.github.yafna.raspberry.grovepi.devices.GroveTemperatureAndHumiditySensor;
 import com.github.yafna.raspberry.grovepi.devices.GroveTemperatureAndHumidityValue;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.SensorWrapper;
+import il.ac.bgu.cs.bp.bprobot.robot.boards.grovepi.GrovePiPort;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class TemperatureWrapper implements SensorWrapper {
-    private Logger logger = Logger.getLogger(TemperatureWrapper.class.getName());
-    private final GroveTemperatureAndHumiditySensor temperatureAndHumiditySensor;
-
-    public TemperatureWrapper(GroveTemperatureAndHumiditySensor temperatureAndHumiditySensor) {
-        this.temperatureAndHumiditySensor = temperatureAndHumiditySensor;
-        logger.setLevel(Level.SEVERE);
+public class TemperatureWrapper extends GroveSensorWrapper<GroveTemperatureAndHumiditySensor> {
+    public TemperatureWrapper(String name, GrovePiPort port, GrovePi grove, GroveTemperatureAndHumiditySensor.Type type) {
+        super(name, port, new GroveTemperatureAndHumiditySensor(grove, port.ordinal(), type),
+            new GenericGroveMode(2, "DEFAULT")
+        );
     }
-
     @Override
-    public Double get(int mode) {
-        try {
-            GroveTemperatureAndHumidityValue result = temperatureAndHumiditySensor.get();
-            switch (mode){
-                case 0:
-                    return result.getTemperature();
-
-                case 1:
-                    return result.getHumidity();
-            }
-        } catch (IOException e) {
-            logger.severe("Error when reading data from port");
-        }
-        return null;
+    protected void sample(float[] sample) throws Exception {
+        var res = device.get();
+        sample[0] = (float) res.getTemperature();
+        sample[1] = (float) res.getHumidity();
     }
-
-    public void setLogger(Logger logger){ this.logger=logger; }
-
-    public Logger getLogger(){ return this.logger; }
 }

@@ -17,6 +17,10 @@ public abstract class DeviceWrapper<T> {
     this.device = device;
   }
 
+  protected T getDevice() {
+    return device;
+  }
+
   private Method getMethod(String name, Object... params) throws NoSuchMethodException {
     return device.getClass().getMethod(name, Arrays.stream(params).map(Object::getClass).toArray(Class[]::new));
   }

@@ -1,33 +1,23 @@
 package il.ac.bgu.cs.bp.bprobot.robot.boards.grovepi.devices.sensors;
 
 import com.github.yafna.raspberry.grovepi.GroveDigitalIn;
-import il.ac.bgu.cs.bp.bprobot.robot.boards.SensorWrapper;
+import com.github.yafna.raspberry.grovepi.GrovePi;
+import il.ac.bgu.cs.bp.bprobot.robot.boards.grovepi.GrovePiPort;
 
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class ButtonWrapper implements SensorWrapper {
+public class ButtonWrapper extends GroveSensorWrapper<GroveDigitalIn> {
+  private static final Logger logger = Logger.getLogger(ButtonWrapper.class.getName());
 
-    private Logger logger = Logger.getLogger(ButtonWrapper.class.getName());
-    private final GroveDigitalIn button;
+  ButtonWrapper(String name, GrovePiPort port, GrovePi grove) throws IOException {
+    super(name, port, new GroveDigitalIn(grove, port.ordinal()));
+    logger.setLevel(Level.SEVERE);
+  }
 
-    public ButtonWrapper(GroveDigitalIn button){
-        this.button = button;
-        logger.setLevel(Level.SEVERE);
-    }
-
-    @Override
-    public Double get(int mode) {
-        try {
-            return button.get() ? 1.0 : 0;
-        } catch (IOException | InterruptedException e) {
-            logger.severe("Error when reading data from port");
-            return null;
-        }
-    }
-
-    public void setLogger(Logger logger){ this.logger=logger; }
-
-    public Logger getLogger(){ return this.logger; }
+  @Override
+  protected void sample(float[] sample) throws Exception {
+    sample[0] = device.get() ? 1 : 0;
+  }
 }

@@ -1,33 +1,24 @@
 package il.ac.bgu.cs.bp.bprobot.robot.boards.grovepi.devices.sensors;
 
+import com.github.yafna.raspberry.grovepi.GroveDigitalIn;
+import com.github.yafna.raspberry.grovepi.GrovePi;
 import com.github.yafna.raspberry.grovepi.devices.GroveSoundSensor;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.SensorWrapper;
+import il.ac.bgu.cs.bp.bprobot.robot.boards.grovepi.GrovePiPort;
 
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class SoundWrapper implements SensorWrapper {
+public class SoundWrapper extends GroveSensorWrapper<GroveSoundSensor> {
 
-    private Logger logger = Logger.getLogger(SoundWrapper.class.getName());
-    private final GroveSoundSensor soundSensor;
-
-    public SoundWrapper(GroveSoundSensor soundSensor){
-        this.soundSensor = soundSensor;
-        logger.setLevel(Level.SEVERE);
+    public SoundWrapper(String name, GrovePiPort port, GrovePi grove) throws IOException {
+        super(name, port, new GroveSoundSensor(grove, port.ordinal()));
     }
 
     @Override
-    public Double get(int mode) {
-        try {
-            return soundSensor.get();
-        } catch (IOException e) {
-            logger.severe("Error when reading data from port");
-            return null;
-        }
+    protected void sample(float[] sample) throws Exception {
+        double ret = device.get();
+        sample[0] = (float) ret;
     }
-
-    public void setLogger(Logger logger){ this.logger=logger; }
-
-    public Logger getLogger(){ return this.logger; }
 }

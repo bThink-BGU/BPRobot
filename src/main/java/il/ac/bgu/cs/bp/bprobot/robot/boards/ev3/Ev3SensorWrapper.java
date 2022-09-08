@@ -7,7 +7,7 @@ import lejos.hardware.sensor.SensorMode;
 
 import java.util.ArrayList;
 
-public class Ev3SensorWrapper extends SensorWrapper<BaseSensor> {
+public abstract class Ev3SensorWrapper extends SensorWrapper<BaseSensor> {
   protected Ev3SensorWrapper(String name, Port port, BaseSensor device) {
     super(name, port, device);
   }
@@ -45,11 +45,6 @@ public class Ev3SensorWrapper extends SensorWrapper<BaseSensor> {
   @Override
   public int getModeCount() {
     return device.getModeCount();
-  }
-
-  @Override
-  public String getName() {
-    return device.getName();
   }
 
   @Override

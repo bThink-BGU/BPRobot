@@ -10,7 +10,7 @@ function portCommand(commandName, address, params) {
   return command(commandName, [portParams(address, params)])
 }
 
-const config = command('Build', {
+const config = command('config', {
   mqtt: {
     address: 'localhost',
     port: 1833

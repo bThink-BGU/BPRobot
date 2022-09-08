@@ -1,37 +1,22 @@
 package il.ac.bgu.cs.bp.bprobot.robot.boards.grovepi.devices.actuators;
 
+import com.github.yafna.raspberry.grovepi.GrovePi;
+import com.github.yafna.raspberry.grovepi.devices.GroveLed;
 import com.github.yafna.raspberry.grovepi.devices.GroveRelay;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.ActuatorWrapper;
+import il.ac.bgu.cs.bp.bprobot.robot.boards.grovepi.GrovePiPort;
 
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class RelayWrapper implements ActuatorWrapper {
-  private Logger logger = Logger.getLogger(RelayWrapper.class.getName());
-  private final GroveRelay relay;
-
-  public RelayWrapper(GroveRelay relay) {
-    this.relay = relay;
-    logger.setLevel(Level.SEVERE);
+public class RelayWrapper extends GroveActuatorWrapper<GroveRelay> {
+  public RelayWrapper(String name, GrovePiPort port, GrovePi grove) throws IOException {
+    super(name, port, new GroveRelay(grove, port.ordinal()));
   }
 
   @Override
-  public boolean setBooleanValue(boolean value) {
-    try {
-      relay.set(value);
-      return true;
-    } catch (IOException e) {
-      logger.severe("Error when writing data to port");
-      return false;
-    }
-  }
-
-  public void setLogger(Logger logger) {
-    this.logger = logger;
-  }
-
-  public Logger getLogger() {
-    return this.logger;
+  public void setBooleanValue(boolean value) throws IOException {
+    device.set(value);
   }
 }

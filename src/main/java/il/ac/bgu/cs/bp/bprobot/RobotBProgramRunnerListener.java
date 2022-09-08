@@ -1,63 +1,54 @@
 package il.ac.bgu.cs.bp.bprobot;
 
+import com.google.common.base.Strings;
 import com.google.gson.*;
-import com.google.gson.internal.LinkedTreeMap;
 import il.ac.bgu.cs.bp.bpjs.execution.listeners.BProgramRunnerListenerAdapter;
 import il.ac.bgu.cs.bp.bpjs.model.BEvent;
 import il.ac.bgu.cs.bp.bpjs.model.BProgram;
-import il.ac.bgu.cs.bp.bprobot.util.communication.IMQTTCommunication;
+import il.ac.bgu.cs.bp.bprobot.util.communication.MQTTCommunication;
 import il.ac.bgu.cs.bp.bprobot.util.communication.QueueNameEnum;
-import il.ac.bgu.cs.bp.bprobot.actuator.RobotSensorsDataCollector;
 import org.eclipse.paho.client.mqttv3.MqttException;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class RobotBProgramRunnerListener extends BProgramRunnerListenerAdapter {
-  private final RobotSensorsDataCollector robotData = new RobotSensorsDataCollector();
-  private final IMQTTCommunication com;
-  private final ICommand subscribe = this::subscribe;
-  private final ICommand unsubscribe = this::unsubscribe;
-  private final ICommand build = this::build;
-  private final ICommand drive = this::drive;
-  private final ICommand rotate = this::rotate;
-  private final ICommand setSensorMode = this::setSensorMode;
-  private final ICommand setActuatorData = this::setActuatorData;
-  private final ICommand myAlgorithm = this::myAlgorithm;
-  private final ICommand test = this::test;
-  private final Map<String, ICommand> commandToMethod = Stream.of(new Object[][]{
-      {"Subscribe", subscribe},
-      {"Unsubscribe", unsubscribe},
-      {"Build", build},
-      {"Drive", drive},
-      {"Rotate", rotate},
-      {"SetSensorMode", setSensorMode},
-      {"SetActuatorData", setActuatorData},
-      {"MyAlgorithm", myAlgorithm},
-      {"Test", test}
-  }).collect(Collectors.toMap(data -> (String) data[0], data -> (ICommand) data[1]));
+  private final AtomicReference<String> sensorsData = new AtomicReference<>();
+  private final MQTTCommunication comm;
+  private final Map<String, QueueNameEnum> cmd2queue = Map.of(
+      "SetSensorMode", QueueNameEnum.SOS,
+      "SetActuatorData", QueueNameEnum.SOS,
+      "subscribe", QueueNameEnum.SOS,
+      "unsubscribe", QueueNameEnum.SOS,
+      "build", QueueNameEnum.SOS
+  );
 
-  RobotBProgramRunnerListener(IMQTTCommunication communication, BProgram bp) throws MqttException {
-    com = communication;
-    com.connect();
-    com.consumeFromQueue(QueueNameEnum.Data, (topic, message) ->
-        robotData.updateBoardMapValues(new String(message.getPayload(), StandardCharsets.UTF_8)));
-    com.consumeFromQueue(QueueNameEnum.Free, (topic, message) ->
+  RobotBProgramRunnerListener(MQTTCommunication communication, BProgram bp) throws MqttException {
+    comm = communication;
+    comm.connect();
+    comm.consumeFromQueue(QueueNameEnum.Data, (topic, message) ->
+        sensorDataReceived(new String(message.getPayload(), StandardCharsets.UTF_8)));
+    comm.consumeFromQueue(QueueNameEnum.Free, (topic, message) ->
         bp.enqueueExternalEvent(new BEvent("GetAlgorithmResult", new String(message.getPayload(), StandardCharsets.UTF_8))));
+  }
+
+  private void sensorDataReceived(String message) {
+    sensorsData.set(message);
   }
 
   @Override
   public void eventSelected(BProgram bp, BEvent theEvent) {
-    if (commandToMethod.containsKey(theEvent.name)) {
+    if (theEvent.name.equals("Command")) {
+      if (Strings.isNullOrEmpty((String) theEvent.maybeData))
+        throw new IllegalArgumentException("Command event does not include data");
+      var json = JsonParser.parseString((String) theEvent.maybeData).getAsJsonObject();
+      String action = json.getAsJsonPrimitive("action").getAsString();
       try {
-        commandToMethod.get(theEvent.name).executeCommand(bp, theEvent);
-      } catch (IOException e) {
-        e.printStackTrace();
+        send((String)theEvent.maybeData, cmd2queue.getOrDefault(theEvent.name,QueueNameEnum.Commands));
+      } catch (MqttException e) {
+        throw new RuntimeException(e);
       }
     }
   }
@@ -65,139 +56,12 @@ public class RobotBProgramRunnerListener extends BProgramRunnerListenerAdapter {
 
   @Override
   public void superstepDone(BProgram bp) {
-    String json = robotData.toJson();
-//        System.out.println(json);
-    bp.enqueueExternalEvent(new BEvent("GetSensorsData", json));
+    String json = sensorsData.get();
+    if (json != null)
+      bp.enqueueExternalEvent(new BEvent("SensorsData", json));
   }
 
-
-  private String eventDataToJson(BEvent theEvent, String command) {
-    String jsonString = parseObjectToJsonString(theEvent.maybeData);
-    switch (command) {
-      case "Build":
-        try {
-          robotData.buildNicknameMaps(jsonString);
-        } catch (Exception e) {
-          e.printStackTrace();
-        }
-        jsonString = cleanNicknames(jsonString);
-        break;
-
-      case "SetSensorMode":
-      case "SetActuatorData":
-      case "Drive":
-      case "Rotate":
-      case "Subscribe":
-      case "Unsubscribe":
-        jsonString = robotData.replaceNicksInJson(jsonString);
-        break;
-    }
-
-    JsonElement jsonElement = new JsonParser().parse(jsonString);
-
-    JsonObject jsonObject = new JsonObject();
-    jsonObject.addProperty("Command", command);
-    jsonObject.add("Data", jsonElement);
-    return jsonObject.toString();
-  }
-
-  private String parseObjectToJsonString(Object data) {
-    return new Gson().toJson(data, Map.class);
-  }
-
-  private void test(BProgram bp, BEvent theEvent) {
-    System.out.println("Test Completed!");
-  }
-
-  private void subscribe(BProgram bp, BEvent theEvent) {
-    String message = eventDataToJson(theEvent, "Subscribe");
-    String jsonString = parseObjectToJsonString(theEvent.maybeData);
-
-    send(message, QueueNameEnum.SOS);
-    robotData.addToBoardsMap(jsonString);
-  }
-
-  private void unsubscribe(BProgram bp, BEvent theEvent) {
-    String message = eventDataToJson(theEvent, "Unsubscribe");
-    String jsonString = parseObjectToJsonString(theEvent.maybeData);
-
-    send(message, QueueNameEnum.SOS);
-    robotData.removeFromBoardsMap(jsonString);
-  }
-
-  private void build(BProgram bp, BEvent theEvent) {
-    String message = eventDataToJson(theEvent, "Build");
-    send(message, QueueNameEnum.SOS);
-  }
-
-  private void drive(BProgram bp, BEvent theEvent) {
-    String message = eventDataToJson(theEvent, "Drive");
-    send(message, QueueNameEnum.Commands);
-  }
-
-  private void rotate(BProgram bp, BEvent theEvent) {
-    String message = eventDataToJson(theEvent, "Rotate");
-    send(message, QueueNameEnum.Commands);
-  }
-
-  private void setSensorMode(BProgram bp, BEvent theEvent) {
-    String message = eventDataToJson(theEvent, "SetSensorMode");
-    send(message, QueueNameEnum.SOS);
-  }
-
-  private void setActuatorData(BProgram bp, BEvent theEvent) {
-    String message = eventDataToJson(theEvent, "SetActuatorData");
-    send(message, QueueNameEnum.SOS);
-  }
-
-  private void myAlgorithm(BProgram bp, BEvent theEvent) {
-    String message = eventDataToJson(theEvent, "MyAlgorithm");
-    send(message, QueueNameEnum.SOS);
-  }
-
-  private void send(String message, QueueNameEnum queue) {
-    try {
-      com.send(message, queue);
-    } catch (MqttException e) {
-      e.printStackTrace();
-    }
-  }
-
-  private String cleanNicknames(String jsonString) {
-    Gson gson = new Gson();
-    Map<?, ?> element = gson.fromJson(jsonString, Map.class); // json String to Map
-    for (Object boardNameKey : element.keySet()) { // Iterate over board types
-      @SuppressWarnings("unchecked")
-      ArrayList<Map<String, ?>> boardsDataList =
-          (ArrayList<Map<String, ?>>) element.get(boardNameKey);
-
-      for (int i = 0; i < boardsDataList.size(); i++) {
-        Map<String, ?> portDataMap = boardsDataList.get(i);
-        portDataMap.remove("Name");
-        Map<String, String> newPortsValues = new HashMap<>();
-        for (Map.Entry<String, ?> ports : portDataMap.entrySet()) {
-          if (ports.getValue() instanceof LinkedTreeMap) { // Check if port value is actually a map with nickname
-            @SuppressWarnings("unchecked")
-            Map<String, String> valueMap = (Map<String, String>) ports.getValue();
-            if (valueMap.containsKey("Device")) {
-              String nickname = valueMap.get("Device");
-              newPortsValues.put(ports.getKey(), nickname);
-            }
-          } else {
-            newPortsValues.put(ports.getKey(), (String) ports.getValue());
-          }
-        }
-        boardsDataList.set(i, newPortsValues);
-      }
-    }
-    return new GsonBuilder().create().toJson(element);
-  }
-
-  /**
-   * Uniform Interface for BPjs Commands
-   */
-  @FunctionalInterface
-  private interface ICommand {
-    void executeCommand(BProgram bp, BEvent theEvent) throws IOException;
+  private void send(String message, QueueNameEnum queue) throws MqttException {
+    comm.send(message, queue);
   }
 }

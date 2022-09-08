@@ -7,7 +7,7 @@ import java.util.UUID;
 
 import static il.ac.bgu.cs.bp.bprobot.util.communication.QueueNameEnum.*;
 
-public class MQTTCommunication implements IMQTTCommunication {
+public class MQTTCommunication {
     private String host = "tcp://localhost:1883";
     private String username = "";
     private String password = "";
@@ -15,7 +15,6 @@ public class MQTTCommunication implements IMQTTCommunication {
     private final MemoryPersistence persistence = new MemoryPersistence();
     private MqttClient client;
 
-    @Override
     public void connect() throws MqttException {
         client = new MqttClient(host, clientId, persistence);
         // MQTT connection option
@@ -34,12 +33,15 @@ public class MQTTCommunication implements IMQTTCommunication {
         client.getTopic(Free.name());
     }
 
-    @Override
+    /**
+     * Async listen to queue and execute callback when messages from it arrive
+     * @param queue name of queue to listen to
+     * @param callback to execute when messages arrive
+     */
     public void consumeFromQueue(QueueNameEnum queue, IMqttMessageListener callback) throws MqttException {
         client.subscribe(queue.name(), callback);
     }
 
-    @Override
     public void closeConnection() throws MqttException {
         if (client.isConnected()) {
             client.disconnect();
@@ -47,14 +49,18 @@ public class MQTTCommunication implements IMQTTCommunication {
         client.close();
     }
 
-    @Override
     public void send(String message, QueueNameEnum queueName) throws MqttException {
         MqttMessage msg = new MqttMessage(message.getBytes());
         msg.setQos(1);
         client.publish(queueName.name(), msg);
     }
 
-    @Override
+    /**
+     * Set credentials of the broker
+     * @param host name/IP address of target machine
+     * @param username to log in with
+     * @param password to log in with
+     */
     public void setCredentials(String host, String username, String password) {
         this.host = host;
         this.username = username;

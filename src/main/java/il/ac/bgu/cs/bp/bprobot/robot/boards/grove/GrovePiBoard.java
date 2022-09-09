@@ -29,15 +29,15 @@ public class GrovePiBoard extends Board {
   }
 
   @Override
-  public void putDevice(Port port, String deviceName, String type, Integer mode) {
+  public void putDevice(Port port, String nickname, String type, Integer mode) {
     try {
       var dev = ReflectionUtils.<DeviceWrapper<?>>create(type, packages, grovePi);
       if(mode != null) {
         ((SensorWrapper<?>)dev).setCurrentMode(mode);
       }
-      putDevice(port, deviceName, dev);
+      putDevice(port, nickname, dev);
     } catch (IOException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
-      throw new RuntimeException("Failed to create device " + deviceName, e);
+      throw new RuntimeException("Failed to create device " + nickname, e);
     }
   }
 

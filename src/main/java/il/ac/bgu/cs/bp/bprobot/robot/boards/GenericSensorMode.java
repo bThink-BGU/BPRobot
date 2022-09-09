@@ -1,8 +1,8 @@
-package il.ac.bgu.cs.bp.bprobot.robot.boards.grove.devices.sensors;
+package il.ac.bgu.cs.bp.bprobot.robot.boards;
 
 import lejos.hardware.sensor.SensorMode;
 
-public class GenericGroveMode implements SensorMode {
+public class GenericSensorMode implements SensorMode {
   private final String modeName;
   private final int sampleSize;
   private final float correctMin;
@@ -12,7 +12,7 @@ public class GenericGroveMode implements SensorMode {
   /**
    * Create new generic sensor handler.
    */
-  public GenericGroveMode() {
+  public GenericSensorMode() {
     this(1, "DEFAULT");
   }
 
@@ -22,7 +22,7 @@ public class GenericGroveMode implements SensorMode {
    * @param sampleSize Number of returned samples.
    * @param modeName   Human-readable sensor mode name.
    */
-  public GenericGroveMode(
+  public GenericSensorMode(
       final int sampleSize,
       final String modeName) {
     this(sampleSize, modeName,
@@ -38,7 +38,7 @@ public class GenericGroveMode implements SensorMode {
    * @param correctMax    Maximum value measured by the sensor. If the reading is higher, positive infinity is returned.
    * @param correctFactor Scaling factor applied to the sensor reading.
    */
-  public GenericGroveMode(
+  public GenericSensorMode(
       final int sampleSize,
       final String modeName,
       final float correctMin,

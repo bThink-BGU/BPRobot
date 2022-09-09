@@ -6,12 +6,16 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
-public abstract class DeviceWrapper<T> {
+public class DeviceWrapper<T> {
   public final String name;
   public final Port port;
   public final T device;
 
-  protected DeviceWrapper(String name, Port port, T device) {
+  public String getName() {
+    return name;
+  }
+
+  public DeviceWrapper(String name, Port port, T device) {
     this.name = name;
     this.port = port;
     this.device = device;

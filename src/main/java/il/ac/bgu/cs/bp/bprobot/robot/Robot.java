@@ -28,7 +28,7 @@ public class Robot {
     public void close() {
         boards.values().forEach(Board::close);
     }
-    public static Robot parse(JsonObject json) {
+    public static Robot parse(JsonObject json) throws Exception {
         Robot robot = new Robot();
         if(json.has("mqtt")) {
             var mqtt = json.getAsJsonObject("mqtt");
@@ -53,19 +53,19 @@ public class Robot {
         return boards.get(name);
     }
 
-    private static Ev3Board ev3Parser(String boardName, JsonArray ports) {
+    private static Ev3Board ev3Parser(String boardName, JsonArray ports) throws Exception {
         var board = new Ev3Board();
         addPorts(board, ports);
         return board;
     }
 
-    private static GrovePiBoard grovePiParser(String boardName, JsonArray ports) {
+    private static GrovePiBoard grovePiParser(String boardName, JsonArray ports) throws Exception {
         var board = new GrovePiBoard();
         addPorts(board, ports);
         return board;
     }
 
-    private static void addPorts(Board board, JsonArray ports) {
+    private static void addPorts(Board board, JsonArray ports) throws Exception {
         for (int i = 0; i < ports.size(); i++) {
             var portJson = ports.get(i).getAsJsonObject();
             var name = Optional.ofNullable(portJson.get("name")).orElse(new JsonPrimitive("")).getAsString();
@@ -82,6 +82,6 @@ public class Robot {
     @FunctionalInterface
     public interface IParser {
         @SuppressWarnings("rawtypes")
-        Board executeParser(String name, JsonArray ports);
+        Board executeParser(String name, JsonArray ports) throws Exception;
     }
 }

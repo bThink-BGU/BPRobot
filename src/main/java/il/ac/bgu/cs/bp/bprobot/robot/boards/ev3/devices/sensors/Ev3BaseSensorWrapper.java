@@ -1,4 +1,4 @@
-package il.ac.bgu.cs.bp.bprobot.robot.boards.ev3;
+package il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.devices.sensors;
 
 import ev3dev.sensors.BaseSensor;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.SensorWrapper;
@@ -7,11 +7,10 @@ import lejos.hardware.sensor.SensorMode;
 
 import java.util.ArrayList;
 
-public abstract class Ev3SensorWrapper extends SensorWrapper<BaseSensor> {
-  protected Ev3SensorWrapper(String name, Port port, BaseSensor device) {
+public class Ev3BaseSensorWrapper extends SensorWrapper<BaseSensor> {
+  public Ev3BaseSensorWrapper(String name, Port port, BaseSensor device) {
     super(name, port, device);
   }
-
   @Override
   public ArrayList<String> getAvailableModes() {
     return device.getAvailableModes();
@@ -50,6 +49,11 @@ public abstract class Ev3SensorWrapper extends SensorWrapper<BaseSensor> {
   @Override
   public int sampleSize() {
     return device.sampleSize();
+  }
+
+  @Override
+  protected void sample(float[] sample) throws Exception {
+    throw new UnsupportedOperationException();
   }
 
   @Override

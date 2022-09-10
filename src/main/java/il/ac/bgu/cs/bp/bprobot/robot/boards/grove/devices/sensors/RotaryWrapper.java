@@ -3,11 +3,12 @@ package il.ac.bgu.cs.bp.bprobot.robot.boards.grove.devices.sensors;
 import com.github.yafna.raspberry.grovepi.GrovePi;
 import com.github.yafna.raspberry.grovepi.devices.GroveRotarySensor;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.GenericSensorMode;
+import il.ac.bgu.cs.bp.bprobot.robot.boards.SensorWrapper;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.grove.GrovePiPort;
 
 import java.io.IOException;
 
-public class RotaryWrapper extends GroveSensorWrapper<GroveRotarySensor> {
+public class RotaryWrapper extends SensorWrapper<GroveRotarySensor> {
   RotaryWrapper(String name, GrovePiPort port, GrovePi grove) throws IOException {
     super(name, port, new GroveRotarySensor(grove, port.ordinal()),
         new GenericSensorMode(4, "DEFAULT"));

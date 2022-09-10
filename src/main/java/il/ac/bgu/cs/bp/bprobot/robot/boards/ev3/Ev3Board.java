@@ -13,21 +13,24 @@ import lejos.hardware.port.Port;
 import lejos.hardware.port.SensorPort;
 import lejos.internals.EV3DevPort;
 
+import java.lang.reflect.Constructor;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class Ev3Board extends Board {
-  private static final Map<String, Port> portsMap = Map.of(
-      "S1", SensorPort.S1,
-      "S2", SensorPort.S2,
-      "S3", SensorPort.S3,
-      "S4", SensorPort.S4,
-      "A", MotorPort.A,
-      "B", MotorPort.B,
-      "C", MotorPort.C,
-      "D", MotorPort.D
+public class Ev3Board extends Board<EV3DevPort> {
+  private static final Map<String, EV3DevPort> portsMap = Map.of(
+      "S1", (EV3DevPort) SensorPort.S1,
+      "S2", (EV3DevPort) SensorPort.S2,
+      "S3", (EV3DevPort) SensorPort.S3,
+      "S4", (EV3DevPort) SensorPort.S4,
+      "A", (EV3DevPort) MotorPort.A,
+      "B", (EV3DevPort) MotorPort.B,
+      "C", (EV3DevPort) MotorPort.C,
+      "D", (EV3DevPort) MotorPort.D
   );
   private static final Logger logger = Logger.getLogger(Ev3Board.class.getName());
 
@@ -37,33 +40,40 @@ public class Ev3Board extends Board {
   }
 
   @Override
-  public Port getPort(String portName) {
+  public EV3DevPort getPort(String portName) {
     var port = portsMap.get(portName);
     if (port == null) throw new IllegalArgumentException("No such port " + portName);
     return port;
   }
 
   @Override
-  protected DeviceWrapper<?> createDeviceWrapper(String nickname, Port port, String type) throws Exception {
-    var classes = ReflectionUtils.getAllClassesInPackages(packages);
-    if (classes.size() > 1) {
-      throw new IllegalArgumentException("More than one class found for type " + type);
-    }
-    var cl = classes.stream()
-        .filter(c -> c.getSimpleName().equals(type))
-        .findFirst()
-        .orElseThrow(() -> new IllegalArgumentException("No such device " + type));
-
+  protected DeviceWrapper<?> createDeviceWrapper(String nickname, EV3DevPort port, String type, Object... ctorParams) throws Exception {
+    Class<?> cl = ReflectionUtils.getClass(type, packages);
+    Constructor<?> ctor;
+    Object device;
+    Class<?>[] ctorParamsTypes = new Class<?>[]{Port.class};
+    ctorParams = new Object[]{port};
     try {
-      var constructor = cl.getConstructor(Port.class);
-      var device = constructor.newInstance(port);
-      if (device instanceof BaseSensor) {
-        return new Ev3BaseSensorWrapper(nickname, port, (BaseSensor) device);
+      ctor = cl.getConstructor(ctorParamsTypes);
+    } catch (NoSuchMethodException ignored) {
+      try {
+        ctor = cl.getConstructor();
+        ctorParamsTypes = new Class<?>[0];
+        ctorParams = new Object[0];
+      } catch (NoSuchMethodException ignored2) {
+        throw new IllegalArgumentException("Could not find an appropriate constructor for class " + cl.getName());
       }
-      return new DeviceWrapper<>(nickname, port, device);
-    } catch (Exception e) {
-      throw new RuntimeException(e);
     }
+    try {
+      device = ctor.newInstance(ctorParams);
+    } catch (Exception e) {
+      throw new InstantiationException("Could not create class " + cl.getSimpleName() + " with parameters " + Arrays.toString(ctorParamsTypes) +". Do we run on an EV3 device?");
+    }
+
+    if (device instanceof BaseSensor) {
+      return new Ev3BaseSensorWrapper(nickname, port, (BaseSensor) device);
+    }
+    return new DeviceWrapper<>(nickname, port, device);
   }
 
   @Override

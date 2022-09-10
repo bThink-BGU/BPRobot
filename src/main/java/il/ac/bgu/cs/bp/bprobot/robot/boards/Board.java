@@ -5,9 +5,9 @@ import lejos.hardware.port.Port;
 
 import java.util.*;
 
-public abstract class Board {
+public abstract class Board<P extends Port> {
   protected final List<String> packages;
-  protected final Map<Port, DeviceWrapper<?>> portDeviceMap = new HashMap<>();
+  protected final Map<P, DeviceWrapper<?>> portDeviceMap = new HashMap<>();
   protected final Map<String, DeviceWrapper<?>> nicknameDeviceMap = new HashMap<>();
 
   protected Board() {
@@ -18,7 +18,7 @@ public abstract class Board {
     this.packages = Collections.unmodifiableList(packages);
   }
 
-  public DeviceWrapper<?> getDevice(Port port) {
+  public DeviceWrapper<?> getDevice(P port) {
     if (!portDeviceMap.containsKey(port)) {
       throw new IllegalArgumentException("Port " + port.getName() + " does not exist");
     }
@@ -31,16 +31,29 @@ public abstract class Board {
     }
     return nicknameDeviceMap.get(port);
   }
-  public abstract Port getPort(String portName);
-  protected abstract DeviceWrapper<?> createDeviceWrapper(String name, Port port, String type) throws Exception;
-  public void putDevice(Port port, String nickname, String type, Integer mode) throws Exception {
-    DeviceWrapper<?>dev = createDeviceWrapper(nickname, port, type);
+
+  public abstract P getPort(String portName);
+
+  /**
+   * Create a new device wrapper for the given type.
+   * @param nickname The nickname of the device.
+   * @param port The port of the device.
+   * @param type The class type of the device. The type can be either full name (i.e., including the full package name)
+   *             or a simple name (i.e., without the package name). If the type is a simple name, the class will be
+   *             searched in the packages list ({@link #packages}).
+   * @return The device wrapper.
+   * @throws Exception is thrown if the device cannot be created.
+   */
+  protected abstract DeviceWrapper<?> createDeviceWrapper(String nickname, P port, String type, Object ... ctorParams) throws Exception;
+
+  public void putDevice(P port, String nickname, String type, Integer mode, Object ... ctorParams) throws Exception {
+    DeviceWrapper<?>dev = createDeviceWrapper(nickname, port, type, ctorParams);
     if(mode != null)
       ((SensorWrapper<?>)dev).setCurrentMode(mode);
     putDevice(port, nickname, dev);
   }
 
-  private void putDevice(Port port, String nickname, DeviceWrapper<?> device) {
+  private void putDevice(P port, String nickname, DeviceWrapper<?> device) {
     portDeviceMap.put(port, device);
     if (!Strings.isNullOrEmpty(nickname)) {
       if (nicknameDeviceMap.containsKey(nickname)) {

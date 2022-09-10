@@ -4,22 +4,21 @@ import com.github.yafna.raspberry.grovepi.GrovePi;
 import com.github.yafna.raspberry.grovepi.pi4j.GrovePi4J;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.Board;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.DeviceWrapper;
-import il.ac.bgu.cs.bp.bprobot.robot.boards.SensorWrapper;
 import il.ac.bgu.cs.bp.bprobot.util.ReflectionUtils;
-import lejos.hardware.port.Port;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Constructor;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class GrovePiBoard extends Board {
+public class GrovePiBoard extends Board<GrovePiPort> {
   private final GrovePi grovePi;
   private static final Logger logger = Logger.getLogger(GrovePiBoard.class.getName());
 
   public GrovePiBoard() {
-    super(List.of("il.ac.bgu.cs.bp.bprobot.robot.boards.grovepi.grovewrappers"));
+    super(List.of("il.ac.bgu.cs.bp.bprobot.robot.boards.grove.devices"));
     try {
       grovePi = new GrovePi4J();
     } catch (IOException e) {
@@ -29,16 +28,29 @@ public class GrovePiBoard extends Board {
   }
 
   @Override
-  public void putDevice(Port port, String nickname, String type, Integer mode) {
-    try {
-      var dev = ReflectionUtils.<DeviceWrapper<?>>create(type, packages, grovePi);
-      if(mode != null) {
-        ((SensorWrapper<?>)dev).setCurrentMode(mode);
-      }
-      putDevice(port, nickname, dev);
-    } catch (IOException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
-      throw new RuntimeException("Failed to create device " + nickname, e);
+  protected DeviceWrapper<?> createDeviceWrapper(String nickname, GrovePiPort port, String type, Object... ctorParams) throws Exception {
+    Class<?> cl = ReflectionUtils.getClass(type, packages);
+    Constructor<?> constructor;
+    Object device;
+    Class<?>[] ctorParamsTypes = new Class<?>[ctorParams.length + 3];
+    Object[] fullCtorParams = new Object[ctorParams.length + 3];
+    ctorParamsTypes[0] = String.class;
+    ctorParamsTypes[1] = GrovePiPort.class;
+    ctorParamsTypes[2] = GrovePi.class;
+    for (int i = 0; i < ctorParams.length; i++) {
+      ctorParamsTypes[i + 3] = ctorParams[i].getClass();
     }
+    fullCtorParams[0] = nickname;
+    fullCtorParams[1] = port;
+    fullCtorParams[2] = grovePi;
+    System.arraycopy(ctorParams, 0, fullCtorParams, 3, ctorParams.length);
+    try {
+      constructor = cl.getConstructor(ctorParamsTypes);
+    } catch (NoSuchMethodException e) {
+      throw new NoSuchMethodException("No constructor found for " + type + " with params " + Arrays.toString(ctorParamsTypes));
+    }
+    device = constructor.newInstance(fullCtorParams);
+    return new DeviceWrapper<>(nickname, port, device);
   }
 
   @Override

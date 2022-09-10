@@ -14,12 +14,8 @@ public abstract class SensorWrapper<T> extends DeviceWrapper<T> implements Senso
   protected int currentMode = 0;
   protected SensorMode[] modes;
 
-  protected SensorWrapper(String name, Port port, T device) {
+  protected SensorWrapper(String name, Port port, T device, SensorMode ... modes) {
     super(name, port, device);
-  }
-
-  protected SensorWrapper(String name, Port port, T device, SensorMode[] modes) {
-    this(name, port, device);
     if (modes == null || modes.length == 0) modes = new GenericSensorMode[]{new GenericSensorMode()};
     setModes(modes);
   }
@@ -39,6 +35,7 @@ public abstract class SensorWrapper<T> extends DeviceWrapper<T> implements Senso
    * @param sample The array to store the sample in.
    * @param offset The elements of the sample are stored in the array starting at the offset position.
    */
+  @Override
   public void fetchSample(float[] sample, int offset) {
     try {
       sample(sample);
@@ -64,6 +61,7 @@ public abstract class SensorWrapper<T> extends DeviceWrapper<T> implements Senso
    *
    * @return List of modes available
    */
+  @Override
   public ArrayList<String> getAvailableModes() {
     return modeList;
   }
@@ -78,6 +76,7 @@ public abstract class SensorWrapper<T> extends DeviceWrapper<T> implements Senso
    * will be invalid.
    * See {@link GenericMode#fetchSample(float[], int)}</p>
    */
+  @Override
   public SensorMode getMode(int mode) {
     if (modeInvalid(mode)) {
       throw new IllegalArgumentException("Invalid mode " + mode);
@@ -95,6 +94,7 @@ public abstract class SensorWrapper<T> extends DeviceWrapper<T> implements Senso
    * will be invalid.
    * See {@link GenericMode#fetchSample(float[], int)}</p>
    */
+  @Override
   public SensorMode getMode(String modeName) {
     int index = getIndex(modeName);
     if (index != -1) {
@@ -112,6 +112,7 @@ public abstract class SensorWrapper<T> extends DeviceWrapper<T> implements Senso
     return getAvailableModes().indexOf(modeName);
   }
 
+  @Override
   public int sampleSize() {
     return modes[currentMode].sampleSize();
   }
@@ -125,6 +126,7 @@ public abstract class SensorWrapper<T> extends DeviceWrapper<T> implements Senso
    * will be invalid.
    * See {@link GenericMode#fetchSample(float[], int)}</p>
    */
+  @Override
   public void setCurrentMode(int mode) {
     if (modeInvalid(mode)) {
       throw new IllegalArgumentException("Invalid mode " + mode);
@@ -133,6 +135,7 @@ public abstract class SensorWrapper<T> extends DeviceWrapper<T> implements Senso
     }
   }
 
+  @Override
   public int getCurrentMode() {
     return currentMode;
   }
@@ -146,10 +149,12 @@ public abstract class SensorWrapper<T> extends DeviceWrapper<T> implements Senso
    * will be invalid.
    * See {@link GenericMode#fetchSample(float[], int)}</p>
    */
+  @Override
   public void setCurrentMode(String modeName) {
     setCurrentMode(getIndex(modeName));
   }
 
+  @Override
   public int getModeCount() {
     return modes.length;
   }

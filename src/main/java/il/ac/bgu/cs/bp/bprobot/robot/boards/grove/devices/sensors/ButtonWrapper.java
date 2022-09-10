@@ -2,13 +2,14 @@ package il.ac.bgu.cs.bp.bprobot.robot.boards.grove.devices.sensors;
 
 import com.github.yafna.raspberry.grovepi.GroveDigitalIn;
 import com.github.yafna.raspberry.grovepi.GrovePi;
+import il.ac.bgu.cs.bp.bprobot.robot.boards.SensorWrapper;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.grove.GrovePiPort;
 
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class ButtonWrapper extends GroveSensorWrapper<GroveDigitalIn> {
+public class ButtonWrapper extends SensorWrapper<GroveDigitalIn> {
   private static final Logger logger = Logger.getLogger(ButtonWrapper.class.getName());
 
   ButtonWrapper(String name, GrovePiPort port, GrovePi grove) throws IOException {

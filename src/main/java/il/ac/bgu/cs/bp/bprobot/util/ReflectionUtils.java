@@ -13,6 +13,20 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class ReflectionUtils {
+  public static Class<?> getClass(String name, List<String> packages) throws ClassNotFoundException, IOException {
+    if (name.contains(".")) {
+      return Class.forName(name);
+    } else {
+      var classes = getAllClassesInPackages(packages).stream().filter(c -> c.getSimpleName().equals(name)).collect(Collectors.toList());
+      if (classes.size() > 1) {
+        throw new IllegalArgumentException("More than one class found for type " + name + ", please use full package name");
+      } else if (classes.size() == 0) {
+        throw new IllegalArgumentException("No class found for type " + name);
+      } else {
+        return List.copyOf(classes).get(0);
+      }
+    }
+  }
   public static Set<Class<?>> getAllClassesInPackages(List<String> packagePath) throws IOException {
     final List<String> finalPackagePath = packagePath == null ? List.of("") : packagePath;
     return ClassPath.from(ClassLoader.getSystemClassLoader())

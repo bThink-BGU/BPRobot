@@ -4,11 +4,12 @@ import ev3dev.sensors.BaseSensor;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.SensorWrapper;
 import lejos.hardware.port.Port;
 import lejos.hardware.sensor.SensorMode;
+import lejos.internals.EV3DevPort;
 
 import java.util.ArrayList;
 
 public class Ev3BaseSensorWrapper extends SensorWrapper<BaseSensor> {
-  public Ev3BaseSensorWrapper(String name, Port port, BaseSensor device) {
+  public Ev3BaseSensorWrapper(String name, EV3DevPort port, BaseSensor device) {
     super(name, port, device);
   }
   @Override

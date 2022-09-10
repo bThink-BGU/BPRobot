@@ -7,6 +7,7 @@ import com.google.gson.JsonPrimitive;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.Ev3Board;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.grove.GrovePiBoard;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.Board;
+import lejos.hardware.port.Port;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,7 +22,7 @@ public class Robot {
     );
     private String mqttAddress = "localhost";
     private int mqttPort = 1833;
-    private final Map<String, Board> boards = new HashMap<>();
+    private final Map<String, Board<?>> boards = new HashMap<>();
 
     private Robot() {}
 
@@ -49,7 +50,7 @@ public class Robot {
         return robot;
     }
 
-    public Board getBoard(String name) {
+    public Board<?> getBoard(String name) {
         return boards.get(name);
     }
 
@@ -65,7 +66,7 @@ public class Robot {
         return board;
     }
 
-    private static void addPorts(Board board, JsonArray ports) throws Exception {
+    private static <P extends Port> void addPorts(Board<P> board, JsonArray ports) throws Exception {
         for (int i = 0; i < ports.size(); i++) {
             var portJson = ports.get(i).getAsJsonObject();
             var name = Optional.ofNullable(portJson.get("name")).orElse(new JsonPrimitive("")).getAsString();

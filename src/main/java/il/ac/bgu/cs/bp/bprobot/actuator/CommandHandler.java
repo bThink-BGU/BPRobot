@@ -103,7 +103,7 @@ public class CommandHandler implements Runnable {
     var address = params.getAsString();
     var board = robot.getBoard(address.substring(0, address.indexOf(".")));
     var port = board.getPort(address.substring(address.indexOf(".") + 1));
-    subscribe((SensorWrapper<?>) board.getDevice(port));
+    subscribe((SensorWrapper<?>) board.getDevice(port.getName()));
   }
 
   private void subscribe(SensorWrapper<?> sensor) {
@@ -124,7 +124,7 @@ public class CommandHandler implements Runnable {
     var address = params.getAsString();
     var board = robot.getBoard(address.substring(0, address.indexOf(".")));
     var port = board.getPort(address.substring(address.indexOf(".") + 1));
-    unsubscribe((SensorWrapper<?>) board.getDevice(port));
+    unsubscribe((SensorWrapper<?>) board.getDevice(port.getName()));
   }
 
   private void unsubscribe(SensorWrapper<?> sensor) {
@@ -159,7 +159,7 @@ public class CommandHandler implements Runnable {
       throw new RuntimeException("Robot is not initialized");
     }
     for (var act : buildActivationMap(commandName, json.getAsJsonArray())) {
-      var device = act.board.getDevice(act.port);
+      var device = act.board.getDevice(act.port.getName());
       var methods = device.getClass().getMethods();
       Method method = null;
       Object[] params = null;
@@ -214,8 +214,8 @@ public class CommandHandler implements Runnable {
    * @param params  build map according to this json
    * @return Map with boards, their indexes, and the data to call 'drive' on.
    */
-  private List<Act> buildActivationMap(String command, JsonArray params) {
-    List<Act> result = new ArrayList<>();
+  private List<Act<?>> buildActivationMap(String command, JsonArray params) {
+    List<Act<?>> result = new ArrayList<>();
     for (var param : params) {
       if (param.isJsonObject()) {
         var paramObj = param.getAsJsonObject();
@@ -257,13 +257,13 @@ public class CommandHandler implements Runnable {
     void executeCommand(String commandName, JsonElement params) throws IOException;
   }
 
-  public static class Act {
-    final Board board;
-    final Port port;
+  public static class Act<P extends Port> {
+    final Board<P> board;
+    final P port;
     final String function;
     final JsonArray params;
 
-    private Act(Board board, Port port, String function, JsonArray params) {
+    private Act(Board<P> board, P port, String function, JsonArray params) {
       this.board = board;
       this.port = port;
       this.function = function;

@@ -12,9 +12,11 @@ RUN echo "robot ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers && \
 	apt -y --allow-releaseinfo-change update && \
 	apt -y full-upgrade && \
 	apt -y autoremove && \
-	apt-get -t stretch-backports install -y ne maven openjdk-11-jdk-headless
+	apt-get -t stretch-backports install -y ne maven openjdk-11-jdk-headless && \
+	echo "export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-armel" >> /etc/environment
 	
 RUN echo "alias ll='ls -al'">>.bashrc && \
+    export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-armel && \
 	git clone https://github.com/bThink-BGU/BPRobot.git && \
 	cd BPRobot && \
 	git checkout newimpl && \

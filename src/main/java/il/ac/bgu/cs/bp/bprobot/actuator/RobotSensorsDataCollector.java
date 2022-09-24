@@ -62,7 +62,7 @@ public class RobotSensorsDataCollector implements Runnable {
     while (!Thread.currentThread().isInterrupted()) {
       var map = update();
       var newMessage = toJson(map);
-      if(!newMessage.equals(message)) {
+      if (!newMessage.equals(message)) {
         try {
           updateQueue(newMessage);
           message = newMessage;
@@ -78,12 +78,18 @@ public class RobotSensorsDataCollector implements Runnable {
     comm.send(message, QueueNameEnum.Data);
   }
 
-  private String toJson(Map<SensorWrapper<?>,float[]> data) {
+  private String toJson(Map<SensorWrapper<?>, float[]> data) {
     var builder = new GsonBuilder();
-    Type swType = new TypeToken<SensorWrapper<?>>() {}.getType();
-    Type mapType = new TypeToken<Map<SensorWrapper<?>,float[]>>() {}.getType();
-    builder.registerTypeAdapter(swType, new SensorWrapperSerializeAdapter());
-    return builder.create().toJson(data,mapType);
+    var map = data.entrySet().stream()
+        .collect(Collectors.toUnmodifiableMap(
+            e -> e.getKey().port,
+            e -> Map.of(
+                "port", e.getKey().port,
+                "name", e.getKey().name,
+                "mode", e.getKey().getCurrentMode(),
+                "value", e.getValue()
+            )));
+    return builder.create().toJson(map);
   }
 
   public void clear() {

@@ -2,7 +2,6 @@ package il.ac.bgu.cs.bp.bprobot.robot.boards.ev3;
 
 import ev3dev.actuators.lego.motors.BaseRegulatedMotor;
 import ev3dev.actuators.lego.motors.BasicMotor;
-import ev3dev.hardware.EV3DevDevice;
 import ev3dev.sensors.BaseSensor;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.Board;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.DeviceWrapper;
@@ -12,9 +11,10 @@ import lejos.hardware.port.MotorPort;
 import lejos.hardware.port.Port;
 import lejos.hardware.port.SensorPort;
 import lejos.internals.EV3DevPort;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 
 import java.lang.reflect.Constructor;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -34,8 +34,8 @@ public class Ev3Board extends Board<EV3DevPort> {
   );
   private static final Logger logger = Logger.getLogger(Ev3Board.class.getName());
 
-  public Ev3Board() {
-    super(List.of("ev3dev"));
+  public Ev3Board(boolean isMock) {
+    super(List.of("ev3dev"), isMock);
     logger.setLevel(Level.SEVERE);
   }
 
@@ -50,7 +50,7 @@ public class Ev3Board extends Board<EV3DevPort> {
   protected DeviceWrapper<?> createDeviceWrapper(String nickname, EV3DevPort port, String type, Object... ctorParams) throws Exception {
     Class<?> cl = ReflectionUtils.getClass(type, packages);
     Constructor<?> ctor;
-    Object device;
+    Object device = null;
     Class<?>[] ctorParamsTypes = new Class<?>[]{Port.class};
     ctorParams = new Object[]{port};
     try {
@@ -64,13 +64,24 @@ public class Ev3Board extends Board<EV3DevPort> {
         throw new IllegalArgumentException("Could not find an appropriate constructor for class " + cl.getName());
       }
     }
-    try {
-      device = ctor.newInstance(ctorParams);
-    } catch (Exception e) {
-      throw new InstantiationException("Could not create class " + cl.getSimpleName() + " with parameters " + Arrays.toString(ctorParamsTypes) +". Do we run on an EV3 device?");
+    if (!isMock) {
+      try {
+        device = ctor.newInstance(ctorParams);
+      } catch (Exception e) {
+        throw new InstantiationException("Could not create class " + cl.getSimpleName() + " with parameters " + Arrays.toString(ctorParamsTypes) + ". Do we run on an EV3 device?");
+      }
+    } else {
+      device = Mockito.mock(cl);
+      if (BaseSensor.class.isAssignableFrom(cl)) {
+        Mockito.doAnswer(invocation -> {
+          var values = invocation.<float[]>getArgument(0);
+          Arrays.fill(values, 0);
+          return null;
+        }).when((BaseSensor) device).fetchSample(Mockito.any(), Mockito.anyInt());
+      }
     }
-
-    if (device instanceof BaseSensor) {
+    if (BaseSensor.class.isAssignableFrom(cl)) {
+//    if (device instanceof BaseSensor) {
       return new Ev3BaseSensorWrapper(nickname, port, (BaseSensor) device);
     }
     return new DeviceWrapper<>(nickname, port, device);

@@ -39,13 +39,14 @@ public class Robot {
         var devices = json.getAsJsonArray("devices");
         for (int i = 0; i < devices.size(); i++) {
             var deviceJson = devices.get(i).getAsJsonObject();
+            var isMocked = Optional.ofNullable(deviceJson.get("mocked")).orElse(new JsonPrimitive(false)).getAsBoolean();
             var type = Optional.ofNullable(deviceJson.get("type")).orElseThrow(() -> new IllegalArgumentException("Device in build does not include a 'type' parameter")).getAsString();
             var parser = parsers.get(type);
             if(parser==null) throw new IllegalArgumentException("'"+type+"' is not a known type of device (Must be 'GROVEPI' or any ev3dev.hardware.EV3DevPlatform.*)");
             var name = Optional.ofNullable(deviceJson.get("name")).orElseThrow(() -> new IllegalArgumentException("Device in build does not include a 'name' parameter")).getAsString();
             if(robot.boards.containsKey(name)) throw new IllegalArgumentException("There is more than one board with the name "+name);
             var ports = deviceJson.getAsJsonArray("ports");
-            robot.boards.put(name, parser.executeParser(name, ports));
+            robot.boards.put(name, parser.executeParser(name, ports, isMocked));
         }
         return robot;
     }
@@ -54,14 +55,14 @@ public class Robot {
         return boards.get(name);
     }
 
-    private static Ev3Board ev3Parser(String boardName, JsonArray ports) throws Exception {
-        var board = new Ev3Board();
+    private static Ev3Board ev3Parser(String boardName, JsonArray ports, boolean isMocked) throws Exception {
+        var board = new Ev3Board(isMocked);
         addPorts(board, ports);
         return board;
     }
 
-    private static GrovePiBoard grovePiParser(String boardName, JsonArray ports) throws Exception {
-        var board = new GrovePiBoard();
+    private static GrovePiBoard grovePiParser(String boardName, JsonArray ports, boolean isMocked) throws Exception {
+        var board = new GrovePiBoard(isMocked);
         addPorts(board, ports);
         return board;
     }
@@ -83,6 +84,6 @@ public class Robot {
     @FunctionalInterface
     public interface IParser {
         @SuppressWarnings("rawtypes")
-        Board executeParser(String name, JsonArray ports) throws Exception;
+        Board executeParser(String name, JsonArray ports, boolean isMocked) throws Exception;
     }
 }

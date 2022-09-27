@@ -1,9 +1,7 @@
 package il.ac.bgu.cs.bp.bprobot.actuator;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
+import ev3dev.sensors.BaseSensor;
 import il.ac.bgu.cs.bp.bprobot.robot.Robot;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.Board;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.SensorWrapper;
@@ -12,6 +10,7 @@ import il.ac.bgu.cs.bp.bprobot.util.communication.QueueNameEnum;
 import lejos.hardware.port.Port;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.mockito.Mockito;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -32,6 +31,8 @@ public class CommandHandler implements Runnable {
   private final ICommand subscribe = this::subscribe;
   private final ICommand unsubscribe = this::unsubscribe;
   private final ICommand config = this::config;
+  private final ICommand mockSensorReadings = this::mockSensorReadings;
+
   private final ICommand defaultCommand = this::ev3Command;
 
   // Thread for data collection from robot sensors
@@ -40,7 +41,8 @@ public class CommandHandler implements Runnable {
   private final Map<String, ICommand> commandToMethod = Map.of(
       "subscribe", subscribe,
       "unsubscribe", unsubscribe,
-      "config", config
+      "config", config,
+      "mockSensorReadings", mockSensorReadings
   );
 
   public CommandHandler() {
@@ -64,7 +66,7 @@ public class CommandHandler implements Runnable {
         closeBoards();
       } catch (Exception ignore) {
       }
-      System.out.println("Connection Closed!");
+      System.out.println("CommandHandler: Connection Closed!");
     }));
 
     // Sending on Data and Free.
@@ -88,6 +90,32 @@ public class CommandHandler implements Runnable {
   void closeBoards() {
     if (robot != null)
       robot.close();
+  }
+
+  private void mockSensorReadings(String commandName, JsonElement params) {
+    var obj = params.getAsJsonObject();
+    var address = obj.getAsJsonPrimitive("address").getAsString();
+    var delay = Optional.ofNullable(obj.get("delay")).orElse(new JsonPrimitive(0)).getAsLong();
+    var valueJS = obj.getAsJsonArray("value");
+    var value = new float[valueJS.size()];
+    for (int i = 0; i < value.length; i++) {
+      value[i] = valueJS.get(i).getAsFloat();
+    }
+    var board = robot.getBoard(address.substring(0, address.indexOf(".")));
+    var port = board.getPort(address.substring(address.indexOf(".") + 1));
+    var device = board.getDevice(port.getName()).device;
+
+    var timer = new Timer();
+    timer.schedule(new TimerTask() {
+      @Override
+      public void run() {
+        Mockito.doAnswer(invocation -> {
+          var values = invocation.<float[]>getArgument(0);
+          System.arraycopy(value, 0, values, 0, values.length);
+          return null;
+        }).when((BaseSensor) device).fetchSample(Mockito.any(), Mockito.anyInt());
+      }
+    }, delay);
   }
 
   /**

@@ -2,7 +2,6 @@ package il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.devices.sensors;
 
 import ev3dev.sensors.BaseSensor;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.SensorWrapper;
-import lejos.hardware.port.Port;
 import lejos.hardware.sensor.SensorMode;
 import lejos.internals.EV3DevPort;
 

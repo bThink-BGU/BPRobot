@@ -17,8 +17,8 @@ public class GrovePiBoard extends Board<GrovePiPort> {
   private final GrovePi grovePi;
   private static final Logger logger = Logger.getLogger(GrovePiBoard.class.getName());
 
-  public GrovePiBoard() {
-    super(List.of("il.ac.bgu.cs.bp.bprobot.robot.boards.grove.devices"));
+  public GrovePiBoard(boolean isMock) {
+    super(List.of("il.ac.bgu.cs.bp.bprobot.robot.boards.grove.devices"), isMock);
     try {
       grovePi = new GrovePi4J();
     } catch (IOException e) {

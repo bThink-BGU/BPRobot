@@ -6,15 +6,20 @@ import lejos.hardware.port.Port;
 import java.util.*;
 
 public abstract class Board<P extends Port> {
+  protected final boolean isMock;
   protected final List<String> packages;
   protected final Map<P, DeviceWrapper<?>> portDeviceMap = new HashMap<>();
   protected final Map<String, DeviceWrapper<?>> nicknameDeviceMap = new HashMap<>();
 
-  protected Board() {
-    packages = new ArrayList<>();
+  private Board() {
+    this(new ArrayList<>());
   }
 
   protected Board(List<String> packages) {
+    this(Collections.unmodifiableList(packages), false);
+  }
+  protected Board(List<String> packages, boolean isMock) {
+    this.isMock = isMock;
     this.packages = Collections.unmodifiableList(packages);
   }
 

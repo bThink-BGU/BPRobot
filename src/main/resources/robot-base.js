@@ -1,5 +1,5 @@
 function command(commandName, params) {
-  return bp.Event('Command', JSON.stringify({ action: commandName, params: params }))
+  return bp.Event('Command', { action: commandName, params: params })
 }
 
 function portParams(address, params) {
@@ -10,7 +10,28 @@ function portCommand(commandName, address, params) {
   return command(commandName, [portParams(address, params)])
 }
 
-const sensorsDataChanged = bp.EventSet('SensorsData', function (e) {
+var anyActuation = bp.EventSet('AnyActuation', function (e) {
+  return e.name==='Command' && ['rotate'].includes(e.data.action)
+})
+
+/**
+ * Cause {@link RobotSensorsDataCollector} to return {@param value} when collecting data.
+ * @param address
+ * @param delay  delay in milliseconds before the sensors data is changed to {@param value}
+ * @param value An array of sensor values.
+ */
+function mockSensorValue(address, value, delay) {
+  if(delay === undefined || delay === null) {
+    delay = 0
+  }
+  return command('mockSensorReadings', { address: address, value: value, when: when })
+}
+
+const sensorsDataEvent = bp.EventSet('SensorsDataEvent', function (e) {
+  return e.name === 'SensorsData'
+})
+
+const sensorsDataChanged = bp.EventSet('SensorsDataChanged', function (e) {
   return e.name === 'SensorsData' && ctx.getEntityById('changes').size() > 0
 })
 
@@ -27,7 +48,6 @@ const ports = ['A', 'B', 'C', 'D', 'S1', 'S2', 'S3', 'S4']
 ctx.populateContext([
   ctx.Entity('sensors', 'system', { name: null, data: null }),
   ctx.Entity('changes', 'system', { data: null }),
-  ctx.Entity('sensors_changes', 'system', { data: [] })
 ])
 
 ctx.populateContext(ports.map(p => ctx.Entity(p, 'port', { mode: 0, data: [] })))

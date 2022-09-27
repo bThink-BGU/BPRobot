@@ -2,8 +2,8 @@ package il.ac.bgu.cs.bp.bprobot;
 
 import com.google.common.base.Strings;
 import com.google.gson.*;
+import il.ac.bgu.cs.bp.bpjs.BPjs;
 import il.ac.bgu.cs.bp.bpjs.execution.listeners.BProgramRunnerListenerAdapter;
-import il.ac.bgu.cs.bp.bpjs.internal.ScriptableUtils;
 import il.ac.bgu.cs.bp.bpjs.model.BEvent;
 import il.ac.bgu.cs.bp.bpjs.model.BProgram;
 import il.ac.bgu.cs.bp.bprobot.util.communication.MQTTCommunication;
@@ -21,6 +21,7 @@ public class RobotBProgramRunnerListener extends BProgramRunnerListenerAdapter {
   private final Map<String, QueueNameEnum> cmd2queue = Map.of(
       "SetSensorMode", QueueNameEnum.SOS,
       "SetActuatorData", QueueNameEnum.SOS,
+      "mock", QueueNameEnum.SOS,
       "subscribe", QueueNameEnum.SOS,
       "unsubscribe", QueueNameEnum.SOS,
       "config", QueueNameEnum.SOS
@@ -33,11 +34,17 @@ public class RobotBProgramRunnerListener extends BProgramRunnerListenerAdapter {
   @Override
   public void eventSelected(BProgram bp, BEvent theEvent) {
     if (theEvent.name.equals("Command")) {
-      var message = (String) theEvent.maybeData;
-      if (Strings.isNullOrEmpty(message))
+      var cmd = (NativeObject) theEvent.maybeData;
+      AtomicReference<String> message = new AtomicReference<>();
+      BPjs.withContext(context -> {
+        String name = "temp" + System.currentTimeMillis();
+        bp.putInGlobalScope(name, cmd);
+        message.set((String) context.evaluateString(bp.getGlobalScope(), "JSON.stringify(" + name + ")", "jsonify", 0, null));
+        bp.getGlobalScope().delete(name);
+      });
+      if (cmd == null)
         throw new IllegalArgumentException("Command event does not include legal data");
-      var json = JsonParser.parseString(message).getAsJsonObject();
-      String action = json.get("action").getAsString();
+      String action = (String)cmd.get("action");
       try {
         if (action.equals("config")) {
           comm = new MQTTCommunication();
@@ -55,7 +62,7 @@ public class RobotBProgramRunnerListener extends BProgramRunnerListenerAdapter {
           comm.consumeFromQueue(QueueNameEnum.Free, (topic, m) ->
               bp.enqueueExternalEvent(new BEvent("GetAlgorithmResult", new String(m.getPayload(), StandardCharsets.UTF_8))));
         }
-        send(message, cmd2queue.getOrDefault(action, QueueNameEnum.Commands));
+        send(message.get(), cmd2queue.getOrDefault(action, QueueNameEnum.Commands));
       } catch (MqttException e) {
         throw new RuntimeException(e);
       }

@@ -9,6 +9,7 @@ import il.ac.bgu.cs.bp.bprobot.robot.boards.grove.GrovePiBoard;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.Board;
 import lejos.hardware.port.Port;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -39,7 +40,7 @@ public class Robot {
         var devices = json.getAsJsonArray("devices");
         for (int i = 0; i < devices.size(); i++) {
             var deviceJson = devices.get(i).getAsJsonObject();
-            var isMocked = Optional.ofNullable(deviceJson.get("mocked")).orElse(new JsonPrimitive(false)).getAsBoolean();
+            var isMocked = Optional.ofNullable(deviceJson.get("mock")).orElse(new JsonPrimitive(false)).getAsBoolean();
             var type = Optional.ofNullable(deviceJson.get("type")).orElseThrow(() -> new IllegalArgumentException("Device in build does not include a 'type' parameter")).getAsString();
             var parser = parsers.get(type);
             if(parser==null) throw new IllegalArgumentException("'"+type+"' is not a known type of device (Must be 'GROVEPI' or any ev3dev.hardware.EV3DevPlatform.*)");
@@ -76,6 +77,10 @@ public class Robot {
             var mode = Optional.ofNullable(portJson.get("mode")).map(JsonElement::getAsInt).orElse(null);
             board.putDevice(board.getPort(address), name, type, mode);
         }
+    }
+
+    public Collection<Board<?>> getBoards() {
+        return boards.values();
     }
 
     /**

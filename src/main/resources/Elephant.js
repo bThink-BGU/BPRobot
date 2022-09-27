@@ -61,7 +61,7 @@ bthread('walk', function () {
       request: [
         command('rotate', [portParams('EV3_1.B', [60, true]), portParams('EV3_1.C', [60, true])]), //forward
         command('rotate', [portParams('EV3_1.B', [60, true]), portParams('EV3_1.C', [0, true])]),  //turn left
-        command('rotate', [portParams('EV3_1.B', [0, true]), portParams('EV3_1.C', [60, true])]),  //turn right
+        command('rotate', [portParams('EV3_1.B', [0, true]), portParams('EV3_1.C', [60, true])])  //turn right
       ]
     })
   }
@@ -83,6 +83,8 @@ bthread('Stop on red', function () {
 
 bthread('Initiation', function () {
   sync({ block: config.negate(), request: config })
+  sync({ request: portCommand('subscribe', 'EV3_1.S1') })
+  sync({ request: portCommand('subscribe', 'EV3_1.S4') })
 })
 
 bthread('interleave', function () {

@@ -1,20 +1,14 @@
 package il.ac.bgu.cs.bp.bprobot.actuator;
 
-import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.SensorWrapper;
-import il.ac.bgu.cs.bp.bprobot.robot.boards.SensorWrapperSerializeAdapter;
 import il.ac.bgu.cs.bp.bprobot.util.communication.MQTTCommunication;
 import il.ac.bgu.cs.bp.bprobot.util.communication.QueueNameEnum;
 import lejos.utility.Delay;
 import org.eclipse.paho.client.mqttv3.MqttException;
 
-import java.lang.reflect.Type;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Logger;

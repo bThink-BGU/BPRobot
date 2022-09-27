@@ -77,8 +77,6 @@ public class CommandHandler implements Runnable {
     } catch (MqttException e) {
       throw new RuntimeException(e);
     }
-
-    dataCollector.run();
   }
 
   // Parse & execute command from message that arrived from BPjs
@@ -174,7 +172,6 @@ public class CommandHandler implements Runnable {
     if (dataCollectionFuture != null) {
       dataCollectionFuture.cancel(true);
     }
-    dataCollector.clear();
   }
 
   /**

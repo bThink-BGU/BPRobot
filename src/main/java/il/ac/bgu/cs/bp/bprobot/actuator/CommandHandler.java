@@ -129,9 +129,7 @@ public class CommandHandler implements Runnable {
       var obj = array.get(i).getAsJsonObject();
       var address = obj.getAsJsonPrimitive("address").getAsString();
       var size = obj.getAsJsonPrimitive("params").getAsInt();
-      var board = robot.getBoard(address.substring(0, address.indexOf(".")));
-      var port = board.getPort(address.substring(address.indexOf(".") + 1));
-      var device = board.getDevice(port.getName()).device;
+      var device = robot.getDevice(address).device;
       Mockito.when(((BaseSensor) device).sampleSize()).then(invocation -> size);
     }
   }

@@ -1,96 +1,38 @@
 // https://pybricks.com/ev3-micropython/examples/elephant.html
-const config = command('config', {
-  mqtt: {
-    address: 'localhost',
-    port: 1833
-  },
-  devices: [
-    {
-      name: 'EV3_1',
-      type: 'EV3BRICK', //corresponds to GROVEPI or any ev3dev.hardware.EV3DevPlatform.*
-      mock: true,
-      ports: [
-        {
-          address: 'A',
-          name: 'legs',
-          type: 'EV3LargeRegulatedMotor' //corresponds to a class that inherits or ev3dev.hardware.EV3DevDevice (e.g., EV3LargeRegulatedMotor)
-        },
-        {
-          address: 'B',
-          name: 'trunk',
-          type: 'EV3MediumRegulatedMotor'
-        },
-        {
-          address: 'D',
-          name: 'neck',
-          type: 'EV3LargeRegulatedMotor'
-        },
-        {
-          address: 'S1',
-          name: 'touch',
-          type: 'EV3TouchSensor',
-          mode: 0
-        },
-        {
-          address: 'S2',
-          name: 'remote',
-          type: 'EV3IRSensor',
-          mode: 0
-        },
-        {
-          address: 'S4',
-          name: 'color',
-          type: 'EV3ColorSensor',
-          mode: 0
-        }
-      ]
-    }
-  ]
-})
 
-/*const actions = {
-  stop_trunk: action('break', 'trunk'),
-  stop_legs: action('break', 'legs'),
-  stop_neck: action('break', 'neck'),
-}*/
+const actions = {
+  walk: portCommand('rotate', 'legs', [60, true]),
+  stop_legs: portCommand('brake', 'EV3_1.A'),
+  raise_trunk: portCommand('rotate', 'trunk', [60, true]),
+  lower_trunk: portCommand('rotate', 'trunk', [-60, true]),
+  stop_trunk: portCommand('brake', 'trunk'),
+  stop_neck: portCommand('brake', 'neck'),
+  subscribe: address => portCommand('subscribe', address)
+}
 
-
-bthread('reset', function () {
-  while (true) {
-    sync({ waitFor: bp.Event('reset') })
-    sync({
-      request: [
-        command('rotate', [portParams('EV3_1.B', [60, true]), portParams('EV3_1.C', [60, true])]),
-        portCommand('rotate', 'EV3_1.B', [0, true]),
-        portCommand('rotate', 'EV3_1.C', [0, true])
-      ]
-    })
-  }
-})
+const device = 'EV3_1'
 
 bthread('walk', function () {
   while (true) {
-    sync({ request: portCommand('rotate', 'EV3_1.A', [60, true]) })
+    sync({ request: actions.walk })
   }
 })
 
-bthread('Stop on red', function () {
-    while (true) {
-      sync({ waitFor: bp.Event('A') })
-      sync({
-        request: [
-          command('rotate', [portParams('EV3_1.B', [60, true]), portParams('EV3_1.C', [60, true])]),
-          portCommand('rotate', 'EV3_1.B', [0, true]),
-          portCommand('rotate', 'EV3_1.C', [0, true])
-        ]
-      })
-    }
+bthread('move trunk', function () {
+  while (true) {
+    sync({ request: [actions.raise_trunk,actions.lower_trunk] })
   }
-)
+})
+
+ctx.bthread('Stop trunk on red', 'color.red', function (entity) {
+  sync({ request: actions.stop_trunk, block: [actions.raise_trunk, actions.lower_trunk] })
+  sync({ block: [actions.raise_trunk, actions.lower_trunk] })
+})
 
 bthread('Initiation', function () {
   sync({ block: config.negate(), request: config })
-  sync({ request: portCommand('subscribe', ['EV3_1.S1', 'EV3_1.S2', 'EV3_1.S4']) })
+  sync({ request: mockSensorSampleSize('EV3_1.S4', 1) })
+  sync({ request: actions.subscribe(['EV3_1.S1', 'EV3_1.S2', 'color']) })
 })
 
 bthread('interleave', function () {
@@ -98,4 +40,13 @@ bthread('interleave', function () {
     sync({ waitFor: anyActuation })
     sync({ waitFor: sensorsDataEvent, block: anyActuation })
   }
+})
+
+
+bthread('mock', function () {
+  sync({ waitFor: sensorsDataEvent })
+  sync({ waitFor: sensorsDataEvent })
+  sync({ waitFor: sensorsDataEvent })
+  sync({ waitFor: sensorsDataEvent })
+  sync({ request: mockSensorValue('color', [1]) })
 })

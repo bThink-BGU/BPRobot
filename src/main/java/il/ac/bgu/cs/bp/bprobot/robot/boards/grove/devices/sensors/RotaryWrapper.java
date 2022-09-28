@@ -9,8 +9,8 @@ import il.ac.bgu.cs.bp.bprobot.robot.boards.grove.GrovePiPort;
 import java.io.IOException;
 
 public class RotaryWrapper extends SensorWrapper<GroveRotarySensor> {
-  RotaryWrapper(String name, GrovePiPort port, GrovePi grove) throws IOException {
-    super(name, port, new GroveRotarySensor(grove, port.ordinal()),
+  RotaryWrapper(String board, String name, GrovePiPort port, GrovePi grove) throws IOException {
+    super(board, name, port, new GroveRotarySensor(grove, port.ordinal()),
         new GenericSensorMode(4, "DEFAULT"));
   }
 

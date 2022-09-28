@@ -32,6 +32,7 @@ public class CommandHandler implements Runnable {
   private final ICommand unsubscribe = this::unsubscribe;
   private final ICommand config = this::config;
   private final ICommand mockSensorReadings = this::mockSensorReadings;
+  private final ICommand mockSensorSampleSize = this::mockSensorSampleSize;
 
   private final ICommand defaultCommand = this::ev3Command;
 
@@ -42,7 +43,8 @@ public class CommandHandler implements Runnable {
       "subscribe", subscribe,
       "unsubscribe", unsubscribe,
       "config", config,
-      "mockSensorReadings", mockSensorReadings
+      "mockSensorReadings", mockSensorReadings,
+      "mockSensorSampleSize", mockSensorSampleSize
   );
 
   public CommandHandler() {
@@ -60,11 +62,13 @@ public class CommandHandler implements Runnable {
     Runtime.getRuntime().addShutdownHook(new Thread(() -> {
       try {
         comm.closeConnection();
-      } catch (MqttException ignore) {
+      } catch (MqttException e) {
+        throw new RuntimeException(e);
       }
       try {
         closeBoards();
-      } catch (Exception ignore) {
+      } catch (Exception e) {
+        throw new RuntimeException(e);
       }
       System.out.println("CommandHandler: Connection Closed!");
     }));
@@ -74,7 +78,8 @@ public class CommandHandler implements Runnable {
     try {
       comm.consumeFromQueue(QueueNameEnum.Commands, this::onReceiveCallback);
       comm.consumeFromQueue(QueueNameEnum.SOS, this::onReceiveCallback);
-    } catch (MqttException e) {
+    } catch (Exception e) {
+      e.printStackTrace();
       throw new RuntimeException(e);
     }
   }
@@ -91,29 +96,44 @@ public class CommandHandler implements Runnable {
   }
 
   private void mockSensorReadings(String commandName, JsonElement params) {
-    var obj = params.getAsJsonObject();
-    var address = obj.getAsJsonPrimitive("address").getAsString();
-    var delay = Optional.ofNullable(obj.get("delay")).orElse(new JsonPrimitive(0)).getAsLong();
-    var valueJS = obj.getAsJsonArray("value");
-    var value = new float[valueJS.size()];
-    for (int i = 0; i < value.length; i++) {
-      value[i] = valueJS.get(i).getAsFloat();
-    }
-    var board = robot.getBoard(address.substring(0, address.indexOf(".")));
-    var port = board.getPort(address.substring(address.indexOf(".") + 1));
-    var device = board.getDevice(port.getName()).device;
-
-    var timer = new Timer();
-    timer.schedule(new TimerTask() {
-      @Override
-      public void run() {
-        Mockito.doAnswer(invocation -> {
-          var values = invocation.<float[]>getArgument(0);
-          System.arraycopy(value, 0, values, 0, values.length);
-          return null;
-        }).when((BaseSensor) device).fetchSample(Mockito.any(), Mockito.anyInt());
+    var array = params.getAsJsonArray();
+    for (int i = 0; i < array.size(); i++) {
+      var obj = array.get(i).getAsJsonObject();
+      var address = obj.getAsJsonPrimitive("address").getAsString();
+      var paramsI = obj.getAsJsonObject("params");
+      var delay = Optional.ofNullable(paramsI.get("delay")).orElse(new JsonPrimitive(0)).getAsLong();
+      var valueJS = paramsI.getAsJsonArray("value");
+      var value = new float[valueJS.size()];
+      for (int j = 0; j < value.length; j++) {
+        value[j] = valueJS.get(j).getAsFloat();
       }
-    }, delay);
+      var device = robot.getDevice(address);
+
+      var timer = new Timer();
+      timer.schedule(new TimerTask() {
+        @Override
+        public void run() {
+          Mockito.doAnswer(invocation -> {
+            var values = invocation.<float[]>getArgument(0);
+            System.arraycopy(value, 0, values, 0, values.length);
+            return null;
+          }).when((BaseSensor) device.device).fetchSample(Mockito.any(), Mockito.anyInt());
+        }
+      }, delay);
+    }
+  }
+
+  private void mockSensorSampleSize(String commandName, JsonElement params) {
+    var array = params.getAsJsonArray();
+    for (int i = 0; i < array.size(); i++) {
+      var obj = array.get(i).getAsJsonObject();
+      var address = obj.getAsJsonPrimitive("address").getAsString();
+      var size = obj.getAsJsonPrimitive("params").getAsInt();
+      var board = robot.getBoard(address.substring(0, address.indexOf(".")));
+      var port = board.getPort(address.substring(address.indexOf(".") + 1));
+      var device = board.getDevice(port.getName()).device;
+      Mockito.when(((BaseSensor) device).sampleSize()).then(invocation -> size);
+    }
   }
 
   /**
@@ -129,9 +149,7 @@ public class CommandHandler implements Runnable {
     var addresses = params.getAsJsonArray().get(0).getAsJsonObject().getAsJsonArray("address");
     for (int i = 0; i < addresses.size(); i++) {
       var address = addresses.get(i).getAsString();
-      var board = robot.getBoard(address.substring(0, address.indexOf(".")));
-      var port = board.getPort(address.substring(address.indexOf(".") + 1));
-      subscribe((SensorWrapper<?>) board.getDevice(port.getName()));
+      subscribe((SensorWrapper<?>) robot.getDevice(address));
     }
   }
 
@@ -150,12 +168,10 @@ public class CommandHandler implements Runnable {
    * @param params from BPjs messages
    */
   void unsubscribe(String commandName, JsonElement params) {
-    var addresses = params.getAsJsonObject().getAsJsonArray("address");
+    var addresses = params.getAsJsonArray().get(0).getAsJsonObject().getAsJsonArray("address");
     for (int i = 0; i < addresses.size(); i++) {
       var address = addresses.get(i).getAsString();
-      var board = robot.getBoard(address.substring(0, address.indexOf(".")));
-      var port = board.getPort(address.substring(address.indexOf(".") + 1));
-      unsubscribe((SensorWrapper<?>) board.getDevice(port.getName()));
+      unsubscribe((SensorWrapper<?>) robot.getDevice(address));
     }
 
   }
@@ -223,15 +239,17 @@ public class CommandHandler implements Runnable {
           }
           if (method != null)
             break;
+        } else {
+          method = null;
         }
       }
       if (method == null) {
-        throw new IllegalArgumentException("No such method " + act.function + " with params " + act.params.toString());
+        throw new IllegalArgumentException("No such method '" + act.function + "' with params " + act.params.toString());
       }
       try {
         method.invoke(device, params);
       } catch (IllegalAccessException | InvocationTargetException e) {
-        throw new RuntimeException(e);
+        throw new RuntimeException("Error while invoking method " + method.getName(), e);
       }
     }
   }
@@ -251,8 +269,9 @@ public class CommandHandler implements Runnable {
         var paramObj = param.getAsJsonObject();
         if (paramObj.has("address")) {
           var address = paramObj.getAsJsonPrimitive("address").getAsString();
-          var board = robot.getBoard(address.substring(0, address.indexOf(".")));
-          var port = board.getPort(address.substring(address.indexOf(".") + 1));
+          var device = robot.getDevice(address);
+          var board = robot.getBoard(device.board);
+          var port = device.port;
           var actionParams = new JsonArray();
           if (paramObj.has("params")) actionParams = paramObj.getAsJsonArray("params");
           result.add(new Act(board, port, command, actionParams));
@@ -270,12 +289,17 @@ public class CommandHandler implements Runnable {
     dataCollectionFuture = executor.scheduleWithFixedDelay(dataCollector, 0L, commandTimeout, TimeUnit.MILLISECONDS);
   }
 
-  private void onReceiveCallback(String topic, MqttMessage message) throws IOException {
-    String msg = new String(message.getPayload(), StandardCharsets.UTF_8);
-    JsonObject obj = JsonParser.parseString(msg).getAsJsonObject();
-    String action = obj.get("action").getAsString();
-    JsonElement params = obj.get("params");
-    executeCommand(action, params);
+  private void onReceiveCallback(String topic, MqttMessage message) {
+    try {
+      String msg = new String(message.getPayload(), StandardCharsets.UTF_8);
+      JsonObject obj = JsonParser.parseString(msg).getAsJsonObject();
+      String action = obj.get("action").getAsString();
+      JsonElement params = obj.get("params");
+      executeCommand(action, params);
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw new RuntimeException(e);
+    }
   }
 
 

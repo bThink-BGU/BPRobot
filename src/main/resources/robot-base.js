@@ -1,3 +1,15 @@
+const anyActuation = bp.EventSet('AnyActuation', function (e) {
+  return e.name === 'Command' && ['rotate'].includes(e.data.action)
+})
+
+const sensorsDataEvent = bp.EventSet('SensorsDataEvent', function (e) {
+  return e.name === 'SensorsData'
+})
+
+const sensorsDataChanged = bp.EventSet('SensorsDataChanged', function (e) {
+  return e.name === 'SensorsData' && ctx.getEntityById('changes').size() > 0
+})
+
 function command(commandName, params) {
   return bp.Event('Command', { action: commandName, params: params })
 }
@@ -10,10 +22,6 @@ function portCommand(commandName, address, params) {
   return command(commandName, [portParams(address, params)])
 }
 
-var anyActuation = bp.EventSet('AnyActuation', function (e) {
-  return e.name==='Command' && ['rotate'].includes(e.data.action)
-})
-
 /**
  * Cause {@link RobotSensorsDataCollector} to return {@param value} when collecting data.
  * @param address
@@ -21,19 +29,20 @@ var anyActuation = bp.EventSet('AnyActuation', function (e) {
  * @param value An array of sensor values.
  */
 function mockSensorValue(address, value, delay) {
-  if(delay === undefined || delay === null) {
+  if (delay === undefined || delay === null) {
     delay = 0
   }
-  return command('mockSensorReadings', { address: address, value: value, when: when })
+  return portCommand('mockSensorReadings', address, { value: value, delay: delay })
 }
 
-const sensorsDataEvent = bp.EventSet('SensorsDataEvent', function (e) {
-  return e.name === 'SensorsData'
-})
-
-const sensorsDataChanged = bp.EventSet('SensorsDataChanged', function (e) {
-  return e.name === 'SensorsData' && ctx.getEntityById('changes').size() > 0
-})
+/**
+ * Mock sampleSize() value of a device
+ * @param address
+ * @param size  the desired size
+ */
+function mockSensorSampleSize(address, size) {
+  return portCommand('mockSensorSampleSize', address, size)
+}
 
 const remoteIsCurrentlyPressed = function (mode, dir) {
   return bp.EventSet('remoteIsCurrentlyPressed', function (e) {
@@ -43,41 +52,60 @@ const remoteIsCurrentlyPressed = function (mode, dir) {
   })
 }
 
-const ports = ['A', 'B', 'C', 'D', 'S1', 'S2', 'S3', 'S4']
-
 ctx.populateContext([
   ctx.Entity('sensors', 'system', { name: null, data: null }),
-  ctx.Entity('changes', 'system', { data: null }),
+  ctx.Entity('changes', 'system', { data: null })
 ])
-
-ctx.populateContext(ports.map(p => ctx.Entity(p, 'port', { mode: 0, data: [] })))
 
 function primitivesArraysEqual(array1, array2) {
   return array1.length === array2.length && array1.every((value, index) => value === array2[index])
 }
 
+ctx.registerEffect('Command', function (data) {
+  switch (data.action) {
+    case 'config':
+      data.params.devices.forEach(d => {
+        d.ports.forEach(p => {
+          ctx.insertEntity(ctx.Entity(d.name + '.' + p.address, 'port', { name: p.name, mode: 0, data: [] }))
+        })
+      })
+      break
+  }
+})
+
 ctx.registerEffect('SensorsData', function (data) {
+  var obj = data.get()
+  if (obj === null) {
+    ctx.getEntityById('sensors').data = null
+    ctx.getEntityById('changes').data = new java.util.HashSet()
+    return
+  }
+
   var json = JSON.parse(data)
   ctx.getEntityById('sensors').data = json
   var changes = new java.util.HashSet()
   for (let prop in json) {
-    var port = json[prop]
-    let changed = false
-    let s = ctx.getEntityById(port.port)
-    if (s.name != port.name) {
-      s.name = port.name
+    let portEntity = null
+    try {
+      portEntity = ctx.getEntityById(prop)
+    } catch (e) {
+      throw new Error('Port ' + prop + ' is not configured')
     }
-    if (!primitivesArraysEqual(s.data, port.data)) {
-      s.data = port.data
+    var sensorData = json[prop]
+    let changed = false
+
+    if (!primitivesArraysEqual(sensorData.value, portEntity.data)) {
+      portEntity.data = sensorData.value
       changed = true
     }
-    if (s.mode !== port.mode) {
-      s.mode = port.mode
+    if (portEntity.mode !== sensorData.mode) {
+      portEntity.mode = sensorData.mode
       changed = true
     }
     if (changed) {
-      changes.add(port)
+      changes.add(sensorData)
     }
   }
+  bp.log.info('Changes: {0}', changes)
   ctx.getEntityById('changes').data = changes
 })

@@ -12,8 +12,8 @@ import java.util.logging.Logger;
 public class ButtonWrapper extends SensorWrapper<GroveDigitalIn> {
   private static final Logger logger = Logger.getLogger(ButtonWrapper.class.getName());
 
-  ButtonWrapper(String name, GrovePiPort port, GrovePi grove) throws IOException {
-    super(name, port, new GroveDigitalIn(grove, port.ordinal()));
+  ButtonWrapper(String board, String name, GrovePiPort port, GrovePi grove) throws IOException {
+    super(board, name, port, new GroveDigitalIn(grove, port.ordinal()));
     logger.setLevel(Level.SEVERE);
   }
 

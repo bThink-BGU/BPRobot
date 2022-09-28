@@ -7,8 +7,8 @@ import il.ac.bgu.cs.bp.bprobot.robot.boards.grove.GrovePiPort;
 import java.io.IOException;
 
 public class LedWrapper extends GroveActuatorWrapper<GroveLed> {
-  public LedWrapper(String name, GrovePiPort port, GrovePi grove) throws IOException {
-    super(name, port, new GroveLed(grove, port.ordinal()));
+  public LedWrapper(String board, String name, GrovePiPort port, GrovePi grove) throws IOException {
+    super(board, name, port, new GroveLed(grove, port.ordinal()));
   }
 
   @Override

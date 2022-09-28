@@ -6,19 +6,21 @@ import lejos.hardware.port.Port;
 import java.util.*;
 
 public abstract class Board<P extends Port> {
+  public final String name;
   protected final boolean isMock;
   protected final List<String> packages;
   protected final Map<P, DeviceWrapper<?>> portDeviceMap = new HashMap<>();
   protected final Map<String, DeviceWrapper<?>> nicknameDeviceMap = new HashMap<>();
 
-  private Board() {
-    this(new ArrayList<>());
+  private Board(String name) {
+    this(name, new ArrayList<>());
   }
 
-  protected Board(List<String> packages) {
-    this(Collections.unmodifiableList(packages), false);
+  protected Board(String name, List<String> packages) {
+    this(name, Collections.unmodifiableList(packages), false);
   }
-  protected Board(List<String> packages, boolean isMock) {
+  protected Board(String name, List<String> packages, boolean isMock) {
+    this.name = name;
     this.isMock = isMock;
     this.packages = Collections.unmodifiableList(packages);
   }
@@ -31,9 +33,6 @@ public abstract class Board<P extends Port> {
   }
 
   public DeviceWrapper<?> getDevice(String port) {
-    if (!nicknameDeviceMap.containsKey(port)) {
-      throw new IllegalArgumentException("Port " + port + " does not exist");
-    }
     return nicknameDeviceMap.get(port);
   }
 
@@ -51,11 +50,12 @@ public abstract class Board<P extends Port> {
    */
   protected abstract DeviceWrapper<?> createDeviceWrapper(String nickname, P port, String type, Object ... ctorParams) throws Exception;
 
-  public void putDevice(P port, String nickname, String type, Integer mode, Object ... ctorParams) throws Exception {
+  public DeviceWrapper<?> putDevice(P port, String nickname, String type, Integer mode, Object ... ctorParams) throws Exception {
     DeviceWrapper<?>dev = createDeviceWrapper(nickname, port, type, ctorParams);
     if(mode != null)
       ((SensorWrapper<?>)dev).setCurrentMode(mode);
     putDevice(port, nickname, dev);
+    return dev;
   }
 
   private void putDevice(P port, String nickname, DeviceWrapper<?> device) {

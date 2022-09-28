@@ -5,8 +5,8 @@ import lejos.hardware.port.Port;
 
 public abstract class GroveActuatorWrapper<T> extends DeviceWrapper<T> {
 
-  protected GroveActuatorWrapper(String name, Port port, T device) {
-    super(name, port, device);
+  protected GroveActuatorWrapper(String board, String name, Port port, T device) {
+    super(board, name, port, device);
   }
 
   public void setBooleanValue(boolean value) throws Exception {

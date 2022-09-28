@@ -52,20 +52,18 @@ public class RobotSensorsDataCollector implements Runnable {
 
   @Override
   public void run() {
-    var message = "{}";
-    while (!Thread.currentThread().isInterrupted()) {
-      var map = update();
-      var newMessage = toJson(map);
-      if (!newMessage.equals(message)) {
-        try {
-          updateQueue(newMessage);
-          message = newMessage;
-        } catch (MqttException e) {
-          throw new RuntimeException(e);
-        }
+    try {
+      while (!Thread.currentThread().isInterrupted()) {
+        var map = update();
+        var message = toJson(map);
+        updateQueue(message);
+        Delay.msDelay(msDelay.get());
       }
-      Delay.msDelay(msDelay.get());
+    } catch (MqttException e) {
+      e.printStackTrace();
+      throw new RuntimeException(e);
     }
+    System.out.println("Robot Sensor Data Collector stopped");
   }
 
   private void updateQueue(String message) throws MqttException {
@@ -76,9 +74,10 @@ public class RobotSensorsDataCollector implements Runnable {
     var builder = new GsonBuilder();
     var map = data.entrySet().stream()
         .collect(Collectors.toUnmodifiableMap(
-            e -> e.getKey().port,
+            e -> e.getKey().board + "." + e.getKey().port.getName(),
             e -> Map.of(
-                "port", e.getKey().port,
+                "port", e.getKey().port.getName(),
+                "board", e.getKey().board,
                 "name", e.getKey().name,
                 "mode", e.getKey().getCurrentMode(),
                 "value", e.getValue()

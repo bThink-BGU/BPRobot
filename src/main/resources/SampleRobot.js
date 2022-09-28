@@ -17,8 +17,6 @@ function command(commandName, params, address) {
   return bp.Event('Command', JSON.stringify({ action: commandName, params: params }))
 }
 
-
-
 const config = command('config', {
   mqtt: {
     address: 'localhost',

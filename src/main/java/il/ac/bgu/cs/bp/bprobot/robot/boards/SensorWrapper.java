@@ -14,8 +14,8 @@ public abstract class SensorWrapper<T> extends DeviceWrapper<T> implements Senso
   protected int currentMode = 0;
   protected SensorMode[] modes;
 
-  protected SensorWrapper(String name, Port port, T device, SensorMode ... modes) {
-    super(name, port, device);
+  protected SensorWrapper(String board, String name, Port port, T device, SensorMode ... modes) {
+    super(board, name, port, device);
     if (modes == null || modes.length == 0) modes = new GenericSensorMode[]{new GenericSensorMode()};
     setModes(modes);
   }

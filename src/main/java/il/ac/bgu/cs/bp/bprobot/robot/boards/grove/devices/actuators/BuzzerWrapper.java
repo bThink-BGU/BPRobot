@@ -7,8 +7,8 @@ import il.ac.bgu.cs.bp.bprobot.robot.boards.grove.GrovePiPort;
 import java.io.IOException;
 
 public class BuzzerWrapper extends GroveActuatorWrapper<GroveDigitalOut> {
-    public BuzzerWrapper(String name, GrovePiPort port, GrovePi grove) throws IOException {
-        super(name, port, new GroveDigitalOut(grove,port.ordinal()));
+    public BuzzerWrapper(String board, String name, GrovePiPort port, GrovePi grove) throws IOException {
+        super(board, name, port, new GroveDigitalOut(grove,port.ordinal()));
     }
 
     @Override

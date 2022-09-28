@@ -8,8 +8,8 @@ import lejos.internals.EV3DevPort;
 import java.util.ArrayList;
 
 public class Ev3BaseSensorWrapper extends SensorWrapper<BaseSensor> {
-  public Ev3BaseSensorWrapper(String name, EV3DevPort port, BaseSensor device) {
-    super(name, port, device);
+  public Ev3BaseSensorWrapper(String board, String name, EV3DevPort port, BaseSensor device) {
+    super(board, name, port, device);
   }
   @Override
   public ArrayList<String> getAvailableModes() {

@@ -7,8 +7,8 @@ import il.ac.bgu.cs.bp.bprobot.robot.boards.grove.GrovePiPort;
 import java.io.IOException;
 
 public class RelayWrapper extends GroveActuatorWrapper<GroveRelay> {
-  public RelayWrapper(String name, GrovePiPort port, GrovePi grove) throws IOException {
-    super(name, port, new GroveRelay(grove, port.ordinal()));
+  public RelayWrapper(String board, String name, GrovePiPort port, GrovePi grove) throws IOException {
+    super(board, name, port, new GroveRelay(grove, port.ordinal()));
   }
 
   @Override

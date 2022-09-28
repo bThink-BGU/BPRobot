@@ -11,7 +11,6 @@ import lejos.hardware.port.MotorPort;
 import lejos.hardware.port.Port;
 import lejos.hardware.port.SensorPort;
 import lejos.internals.EV3DevPort;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import java.lang.reflect.Constructor;
@@ -34,8 +33,8 @@ public class Ev3Board extends Board<EV3DevPort> {
   );
   private static final Logger logger = Logger.getLogger(Ev3Board.class.getName());
 
-  public Ev3Board(boolean isMock) {
-    super(List.of("ev3dev"), isMock);
+  public Ev3Board(String name, boolean isMock) {
+    super(name, List.of("ev3dev"), isMock);
     logger.setLevel(Level.SEVERE);
   }
 
@@ -82,9 +81,9 @@ public class Ev3Board extends Board<EV3DevPort> {
     }
     if (BaseSensor.class.isAssignableFrom(cl)) {
 //    if (device instanceof BaseSensor) {
-      return new Ev3BaseSensorWrapper(nickname, port, (BaseSensor) device);
+      return new Ev3BaseSensorWrapper(name, nickname, port, (BaseSensor) device);
     }
-    return new DeviceWrapper<>(nickname, port, device);
+    return new DeviceWrapper<>(name, nickname, port, device);
   }
 
   @Override

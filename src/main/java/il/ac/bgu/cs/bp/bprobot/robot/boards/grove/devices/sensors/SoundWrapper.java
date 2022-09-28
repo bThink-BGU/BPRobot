@@ -9,8 +9,8 @@ import java.io.IOException;
 
 public class SoundWrapper extends SensorWrapper<GroveSoundSensor> {
 
-    public SoundWrapper(String name, GrovePiPort port, GrovePi grove) throws IOException {
-        super(name, port, new GroveSoundSensor(grove, port.ordinal()));
+    public SoundWrapper(String board, String name, GrovePiPort port, GrovePi grove) throws IOException {
+        super(board, name, port, new GroveSoundSensor(grove, port.ordinal()));
     }
 
     @Override

@@ -17,8 +17,8 @@ public class GrovePiBoard extends Board<GrovePiPort> {
   private final GrovePi grovePi;
   private static final Logger logger = Logger.getLogger(GrovePiBoard.class.getName());
 
-  public GrovePiBoard(boolean isMock) {
-    super(List.of("il.ac.bgu.cs.bp.bprobot.robot.boards.grove.devices"), isMock);
+  public GrovePiBoard(String name, boolean isMock) {
+    super(name, List.of("il.ac.bgu.cs.bp.bprobot.robot.boards.grove.devices"), isMock);
     try {
       grovePi = new GrovePi4J();
     } catch (IOException e) {
@@ -50,7 +50,7 @@ public class GrovePiBoard extends Board<GrovePiPort> {
       throw new NoSuchMethodException("No constructor found for " + type + " with params " + Arrays.toString(ctorParamsTypes));
     }
     device = constructor.newInstance(fullCtorParams);
-    return new DeviceWrapper<>(nickname, port, device);
+    return new DeviceWrapper<>(name, nickname, port, device);
   }
 
   @Override

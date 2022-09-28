@@ -7,6 +7,7 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 
 public class DeviceWrapper<T> {
+  public final String board;
   public final String name;
   public final Port port;
   public final T device;
@@ -15,7 +16,8 @@ public class DeviceWrapper<T> {
     return name;
   }
 
-  public DeviceWrapper(String name, Port port, T device) {
+  public DeviceWrapper(String board, String name, Port port, T device) {
+    this.board = board;
     this.name = name;
     this.port = port;
     this.device = device;

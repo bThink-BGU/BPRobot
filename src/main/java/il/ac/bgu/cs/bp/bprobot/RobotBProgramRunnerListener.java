@@ -1,7 +1,5 @@
 package il.ac.bgu.cs.bp.bprobot;
 
-import com.google.common.base.Strings;
-import com.google.gson.*;
 import il.ac.bgu.cs.bp.bpjs.BPjs;
 import il.ac.bgu.cs.bp.bpjs.execution.listeners.BProgramRunnerListenerAdapter;
 import il.ac.bgu.cs.bp.bpjs.model.BEvent;
@@ -21,14 +19,16 @@ public class RobotBProgramRunnerListener extends BProgramRunnerListenerAdapter {
   private final Map<String, QueueNameEnum> cmd2queue = Map.of(
       "SetSensorMode", QueueNameEnum.SOS,
       "SetActuatorData", QueueNameEnum.SOS,
-      "mock", QueueNameEnum.SOS,
+      "mockSensorReadings", QueueNameEnum.SOS,
+      "mockSensorSampleSize", QueueNameEnum.SOS,
       "subscribe", QueueNameEnum.SOS,
       "unsubscribe", QueueNameEnum.SOS,
       "config", QueueNameEnum.SOS
   );
 
-  private void sensorDataReceived(String message) {
+  private void sensorDataReceived(BProgram bp, String message) {
     sensorsData.set(message);
+    bp.enqueueExternalEvent(new BEvent("SensorsData", sensorsData));
   }
 
   @Override
@@ -58,7 +58,7 @@ public class RobotBProgramRunnerListener extends BProgramRunnerListenerAdapter {
             }
           }));
           comm.consumeFromQueue(QueueNameEnum.Data, (topic, m) ->
-              sensorDataReceived(new String(m.getPayload(), StandardCharsets.UTF_8)));
+              sensorDataReceived(bp, new String(m.getPayload(), StandardCharsets.UTF_8)));
           comm.consumeFromQueue(QueueNameEnum.Free, (topic, m) ->
               bp.enqueueExternalEvent(new BEvent("GetAlgorithmResult", new String(m.getPayload(), StandardCharsets.UTF_8))));
         }
@@ -67,14 +67,6 @@ public class RobotBProgramRunnerListener extends BProgramRunnerListenerAdapter {
         throw new RuntimeException(e);
       }
     }
-  }
-
-
-  @Override
-  public void superstepDone(BProgram bp) {
-    String json = sensorsData.get();
-    if (json != null)
-      bp.enqueueExternalEvent(new BEvent("SensorsData", json));
   }
 
   private void send(String message, QueueNameEnum queue) throws MqttException {

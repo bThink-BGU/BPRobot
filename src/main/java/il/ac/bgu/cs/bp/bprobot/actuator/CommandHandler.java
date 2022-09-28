@@ -271,7 +271,12 @@ public class CommandHandler implements Runnable {
           var board = robot.getBoard(device.board);
           var port = device.port;
           var actionParams = new JsonArray();
-          if (paramObj.has("params")) actionParams = paramObj.getAsJsonArray("params");
+          if (paramObj.has("params")) {
+            if(paramObj.get("params").isJsonArray())
+              actionParams = paramObj.getAsJsonArray("params");
+            else
+              actionParams.add(paramObj.get("params"));
+          }
           result.add(new Act(board, port, command, actionParams));
         }
       }

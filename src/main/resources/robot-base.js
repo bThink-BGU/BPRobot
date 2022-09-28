@@ -1,5 +1,5 @@
 const anyActuation = bp.EventSet('AnyActuation', function (e) {
-  return e.name === 'Command' && ['rotate'].includes(e.data.action)
+  return e.name === 'Command' && ['rotate','forward','backward'].includes(e.data.action)
 })
 
 const sensorsDataEvent = bp.EventSet('SensorsDataEvent', function (e) {
@@ -106,6 +106,5 @@ ctx.registerEffect('SensorsData', function (data) {
       changes.add(sensorData)
     }
   }
-  bp.log.info('Changes: {0}', changes)
   ctx.getEntityById('changes').data = changes
 })

@@ -1,6 +1,5 @@
 package il.ac.bgu.cs.bp.bprobot;
 
-import il.ac.bgu.cs.bp.bpjs.BPjs;
 import il.ac.bgu.cs.bp.bpjs.context.ContextBProgram;
 import il.ac.bgu.cs.bp.bpjs.execution.BProgramRunner;
 import il.ac.bgu.cs.bp.bpjs.execution.listeners.PrintBProgramRunnerListener;
@@ -11,11 +10,12 @@ import il.ac.bgu.cs.bp.bpjs.model.BProgram;
  *
  * @author michael
  */
-public class SampleRobot {
+public class Elephant {
 
   public static void main(String[] args) {
     // This will load the program file  <Project>/src/main/resources/HelloBPjsWorld.js
-    final BProgram bprog = new ContextBProgram("robot-base.js","elephant/data.js", "elephant/behavior-low.js", "elephant/behavior-high.js");
+    final BProgram bprog = new ContextBProgram("robot-base.js",
+        "elephant/data.js", "elephant/behavior-low.js", "elephant/behavior-high.js");
     bprog.setWaitForExternalEvents(true);
 //    bprog.getGlobalScope()..putInGlobalScope("Colors", lejos.robotics.Color);
     BProgramRunner rnr = new BProgramRunner(bprog);

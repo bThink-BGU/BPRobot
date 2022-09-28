@@ -32,6 +32,12 @@ const config = command('config', {
           mode: 0
         },
         {
+          address: 'S2',
+          name: 'remote',
+          type: 'EV3IRSensor',
+          mode: 0
+        },
+        {
           address: 'S4',
           name: 'color',
           type: 'EV3ColorSensor',
@@ -41,6 +47,13 @@ const config = command('config', {
     }
   ]
 })
+
+/*const actions = {
+  stop_trunk: action('break', 'trunk'),
+  stop_legs: action('break', 'legs'),
+  stop_neck: action('break', 'neck'),
+}*/
+
 
 bthread('reset', function () {
   while (true) {
@@ -57,13 +70,7 @@ bthread('reset', function () {
 
 bthread('walk', function () {
   while (true) {
-    sync({
-      request: [
-        command('rotate', [portParams('EV3_1.B', [60, true]), portParams('EV3_1.C', [60, true])]), //forward
-        command('rotate', [portParams('EV3_1.B', [60, true]), portParams('EV3_1.C', [0, true])]),  //turn left
-        command('rotate', [portParams('EV3_1.B', [0, true]), portParams('EV3_1.C', [60, true])])  //turn right
-      ]
-    })
+    sync({ request: portCommand('rotate', 'EV3_1.A', [60, true]) })
   }
 })
 
@@ -83,8 +90,7 @@ bthread('Stop on red', function () {
 
 bthread('Initiation', function () {
   sync({ block: config.negate(), request: config })
-  sync({ request: portCommand('subscribe', 'EV3_1.S1') })
-  sync({ request: portCommand('subscribe', 'EV3_1.S4') })
+  sync({ request: portCommand('subscribe', ['EV3_1.S1', 'EV3_1.S2', 'EV3_1.S4']) })
 })
 
 bthread('interleave', function () {

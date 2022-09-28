@@ -66,6 +66,9 @@ public abstract class Board<P extends Port> {
       }
       nicknameDeviceMap.put(nickname, device);
     }
+    if(!port.getName().equals(nickname)) {
+      nicknameDeviceMap.put(port.getName(),device);
+    }
   }
 
   public void close() {

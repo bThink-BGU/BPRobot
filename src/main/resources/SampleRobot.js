@@ -1,14 +1,23 @@
-function command(commandName, params) {
+// noinspection JSCheckFunctionSignatures,InfiniteLoopJS
+// noinspection InfiniteLoopJS
+
+function command(commandName, params, address) {
+  if (params == null) {
+    // received action(s)
+    params = commandName
+    if (!Array.isArray(params))
+      params = [commandName]
+    commandName = 'do'
+  } else if (address == null) {
+    //received a command with no address, do nothing
+  } else {
+    params = [action(commandName, params, address)]
+  }
+
   return bp.Event('Command', JSON.stringify({ action: commandName, params: params }))
 }
 
-function portParams(address, params) {
-  return { address: address, params: params }
-}
 
-function portCommand(commandName, address, params) {
-  return command(commandName, [portParams(address, params)])
-}
 
 const config = command('config', {
   mqtt: {
@@ -45,9 +54,12 @@ bthread('Drive', function () {
   while (true) {
     sync({
       request: [
-        command('rotate', [portParams('EV3_1.B', [60, true]), portParams('EV3_1.C', [60, true])]),
-        portCommand('rotate', 'EV3_1.B', [0, true]),
-        portCommand('rotate', 'EV3_1.C', [0, true])
+        command([
+          action('rotate', 'EV3_1.B', [60, true]),
+          action('rotate', 'EV3_1.C', [60, true])
+        ]), // drive straight
+        command('rotate', 'EV3_1.B', [60, true]), //turn right
+        command('rotate', 'EV3_1.C', [60, true]) //turn left
       ]
     })
   }
@@ -56,13 +68,8 @@ bthread('Drive', function () {
 bthread('Stop on red', function () {
   command('subscribe', 'EV3_1.S3')
   while (true) {
-    sync({
-      request: [
-        command('rotate', [portParams('EV3_1.B', [60, true]), portParams('EV3_1.C', [60, true])]),
-        portCommand('rotate', 'EV3_1.B', [0, true]),
-        portCommand('rotate', 'EV3_1.C', [0, true])
-      ]
-    })
+    sync({ waitFor: e => e.name === 'sensors_data' && e.data.color === 'RED' })
+    sync({ block: e => e.name === 'do' && e.data.action === 'rotate' })
   }
 })
 

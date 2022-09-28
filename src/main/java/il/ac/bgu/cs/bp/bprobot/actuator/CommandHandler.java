@@ -126,10 +126,13 @@ public class CommandHandler implements Runnable {
    * @param params json element from BPjs messages
    */
   void subscribe(String commandName, JsonElement params) {
-    var address = params.getAsString();
-    var board = robot.getBoard(address.substring(0, address.indexOf(".")));
-    var port = board.getPort(address.substring(address.indexOf(".") + 1));
-    subscribe((SensorWrapper<?>) board.getDevice(port.getName()));
+    var addresses = params.getAsJsonArray().get(0).getAsJsonObject().getAsJsonArray("address");
+    for (int i = 0; i < addresses.size(); i++) {
+      var address = addresses.get(i).getAsString();
+      var board = robot.getBoard(address.substring(0, address.indexOf(".")));
+      var port = board.getPort(address.substring(address.indexOf(".") + 1));
+      subscribe((SensorWrapper<?>) board.getDevice(port.getName()));
+    }
   }
 
   private void subscribe(SensorWrapper<?> sensor) {
@@ -147,10 +150,14 @@ public class CommandHandler implements Runnable {
    * @param params from BPjs messages
    */
   void unsubscribe(String commandName, JsonElement params) {
-    var address = params.getAsString();
-    var board = robot.getBoard(address.substring(0, address.indexOf(".")));
-    var port = board.getPort(address.substring(address.indexOf(".") + 1));
-    unsubscribe((SensorWrapper<?>) board.getDevice(port.getName()));
+    var addresses = params.getAsJsonObject().getAsJsonArray("address");
+    for (int i = 0; i < addresses.size(); i++) {
+      var address = addresses.get(i).getAsString();
+      var board = robot.getBoard(address.substring(0, address.indexOf(".")));
+      var port = board.getPort(address.substring(address.indexOf(".") + 1));
+      unsubscribe((SensorWrapper<?>) board.getDevice(port.getName()));
+    }
+
   }
 
   private void unsubscribe(SensorWrapper<?> sensor) {
@@ -184,40 +191,38 @@ public class CommandHandler implements Runnable {
       throw new RuntimeException("Robot is not initialized");
     }
     for (var act : buildActivationMap(commandName, json.getAsJsonArray())) {
-      var device = act.board.getDevice(act.port.getName());
+      var device = act.board.getDevice(act.port.getName()).device;
       var methods = device.getClass().getMethods();
       Method method = null;
       Object[] params = null;
-      for (int i = 0; i < methods.length && method == null; i++) {
+      for (int i = 0; i < methods.length; i++) {
         method = methods[i];
         if (method.getName().equals(act.function) && method.getParameterCount() == act.params.size()) {
           var paramsDef = method.getParameters();
           params = new Object[act.params.size()];
           for (int j = 0; j < params.length; j++) {
             var clazz = paramsDef[j].getType();
-            if (clazz.isAssignableFrom(Byte.class)) {
-              params[j] = act.params.get(i).getAsByte();
-            } else if (clazz.isAssignableFrom(Short.class)) {
-              params[j] = act.params.get(i).getAsShort();
-            } else if (clazz.isAssignableFrom(Integer.class)) {
-              params[j] = act.params.get(i).getAsInt();
-            } else if (clazz.isAssignableFrom(Long.class)) {
-              params[j] = act.params.get(i).getAsLong();
-            } else if (clazz.isAssignableFrom(Double.class)) {
-              params[j] = act.params.get(i).getAsDouble();
+            if (clazz.isAssignableFrom(Byte.class) || clazz.isAssignableFrom(byte.class)) {
+              params[j] = act.params.get(j).getAsByte();
+            } else if (clazz.isAssignableFrom(Short.class) || clazz.isAssignableFrom(short.class)) {
+              params[j] = act.params.get(j).getAsShort();
+            } else if (clazz.isAssignableFrom(Integer.class) || clazz.isAssignableFrom(int.class)) {
+              params[j] = act.params.get(j).getAsInt();
+            } else if (clazz.isAssignableFrom(Long.class) || clazz.isAssignableFrom(long.class)) {
+              params[j] = act.params.get(j).getAsLong();
+            } else if (clazz.isAssignableFrom(Double.class) || clazz.isAssignableFrom(double.class)) {
+              params[j] = act.params.get(j).getAsDouble();
+            } else if (clazz.isAssignableFrom(Boolean.class) || clazz.isAssignableFrom(boolean.class)) {
+              params[j] = act.params.get(j).getAsBoolean();
             } else if (clazz.isAssignableFrom(String.class)) {
-              var s = act.params.get(i).getAsString();
-              assert s.length() == 1;
-              params[j] = s.charAt(0);
-            } else if (clazz.isAssignableFrom(Boolean.class)) {
-              params[j] = act.params.get(i).getAsBoolean();
-            } else if (clazz.isAssignableFrom(String.class)) {
-              params[j] = act.params.get(i).getAsString();
+              params[j] = act.params.get(j).getAsString();
             } else {
               method = null;
               break;
             }
           }
+          if (method != null)
+            break;
         }
       }
       if (method == null) {
@@ -269,7 +274,7 @@ public class CommandHandler implements Runnable {
     String msg = new String(message.getPayload(), StandardCharsets.UTF_8);
     JsonObject obj = JsonParser.parseString(msg).getAsJsonObject();
     String action = obj.get("action").getAsString();
-    JsonElement params = obj.getAsJsonObject("params");
+    JsonElement params = obj.get("params");
     executeCommand(action, params);
   }
 

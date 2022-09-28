@@ -14,7 +14,7 @@ public class SampleRobot {
 
   public static void main(String[] args) {
     // This will load the program file  <Project>/src/main/resources/HelloBPjsWorld.js
-    final BProgram bprog = new ContextBProgram("robot-base.js", "Elephant.js");
+    final BProgram bprog = new ContextBProgram("robot-base.js","elephant/data.js", "elephant/behavior-high.js");
     bprog.setWaitForExternalEvents(true);
     BProgramRunner rnr = new BProgramRunner(bprog);
 

@@ -111,6 +111,24 @@
                             </arguments>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>robot</id>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>java</executable>
+                            <arguments>
+                                <argument>-classpath</argument>
+                                <classpath/> <!-- will include your class path -->
+                                <argument>il.ac.bgu.cs.bp.bprobot.RobotRunner</argument>
+                                <argument>${env.ROBOT}</argument>
+                            </arguments>
+                            <environmentVariables>
+                                <ROBOT>src/main/resources/elephant</ROBOT>
+                            </environmentVariables>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
         </plugins>

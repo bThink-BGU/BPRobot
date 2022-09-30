@@ -10,6 +10,7 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <exec.mainClass>il.ac.bgu.cs.bp.bprobot.RobotRunner</exec.mainClass>
+        <path.robot></path.robot>
     </properties>
 
     <groupId>com.github.bthink-bgu</groupId>
@@ -24,59 +25,6 @@
     </repositories>
     <build>
         <plugins>
-            <!--<plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>3.3.0</version>
-                <executions>
-                    <execution>
-                        <id>copy</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>copy</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <artifactItems>
-                        <artifactItem>
-                            <groupId>com.github.ev3dev-lang-java</groupId>
-                            <artifactId>ev3dev-lang-java</artifactId>
-&lt;!&ndash;                            <version>2.6.2-SNAPSHOT</version>&ndash;&gt;
-                            <type>jar</type>
-                            <overWrite>false</overWrite>
-                            <outputDirectory>${project.build.directory}/libs</outputDirectory>
-                        </artifactItem>
-                        <artifactItem>
-                            <groupId>com.github.ev3dev-lang-java</groupId>
-                            <artifactId>lejos-commons</artifactId>
-&lt;!&ndash;                            <version>2.6.2-SNAPSHOT</version>&ndash;&gt;
-                            <type>jar</type>
-                            <overWrite>false</overWrite>
-                            <outputDirectory>${project.build.directory}/libs</outputDirectory>
-                        </artifactItem>
-                        <artifactItem>
-                            <groupId>com.github.yafna.raspberry</groupId>
-                            <artifactId>grovepi-pi4j</artifactId>
-                            &lt;!&ndash;                            <version>2.6.2-SNAPSHOT</version>&ndash;&gt;
-                            <type>jar</type>
-                            <overWrite>false</overWrite>
-                            <outputDirectory>${project.build.directory}/libs</outputDirectory>
-                        </artifactItem>
-                        <artifactItem>
-                            <groupId>com.github.yafna.raspberry</groupId>
-                            <artifactId>grovepi-spec</artifactId>
-                            &lt;!&ndash;                            <version>2.6.2-SNAPSHOT</version>&ndash;&gt;
-                            <type>jar</type>
-                            <overWrite>false</overWrite>
-                            <outputDirectory>${project.build.directory}/libs</outputDirectory>
-                        </artifactItem>
-                    </artifactItems>
-                    <outputDirectory>${project.build.directory}/wars</outputDirectory>
-                    <overWriteReleases>false</overWriteReleases>
-                    <overWriteSnapshots>true</overWriteSnapshots>
-                </configuration>
-            </plugin>-->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
@@ -122,11 +70,8 @@
                                 <argument>-classpath</argument>
                                 <classpath/> <!-- will include your class path -->
                                 <argument>il.ac.bgu.cs.bp.bprobot.RobotRunner</argument>
-                                <argument>${env.ROBOT}</argument>
+                                <argument>${path.robot}</argument>
                             </arguments>
-                            <environmentVariables>
-                                <ROBOT>src/main/resources/elephant</ROBOT>
-                            </environmentVariables>
                         </configuration>
                     </execution>
                 </executions>

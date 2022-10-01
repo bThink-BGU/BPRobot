@@ -84,6 +84,7 @@ public class CommandHandler implements Runnable {
       e.printStackTrace();
       throw new RuntimeException(e);
     }
+    System.out.println("CommandHandler: Ready to receive commands");
   }
 
   // Parse & execute command from message that arrived from BPjs

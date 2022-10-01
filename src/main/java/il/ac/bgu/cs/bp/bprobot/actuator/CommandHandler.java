@@ -55,22 +55,24 @@ public class CommandHandler implements Runnable {
   @Override
   public void run() {
     try {
-      comm.connect();
+      comm.connect(true);
     } catch (MqttException e) {
       throw new RuntimeException(e);
     }
     Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+      System.out.println("CommandHandler: Trying to disconnect from MQTT broker");
       try {
         comm.closeConnection();
       } catch (MqttException e) {
         throw new RuntimeException(e);
       }
+      System.out.println("CommandHandler: Trying to close boards");
       try {
         closeBoards();
       } catch (Exception e) {
         throw new RuntimeException(e);
       }
-      System.out.println("CommandHandler: Connection Closed!");
+      System.out.println("CommandHandler: Termination completed!");
     }));
 
     // Sending on Data and Free.

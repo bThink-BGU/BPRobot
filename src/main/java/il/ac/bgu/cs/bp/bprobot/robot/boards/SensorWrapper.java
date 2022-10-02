@@ -9,6 +9,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
+/** Wraps a sensor to provide a consistent interface for all sensors.
+ * The class implements the SampleProvider interface. For more information See {@link lejos.robotics.SampleProvider leJOS conventions for SampleProviders}
+ */
 public abstract class SensorWrapper<T> extends DeviceWrapper<T> implements SensorModes {
   private ArrayList<String> modeList;
   protected int currentMode = 0;

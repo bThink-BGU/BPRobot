@@ -81,8 +81,18 @@ public class Robot {
       var name = Optional.ofNullable(portJson.get("name")).orElse(new JsonPrimitive("")).getAsString();
       var address = portJson.get("address").getAsString();
       var type = portJson.get("type").getAsString();
-      var mode = Optional.ofNullable(portJson.get("mode")).map(JsonElement::getAsInt).orElse(null);
-      var dev = board.putDevice(board.getPort(address), name, type, mode);
+      var mode = Optional.ofNullable(portJson.get("mode")).orElse(null);
+      DeviceWrapper<?> dev = null;
+      if (mode == null) {
+        dev = board.putDevice(board.getPort(address), name, type, (String) null);
+      } else {
+        if (mode.getAsJsonPrimitive().isNumber()) {
+          dev = board.putDevice(board.getPort(address), name, type, mode.getAsInt());
+        } else {
+          dev = board.putDevice(board.getPort(address), name, type, mode.getAsString());
+        }
+      }
+
       if (!Strings.isNullOrEmpty(name)) {
         if (robot.nickname2DeviceWrapper.containsKey(name))
           throw new IllegalArgumentException("There is more than one device with the name " + name);

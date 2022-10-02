@@ -1,8 +1,10 @@
+const RemoteCommands = Packages.il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.devices.sensors.RemoteCommands;
+
 const anyActuation = bp.EventSet('AnyActuation', function (e) {
   return e.name === 'Command' && ['rotate','forward','backward'].includes(e.data.action)
 })
 
-const sensorsDataEvent = bp.EventSet('SensorsDataEvent', function (e) {
+const AnySensorsData = bp.EventSet('SensorsDataEvent', function (e) {
   return e.name === 'SensorsData'
 })
 
@@ -44,12 +46,23 @@ function mockSensorSampleSize(address, size) {
   return portCommand('mockSensorSampleSize', address, size)
 }
 
-const remoteIsCurrentlyPressed = function (mode, dir) {
-  return bp.EventSet('remoteIsCurrentlyPressed', function (e) {
-    return e.name === 'SensorsData' &&
-      ctx.getEntityById('sensors').mode === mode &&
-      ctx.getEntityById('sensors').data[0] === dir
-  })
+function getRemoteCommand(full_address, channel) {
+  let portEntity = null
+  try {
+    portEntity = ctx.getEntityById(full_address)
+  } catch (e) {
+    throw new Error('Port ' + full_address + ' is not configured')
+  }
+  if(portEntity.data.length===0){
+    return RemoteCommands.empty()
+  }
+  if (portEntity.mode !== 2) {
+    throw new Error('Remote mode is not configured to "Remote". Value is ' +portEntity.mode)
+  }
+  if(channel <0 || channel >= portEntity.data.length){
+    throw new Error('Illegal channel number: ' + channel)
+  }
+  return RemoteCommands.fromEV3DevID(portEntity.data[channel])
 }
 
 ctx.populateContext([
@@ -66,7 +79,7 @@ ctx.registerEffect('Command', function (data) {
     case 'config':
       data.params.devices.forEach(d => {
         d.ports.forEach(p => {
-          ctx.insertEntity(ctx.Entity(d.name + '.' + p.address, 'port', { name: p.name, mode: 0, data: [] }))
+          ctx.insertEntity(ctx.Entity(d.name + '.' + p.address, 'port', { name: p.name, mode: p.mode, data: [] }))
         })
       })
       break
@@ -98,8 +111,13 @@ ctx.registerEffect('SensorsData', function (data) {
       portEntity.data = sensorData.value
       changed = true
     }
+/*    if(sensorData.mode === 2){
+      bp.log.info('prop {0}; data {1}; neq {2}', prop.mode, sensorData.mode, portEntity.mode !== sensorData.mode)
+    }*/
     if (portEntity.mode !== sensorData.mode) {
+      // bp.log.info("updating mode of {0}" , prop)
       portEntity.mode = sensorData.mode
+      // bp.log.info("updated mode of {0}" , prop)
       changed = true
     }
     if (changed) {

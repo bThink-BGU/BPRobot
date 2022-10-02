@@ -14,10 +14,11 @@ const actions = {
 }
 
 const device = 'EV3_1'
+const remoteChannel = 1
 
 bthread('interleave', function () {
   while (true) {
-    sync({ waitFor: sensorsDataEvent, block: anyActuation })
+    sync({ waitFor: AnySensorsData, block: anyActuation })
     sync({ waitFor: anyActuation })
   }
 })
@@ -59,9 +60,34 @@ ctx.bthread('Stop raise trunk on touch pressed', 'touch.pressed', function (enti
   sync({ block: [actions.raise_trunk] })
 })
 
+ctx.bthread('Handle remote', 'remote.pressed', function (entity) {
+  while(true) {
+    let remoteCommand = getRemoteCommand(entity.id, remoteChannel)
+    if (remoteCommand.contains(RemoteCommands.TOP_LEFT)) {
+      bp.log.info('top left')
+    }
+    if (remoteCommand.contains(RemoteCommands.TOP_RIGHT)) {
+      bp.log.info('top right')
+    }
+    if (remoteCommand.contains(RemoteCommands.BOTTOM_LEFT)) {
+      bp.log.info('bottom left')
+    }
+    if (remoteCommand.contains(RemoteCommands.BOTTOM_RIGHT)) {
+      bp.log.info('bottom right')
+    }
+    if (remoteCommand.contains(RemoteCommands.CENTER_BEACON)) {
+      bp.log.info('center beacon')
+    }
+    sync({waitFor: AnySensorsData})
+  }
+})
+
 bthread('mock', function () {
   sync({ request: mockSensorSampleSize('touch', 1) })
+  sync({ request: mockSensorSampleSize('remote', 4) })
   sync({ request: mockSensorSampleSize('EV3_1.S4', 1) }) //color
   sync({ request: mockSensorValue('touch', [1], 10000) })
   sync({ request: mockSensorValue('color', [1], 5000) })
+  sync({ request: mockSensorValue('remote', [0,1,0,0], 1000) })
+  sync({ request: mockSensorValue('remote', [0,5,0,0], 2000) })
 })

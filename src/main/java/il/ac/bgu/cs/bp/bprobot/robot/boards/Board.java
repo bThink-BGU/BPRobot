@@ -2,6 +2,7 @@ package il.ac.bgu.cs.bp.bprobot.robot.boards;
 
 import com.google.common.base.Strings;
 import lejos.hardware.port.Port;
+import org.mockito.Mockito;
 
 import java.util.*;
 
@@ -52,8 +53,23 @@ public abstract class Board<P extends Port> {
 
   public DeviceWrapper<?> putDevice(P port, String nickname, String type, Integer mode, Object ... ctorParams) throws Exception {
     DeviceWrapper<?>dev = createDeviceWrapper(nickname, port, type, ctorParams);
-    if(mode != null)
-      ((SensorWrapper<?>)dev).setCurrentMode(mode);
+    if(mode != null) {
+      ((SensorWrapper<?>) dev).setCurrentMode(mode);
+      if(isMock) {
+        Mockito.when(((SensorWrapper<?>) dev).getCurrentMode()).thenReturn(mode);
+      }
+    }
+    putDevice(port, nickname, dev);
+    return dev;
+  }
+  public DeviceWrapper<?> putDevice(P port, String nickname, String type, String mode, Object ... ctorParams) throws Exception {
+    DeviceWrapper<?>dev = createDeviceWrapper(nickname, port, type, ctorParams);
+    if(mode != null) {
+      ((SensorWrapper<?>) dev).setCurrentMode(mode);
+      if(isMock) {
+        Mockito.when(((SensorWrapper<?>) dev).getCurrentMode()).thenReturn(0);
+      }
+    }
     putDevice(port, nickname, dev);
     return dev;
   }

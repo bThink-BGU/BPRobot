@@ -34,7 +34,7 @@ const config = command('config', {
           address: 'S2',
           name: 'remote',
           type: 'EV3IRSensor',
-          mode: 0
+          mode: 2
         },
         {
           address: 'S4',

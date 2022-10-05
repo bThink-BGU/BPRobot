@@ -15,7 +15,7 @@
  */
 package il.ac.bgu.cs.bp.bprobot.remote.machine.device.port;
 
-import il.ac.bgu.cs.bp.bprobot.remote.machine.device.DeviceType;
+import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.devices.DeviceType;
 import lejos.hardware.port.Port;
 
 /**

@@ -1,4 +1,4 @@
-const RemoteCommands = Packages.il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.devices.sensors.RemoteCommands;
+const RemoteControlKeys = Packages.il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.devices.sensors.RemoteControlKeys;
 
 const anyActuation = bp.EventSet('AnyActuation', function (e) {
   return e.name === 'Command' && ['rotate','forward','backward'].includes(e.data.action)
@@ -54,7 +54,7 @@ function getRemoteCommand(full_address, channel) {
     throw new Error('Port ' + full_address + ' is not configured')
   }
   if(portEntity.data.length===0){
-    return RemoteCommands.empty()
+    return RemoteControlKeys.empty()
   }
   if (portEntity.mode !== 2) {
     throw new Error('Remote mode is not configured to "Remote". Value is ' +portEntity.mode)
@@ -62,7 +62,7 @@ function getRemoteCommand(full_address, channel) {
   if(channel <0 || channel >= portEntity.data.length){
     throw new Error('Illegal channel number: ' + channel)
   }
-  return RemoteCommands.fromEV3DevID(portEntity.data[channel])
+  return RemoteControlKeys.fromEV3DevID(portEntity.data[channel])
 }
 
 ctx.populateContext([

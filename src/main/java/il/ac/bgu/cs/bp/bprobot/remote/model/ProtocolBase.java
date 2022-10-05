@@ -53,29 +53,4 @@ public abstract class ProtocolBase {
      * @return the result of the command
      */
     public abstract Map<String, Object> exec(int port, CommandBase cmd);
-
-    /**
-     * Applies commands.
-     * This method will be used with devices supporting 'transactions'.
-     *
-     * @return succeed (<code>true</code>) or not (<code>false</code>)
-     */
-    public abstract boolean apply();
-
-    /**
-     * Loads a value which has the specified key from a machine.
-     *
-     * @param key a key of a key-value store
-     * @return raw values in an array of <code>byte</code>
-     */
-    public abstract byte[] load(int key);
-
-    /**
-     * Stores a value with a key to a machine.
-     *
-     * @param key a key of a key-value store
-     * @param data a value fo a key-value store
-     * @return succeed (<code>true</code>) or not (<code>false</code>)
-     */
-    public abstract boolean store(int key, byte[] data);
 }

@@ -40,12 +40,10 @@ import java.io.IOException;
  */
 public abstract class MachineBase extends Board<DevicePort> {
     protected ProtocolBase mProtocol;
-    protected MachineStatus mStatus;
 
     public MachineBase(String name, ProtocolBase protocol) {
         super(name);
         mProtocol = protocol;
-        mStatus = new MachineStatus();
     }
 
     /**
@@ -91,14 +89,6 @@ public abstract class MachineBase extends Board<DevicePort> {
     public boolean store(int key, byte[] data) {
         throw new UnsupportedOperationException("This machine does not support 'store' command");
     }
-
-    /**
-     * Fetches {@link MachineStatus} from this machine.
-     * NOTE: before this command, makes connection
-     *
-     * @return the {@link MachineStatus}
-     */
-    public abstract MachineStatus fetchStatus();
 
     /**
      * Creates a {@link Motor}.

@@ -57,7 +57,14 @@ public class Ev3Protocol extends ProtocolBase {
     public Map<String, Object> exec(int port, CommandBase cmd) {
         Map<String, Object> res = new HashMap<>();
         CommandType type = cmd.getCommandType();
+        var args = cmd.getArgs();
         switch (type) {
+            case GET_SI_VALUES:
+                res.put(KEY_VALUE, getSiValue(port, 0, 0, (int)args.get("nvalue")));
+                break;
+            case GET_PERCENT_VALUES:
+                res.put(KEY_VALUE, getPercentValue(port, 0, 0, (int)args.get("nvalue")));
+                break;
             case GET_COLOR_ILLUMINANCE: {
                 // TODO: EV3 also can use NXT's color sensor (NXT_COLOR).
                 // I should switch the types (EV3_COLOR/NXT_COLOR) based on the device info.
@@ -136,7 +143,6 @@ public class Ev3Protocol extends ProtocolBase {
                 break;
             }
             case SET_MOTOR_SPEED: {
-                Map<String, Object> args = cmd.getArgs();
                 int speed = (Integer) args.get("speed");
                 setOutputState(port, speed);
                 break;
@@ -315,20 +321,5 @@ public class Ev3Protocol extends ProtocolBase {
         Log.d(TAG, "read: " + result.length + " bytes");
 
         return result;
-    }
-
-    @Override
-    public boolean apply() {
-        throw new UnsupportedOperationException("Ev3 Protocol does not support transactions");
-    }
-
-    @Override
-    public byte[] load(int key) {
-        throw new UnsupportedOperationException("Ev3 Protocol hasn't supported key-value store yet");
-    }
-
-    @Override
-    public boolean store(int key, byte[] data) {
-        throw new UnsupportedOperationException("Ev3 Protocol hasn't supported key-value store yet");
     }
 }

@@ -7,7 +7,12 @@ import il.ac.bgu.cs.bp.bprobot.robot.boards.DeviceWrapper;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.Ev3Board;
 import lejos.internals.EV3DevPort;
 
+import java.util.Map;
+
 public class Ev3RemoteBoard extends Ev3Board {
+  private static final Map<String, String> ev3devToRemote = Map.of(
+      
+  );
   protected ProtocolBase mProtocol;
 
   public Ev3RemoteBoard(ICommunicator comm, String name, boolean isMock) {

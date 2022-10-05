@@ -1,4 +1,4 @@
-package il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.devices.sensors;
+package il.ac.bgu.cs.bp.bprobot.robot.boards.ev3;
 
 import ev3dev.sensors.BaseSensor;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.SensorWrapper;

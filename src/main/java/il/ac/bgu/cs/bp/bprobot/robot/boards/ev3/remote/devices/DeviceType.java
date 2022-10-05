@@ -13,36 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package il.ac.bgu.cs.bp.bprobot.remote.machine.device;
+package il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.devices;
 
 /**
  * An enum class which represents types of devices.
  */
 public enum DeviceType {
-    /**
-     * @see #SERVOMOTOR
-     */
-    MOTOR,
-
-    /**
-     * @see #MOTOR
-     */
-    SERVOMOTOR,
-    BUZZER,
-    LED,
-
-    /**
-     * e.g., LightSensor for EV3
-     */
+    EV3GyroSensor,
+    EV3TouchSensor,
+    EV3ColorSensor,
+    EV3UltrasonicSensor,
+    EV3IRSensor,
     LIGHT_SENSOR,
-    GYRO_SENSOR,
-    TOUCH_SENSOR,
-    COLOR_SENSOR,
-
-    /**
-     * e.g., UltrasonicSensor for EV3
-     */
-    RANGEFINDER,
     SOUND_SENSOR,
-    REMOTECONTROL_RECEIVER
+    EV3MediumRegulatedMotor,
+    EV3LargeRegulatedMotor,
+    NXTRegulatedMotor,
+    UnregulatedMotor,
+    MOTOR,
+    SERVOMOTOR,
+    Sound,
+    EV3Led,
 }

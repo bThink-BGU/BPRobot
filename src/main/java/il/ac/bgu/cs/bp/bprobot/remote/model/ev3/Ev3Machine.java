@@ -16,8 +16,6 @@
 package il.ac.bgu.cs.bp.bprobot.remote.model.ev3;
 
 import il.ac.bgu.cs.bp.bprobot.remote.machine.MachineBase;
-import il.ac.bgu.cs.bp.bprobot.remote.machine.MachineStatus;
-import il.ac.bgu.cs.bp.bprobot.remote.machine.device.DeviceType;
 import il.ac.bgu.cs.bp.bprobot.remote.machine.device.input.*;
 import il.ac.bgu.cs.bp.bprobot.remote.machine.device.output.Buzzer;
 import il.ac.bgu.cs.bp.bprobot.remote.machine.device.output.Led;
@@ -31,9 +29,6 @@ import il.ac.bgu.cs.bp.bprobot.remote.model.com.ICommunicator;
 import il.ac.bgu.cs.bp.bprobot.remote.model.ev3.port.Ev3InputPort;
 import il.ac.bgu.cs.bp.bprobot.remote.model.ev3.port.Ev3OutputPort;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.DeviceWrapper;
-import lejos.hardware.port.MotorPort;
-import lejos.hardware.port.SensorPort;
-import lejos.internals.EV3DevPort;
 
 import java.util.Map;
 
@@ -57,100 +52,68 @@ public class Ev3Machine extends MachineBase {
     }
 
     @Override
-    public void apply() {
-        mProtocol.apply();
-    }
-
-    @Override
-    public MachineStatus fetchStatus() {
-        return mStatus;
-    }
-
-    @Override
     public Motor createMotor(OutputPort port) {
         checkOutputPortCompatibility(port);
-
-        mStatus.bind(port, DeviceType.MOTOR);
         return new Motor(port, mProtocol);
     }
 
     @Override
     public Servomotor createServomotor(OutputPort port) {
         checkOutputPortCompatibility(port);
-
-        mStatus.bind(port, DeviceType.SERVOMOTOR);
         return new Servomotor(port, mProtocol);
     }
 
     @Override
     public Buzzer createBuzzer(OutputPort port) {
         checkOutputPortCompatibility(port);
-
-        mStatus.bind(port, DeviceType.BUZZER);
         return new Buzzer(port, mProtocol);
     }
 
     @Override
     public Led createLed(OutputPort port) {
         checkOutputPortCompatibility(port);
-
-        mStatus.bind(port, DeviceType.LED);
         return new Led(port, mProtocol);
     }
 
     @Override
     public LightSensor createLightSensor(InputPort port) {
         checkInputPortCompatibility(port);
-
-        mStatus.bind(port, DeviceType.LIGHT_SENSOR);
         return new LightSensor(port, mProtocol);
     }
 
     @Override
     public TouchSensor createTouchSensor(InputPort port) {
         checkInputPortCompatibility(port);
-
-        mStatus.bind(port, DeviceType.TOUCH_SENSOR);
         return new TouchSensor(port, mProtocol);
     }
 
     @Override
     public SoundSensor createSoundSensor(InputPort port) {
         checkInputPortCompatibility(port);
-
-        mStatus.bind(port, DeviceType.SOUND_SENSOR);
         return new SoundSensor(port, mProtocol);
     }
 
     @Override
     public GyroSensor createGyroSensor(InputPort port) {
         checkInputPortCompatibility(port);
-
-        mStatus.bind(port, DeviceType.GYRO_SENSOR);
         return new GyroSensor(port, mProtocol);
     }
 
     @Override
     public ColorSensor createColorSensor(InputPort port) {
         checkInputPortCompatibility(port);
-
-        mStatus.bind(port, DeviceType.COLOR_SENSOR);
         return new ColorSensor(port, mProtocol);
     }
 
     @Override
     public Rangefinder createRangefinder(InputPort port) {
         checkInputPortCompatibility(port);
-
-        mStatus.bind(port, DeviceType.RANGEFINDER);
         return new Rangefinder(port, mProtocol);
     }
 
     @Override
     public RemoteControlReceiver createRemoteControlReceiver(InputPort port) {
         checkInputPortCompatibility(port);
-
-        mStatus.bind(port, DeviceType.REMOTECONTROL_RECEIVER);
         return new RemoteControlReceiver(port, mProtocol);
     }
 

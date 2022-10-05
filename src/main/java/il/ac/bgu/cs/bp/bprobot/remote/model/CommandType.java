@@ -15,127 +15,31 @@
  */
 package il.ac.bgu.cs.bp.bprobot.remote.model;
 
-import il.ac.bgu.cs.bp.bprobot.remote.machine.device.DeviceType;
 import il.ac.bgu.cs.bp.bprobot.remote.command.Command;
 
 /**
  * An enum class which contains the types of {@link Command}s.
  */
 public enum CommandType {
-    SET_LED_ON {
-        @Override
-        public DeviceType getDeviceType() {
-            return DeviceType.LED;
-        }
-    },
-    SET_LED_OFF {
-        @Override
-        public DeviceType getDeviceType() {
-            return DeviceType.LED;
-        }
-    },
-    SET_MOTOR_SPEED {
-        @Override
-        public DeviceType getDeviceType() {
-            return DeviceType.MOTOR;
-        }
-    },
-    SET_SERVO_ANGLE {
-        @Override
-        public DeviceType getDeviceType() {
-            return DeviceType.SERVOMOTOR;
-        }
-    },
-    GET_SERVO_ANGLE {
-        @Override
-        public DeviceType getDeviceType() {
-            return DeviceType.SERVOMOTOR;
-        }
-    },
-    SET_BUZZER_ON {
-        @Override
-        public DeviceType getDeviceType() {
-            return DeviceType.BUZZER;
-        }
-    },
-    SET_BUZZER_OFF {
-        @Override
-        public DeviceType getDeviceType() {
-            return DeviceType.BUZZER;
-        }
-    },
-    SET_BUZZER_BEEP {
-        @Override
-        public DeviceType getDeviceType() {
-            return DeviceType.BUZZER;
-        }
-    },
-    GET_LIGHT_VALUE {
-        @Override
-        public DeviceType getDeviceType() {
-            return DeviceType.LIGHT_SENSOR;
-        }
-    },
-    GET_GYRO_ANGLE {
-        @Override
-        public DeviceType getDeviceType() {
-            return DeviceType.GYRO_SENSOR;
-        }
-    },
-    GET_GYRO_RATE {
-        @Override
-        public DeviceType getDeviceType() {
-            return DeviceType.GYRO_SENSOR;
-        }
-    },
-    GET_TOUCH_TOUCHED {
-        @Override
-        public DeviceType getDeviceType() {
-            return DeviceType.TOUCH_SENSOR;
-        }
-    },
-    GET_TOUCH_COUNT {
-        @Override
-        public DeviceType getDeviceType() {
-            return DeviceType.TOUCH_SENSOR;
-        }
-    },
-    GET_COLOR_RGB {
-        @Override
-        public DeviceType getDeviceType() {
-            return DeviceType.COLOR_SENSOR;
-        }
-    },
-    GET_COLOR_ILLUMINANCE {
-        @Override
-        public DeviceType getDeviceType() {
-            return DeviceType.COLOR_SENSOR;
-        }
-    },
-    GET_RANGEFINDER_DIST {
-        @Override
-        public DeviceType getDeviceType() {
-            return DeviceType.RANGEFINDER;
-        }
-    },
-    GET_REMOTECONTROLLER_BUTTON {
-        @Override
-        public DeviceType getDeviceType() {
-            return DeviceType.REMOTECONTROL_RECEIVER;
-        }
-    },
-    GET_REMOTECONTROLLER_DIST {
-        @Override
-        public DeviceType getDeviceType() {
-            return DeviceType.REMOTECONTROL_RECEIVER;
-        }
-    },
-    GET_SOUND_DB {
-        @Override
-        public DeviceType getDeviceType() {
-            return DeviceType.SOUND_SENSOR;
-        }
-    };
-
-    public abstract DeviceType getDeviceType();
+    SET_LED_ON,
+    SET_LED_OFF,
+    SET_MOTOR_SPEED,
+    SET_SERVO_ANGLE,
+    GET_SERVO_ANGLE,
+    SET_BUZZER_ON,
+    SET_BUZZER_OFF,
+    SET_BUZZER_BEEP,
+    GET_LIGHT_VALUE,
+    GET_GYRO_ANGLE,
+    GET_GYRO_RATE,
+    GET_TOUCH_TOUCHED,
+    GET_TOUCH_COUNT,
+    GET_COLOR_RGB,
+    GET_COLOR_ILLUMINANCE,
+    GET_RANGEFINDER_DIST,
+    GET_REMOTECONTROLLER_BUTTON,
+    GET_REMOTECONTROLLER_DIST,
+    GET_SOUND_DB,
+    GET_SI_VALUES,
+    GET_PERCENT_VALUES;
 }

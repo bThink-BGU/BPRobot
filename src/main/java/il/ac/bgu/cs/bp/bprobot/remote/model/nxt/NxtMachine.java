@@ -16,8 +16,6 @@
 package il.ac.bgu.cs.bp.bprobot.remote.model.nxt;
 
 import il.ac.bgu.cs.bp.bprobot.remote.machine.MachineBase;
-import il.ac.bgu.cs.bp.bprobot.remote.machine.MachineStatus;
-import il.ac.bgu.cs.bp.bprobot.remote.machine.device.DeviceType;
 import il.ac.bgu.cs.bp.bprobot.remote.machine.device.input.LightSensor;
 import il.ac.bgu.cs.bp.bprobot.remote.machine.device.input.SoundSensor;
 import il.ac.bgu.cs.bp.bprobot.remote.machine.device.input.TouchSensor;
@@ -41,44 +39,26 @@ public class NxtMachine extends MachineBase {
     }
 
     @Override
-    public void apply() {
-        mProtocol.apply();
-    }
-
-    @Override
-    public MachineStatus fetchStatus() {
-        return mStatus;
-    }
-
-    @Override
     public Motor createMotor(OutputPort port) {
         checkOutputPortCompatibility(port);
-
-        mStatus.bind(port, DeviceType.MOTOR);
         return new Motor(port, mProtocol);
     }
 
     @Override
     public LightSensor createLightSensor(InputPort port) {
         checkInputPortCompatibility(port);
-
-        mStatus.bind(port, DeviceType.LIGHT_SENSOR);
         return new LightSensor(port, mProtocol);
     }
 
     @Override
     public TouchSensor createTouchSensor(InputPort port) {
         checkInputPortCompatibility(port);
-
-        mStatus.bind(port, DeviceType.TOUCH_SENSOR);
         return new TouchSensor(port, mProtocol);
     }
 
     @Override
     public SoundSensor createSoundSensor(InputPort port) {
         checkInputPortCompatibility(port);
-
-        mStatus.bind(port, DeviceType.SOUND_SENSOR);
         return new SoundSensor(port, mProtocol);
     }
 

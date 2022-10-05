@@ -63,19 +63,19 @@ ctx.bthread('Stop raise trunk on touch pressed', 'touch.pressed', function (enti
 ctx.bthread('Handle remote', 'remote.pressed', function (entity) {
   while(true) {
     let remoteCommand = getRemoteCommand(entity.id, remoteChannel)
-    if (remoteCommand.contains(RemoteCommands.TOP_LEFT)) {
+    if (remoteCommand.contains(RemoteControlKeys.TOP_LEFT)) {
       bp.log.info('top left')
     }
-    if (remoteCommand.contains(RemoteCommands.TOP_RIGHT)) {
+    if (remoteCommand.contains(RemoteControlKeys.TOP_RIGHT)) {
       bp.log.info('top right')
     }
-    if (remoteCommand.contains(RemoteCommands.BOTTOM_LEFT)) {
+    if (remoteCommand.contains(RemoteControlKeys.BOTTOM_LEFT)) {
       bp.log.info('bottom left')
     }
-    if (remoteCommand.contains(RemoteCommands.BOTTOM_RIGHT)) {
+    if (remoteCommand.contains(RemoteControlKeys.BOTTOM_RIGHT)) {
       bp.log.info('bottom right')
     }
-    if (remoteCommand.contains(RemoteCommands.CENTER_BEACON)) {
+    if (remoteCommand.contains(RemoteControlKeys.CENTER_BEACON)) {
       bp.log.info('center beacon')
     }
     sync({waitFor: AnySensorsData})

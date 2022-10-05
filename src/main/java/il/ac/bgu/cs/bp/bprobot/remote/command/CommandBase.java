@@ -15,7 +15,7 @@
  */
 package il.ac.bgu.cs.bp.bprobot.remote.command;
 
-import il.ac.bgu.cs.bp.bprobot.remote.machine.device.DeviceType;
+import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.devices.DeviceType;
 import il.ac.bgu.cs.bp.bprobot.remote.model.CommandType;
 
 import java.util.Map;
@@ -39,15 +39,6 @@ public abstract class CommandBase {
      */
     public CommandType getCommandType() {
         return mType;
-    }
-
-    /**
-     * Gets the type of the device which is used with this command.
-     *
-     * @return the {@link DeviceType}
-     */
-    public DeviceType getDeviceType() {
-        return mType.getDeviceType();
     }
 
     /**

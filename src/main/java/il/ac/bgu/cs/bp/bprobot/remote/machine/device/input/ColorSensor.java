@@ -15,8 +15,8 @@
  */
 package il.ac.bgu.cs.bp.bprobot.remote.machine.device.input;
 
-import il.ac.bgu.cs.bp.bprobot.remote.machine.device.DeviceBase;
-import il.ac.bgu.cs.bp.bprobot.remote.machine.device.DeviceType;
+import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.devices.RemoteDeviceBase;
+import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.devices.DeviceType;
 import il.ac.bgu.cs.bp.bprobot.remote.machine.device.port.InputPort;
 import il.ac.bgu.cs.bp.bprobot.remote.command.CommandBase;
 import il.ac.bgu.cs.bp.bprobot.remote.command.CommandFactory;
@@ -25,13 +25,15 @@ import il.ac.bgu.cs.bp.bprobot.remote.model.ProtocolBase;
 
 import java.util.Map;
 
+import static il.ac.bgu.cs.bp.bprobot.remote.model.ev3.Ev3Constants.EV3_COLOR;
+
 /**
  * A color sensor class.
  */
-public class ColorSensor extends DeviceBase {
+public class ColorSensor extends RemoteDeviceBase {
 
     public ColorSensor(InputPort port, ProtocolBase protocol) {
-        super(port, protocol);
+        super(port, EV3_COLOR, protocol);
     }
 
     /**
@@ -55,10 +57,5 @@ public class ColorSensor extends DeviceBase {
         CommandBase cmd = CommandFactory.createCommand(CommandType.GET_COLOR_ILLUMINANCE, null);
         Map<String, Object> res = exec(cmd);
         return (Integer) res.get("value");
-    }
-
-    @Override
-    public DeviceType getDeviceType() {
-        return DeviceType.COLOR_SENSOR;
     }
 }

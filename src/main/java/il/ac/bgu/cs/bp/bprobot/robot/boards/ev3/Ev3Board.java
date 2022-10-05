@@ -5,7 +5,7 @@ import ev3dev.actuators.lego.motors.BasicMotor;
 import ev3dev.sensors.BaseSensor;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.Board;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.DeviceWrapper;
-import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.devices.sensors.Ev3BaseSensorWrapper;
+import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.devices.sensors.Ev3RemoteSensorWrapper;
 import il.ac.bgu.cs.bp.bprobot.util.ReflectionUtils;
 import lejos.hardware.port.MotorPort;
 import lejos.hardware.port.Port;

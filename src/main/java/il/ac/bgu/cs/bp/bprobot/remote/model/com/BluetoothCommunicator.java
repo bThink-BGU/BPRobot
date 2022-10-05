@@ -1,0 +1,84 @@
+package il.ac.bgu.cs.bp.bprobot.remote.model.com;
+
+import com.fazecast.jSerialComm.SerialPort;
+
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.logging.Logger;
+
+public class BluetoothCommunicator implements ICommunicator {
+  private static final Logger logger = Logger.getLogger(BluetoothCommunicator.class.getName());
+
+  private SerialPort port;
+  private int delay = 0;
+
+  public int getDelay(){return delay;}
+  public void setDelay(int delay){this.delay = delay;}
+
+  public BluetoothCommunicator(String portName) {
+    logger.info("EV3.EV3 object initiated at - " + LocalDateTime.now());
+    logger.config("Trying to connect to EV3.EV3 Brick...");
+
+    for (SerialPort sp: SerialPort.getCommPorts()) {
+      if (sp.getSystemPortName().equals(portName)){
+        port = sp;
+        logger.config("Connecting to: " + sp.getSystemPortName());
+        break;
+      }
+    }
+    if (port != null) {
+      port.openPort();
+      logger.info("Port open!");
+      port.setComPortTimeouts
+          (SerialPort.NO_PARITY, SerialPort.TIMEOUT_READ_BLOCKING, SerialPort.TIMEOUT_WRITE_BLOCKING);
+    } else {
+      logger.severe("No EV3.EV3 Brick Found!");
+      throw new NullPointerException("Brick was not found!\n");
+    }
+  }
+
+  @Override
+  public void open() throws IOException {
+    port.openPort();
+  }
+
+  @Override
+  public void close() {
+    stop();
+    port.closePort();
+    port = null;
+  }
+
+  @Override
+  public void write(byte[] message) throws RuntimeException {
+    port.writeBytes(message, message.length);
+  }
+
+  @Override
+  public byte[] read(int length) throws RuntimeException {
+    byte[] buffer = new byte[length];
+    int numBytes = port.readBytes(buffer, length);
+    byte[] result = new byte[numBytes];
+    System.arraycopy(buffer, 0, result, 0, numBytes);
+
+    return result;
+  }
+
+  /**
+   * Stop all motors at once.
+   */
+  public void stop(){
+//    spin(0,0,0,0);
+    delay();
+  }
+
+  private void delay(){
+    if (delay > 0){
+      try {
+        Thread.sleep(delay);
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
+    }
+  }
+}

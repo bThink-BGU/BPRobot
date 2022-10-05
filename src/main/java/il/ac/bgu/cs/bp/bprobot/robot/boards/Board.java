@@ -13,13 +13,18 @@ public abstract class Board<P extends Port> {
   protected final Map<P, DeviceWrapper<?>> portDeviceMap = new HashMap<>();
   protected final Map<String, DeviceWrapper<?>> nicknameDeviceMap = new HashMap<>();
 
-  private Board(String name) {
-    this(name, new ArrayList<>());
+  protected Board(String name) {
+    this(name, List.of(), false);
+  }
+
+  protected Board(String name, boolean isMock) {
+    this(name, List.of(), isMock);
   }
 
   protected Board(String name, List<String> packages) {
     this(name, Collections.unmodifiableList(packages), false);
   }
+
   protected Board(String name, List<String> packages, boolean isMock) {
     this.name = name;
     this.isMock = isMock;
@@ -41,32 +46,34 @@ public abstract class Board<P extends Port> {
 
   /**
    * Create a new device wrapper for the given type.
+   *
    * @param nickname The nickname of the device.
-   * @param port The port of the device.
-   * @param type The class type of the device. The type can be either full name (i.e., including the full package name)
-   *             or a simple name (i.e., without the package name). If the type is a simple name, the class will be
-   *             searched in the packages list ({@link #packages}).
+   * @param port     The port of the device.
+   * @param type     The class type of the device. The type can be either full name (i.e., including the full package name)
+   *                 or a simple name (i.e., without the package name). If the type is a simple name, the class will be
+   *                 searched in the packages list ({@link #packages}).
    * @return The device wrapper.
    * @throws Exception is thrown if the device cannot be created.
    */
-  protected abstract DeviceWrapper<?> createDeviceWrapper(String nickname, P port, String type, Object ... ctorParams) throws Exception;
+  protected abstract DeviceWrapper<?> createDeviceWrapper(String nickname, P port, String type, Object... ctorParams) throws Exception;
 
-  public DeviceWrapper<?> putDevice(P port, String nickname, String type, Integer mode, Object ... ctorParams) throws Exception {
-    DeviceWrapper<?>dev = createDeviceWrapper(nickname, port, type, ctorParams);
-    if(mode != null) {
+  public DeviceWrapper<?> putDevice(P port, String nickname, String type, Integer mode, Object... ctorParams) throws Exception {
+    DeviceWrapper<?> dev = createDeviceWrapper(nickname, port, type, ctorParams);
+    if (mode != null) {
       ((SensorWrapper<?>) dev).setCurrentMode(mode);
-      if(isMock) {
+      if (isMock) {
         Mockito.when(((SensorWrapper<?>) dev).getCurrentMode()).thenReturn(mode);
       }
     }
     putDevice(port, nickname, dev);
     return dev;
   }
-  public DeviceWrapper<?> putDevice(P port, String nickname, String type, String mode, Object ... ctorParams) throws Exception {
-    DeviceWrapper<?>dev = createDeviceWrapper(nickname, port, type, ctorParams);
-    if(mode != null) {
+
+  public DeviceWrapper<?> putDevice(P port, String nickname, String type, String mode, Object... ctorParams) throws Exception {
+    DeviceWrapper<?> dev = createDeviceWrapper(nickname, port, type, ctorParams);
+    if (mode != null) {
       ((SensorWrapper<?>) dev).setCurrentMode(mode);
-      if(isMock) {
+      if (isMock) {
         Mockito.when(((SensorWrapper<?>) dev).getCurrentMode()).thenReturn(0);
       }
     }
@@ -82,8 +89,8 @@ public abstract class Board<P extends Port> {
       }
       nicknameDeviceMap.put(nickname, device);
     }
-    if(!port.getName().equals(nickname)) {
-      nicknameDeviceMap.put(port.getName(),device);
+    if (!port.getName().equals(nickname)) {
+      nicknameDeviceMap.put(port.getName(), device);
     }
   }
 

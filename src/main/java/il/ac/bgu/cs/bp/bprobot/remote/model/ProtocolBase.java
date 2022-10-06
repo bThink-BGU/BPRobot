@@ -16,14 +16,16 @@
 package il.ac.bgu.cs.bp.bprobot.remote.model;
 
 import il.ac.bgu.cs.bp.bprobot.remote.command.CommandBase;
+import il.ac.bgu.cs.bp.bprobot.remote.enums.RemoteCode;
 import il.ac.bgu.cs.bp.bprobot.remote.model.com.ICommunicator;
+import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.devices.RemoteDevice;
 
 import java.io.IOException;
 import java.util.Map;
 
 /**
  * A base class of protocols which are used for
- * {@link il.ac.bgu.cs.bp.bprobot.remote.machine.MachineBase}
+ * {@link RemoteDevice}.
  * to interpret machine-specific byte codes.
  */
 public abstract class ProtocolBase {
@@ -48,9 +50,9 @@ public abstract class ProtocolBase {
     /**
      * Executes a {@link CommandBase} with a port and returns the result as a map.
      *
-     * @param port a port to be used with the command
      * @param cmd a {@link CommandBase} which is to be executed
+     * @param args arguments of the command
      * @return the result of the command
      */
-    public abstract Map<String, Object> exec(int port, CommandBase cmd);
+    public abstract Map<String, Object> exec(RemoteCode cmd, Map<String, Object> args);
 }

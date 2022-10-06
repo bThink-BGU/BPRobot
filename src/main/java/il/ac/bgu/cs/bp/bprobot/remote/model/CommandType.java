@@ -15,8 +15,6 @@
  */
 package il.ac.bgu.cs.bp.bprobot.remote.model;
 
-import il.ac.bgu.cs.bp.bprobot.remote.command.Command;
-
 /**
  * An enum class which contains the types of {@link Command}s.
  */
@@ -41,5 +39,6 @@ public enum CommandType {
     GET_REMOTECONTROLLER_DIST,
     GET_SOUND_DB,
     GET_SI_VALUES,
-    GET_PERCENT_VALUES;
+    GET_PERCENT_VALUES,
+    GET_SYSTEM_TYPE_MODE;
 }

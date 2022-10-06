@@ -3,7 +3,7 @@ package il.ac.bgu.cs.bp.bprobot.robot.boards.grove;
 import com.github.yafna.raspberry.grovepi.GrovePi;
 import com.github.yafna.raspberry.grovepi.pi4j.GrovePi4J;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.Board;
-import il.ac.bgu.cs.bp.bprobot.robot.boards.DeviceWrapper;
+import il.ac.bgu.cs.bp.bprobot.robot.boards.Device;
 import il.ac.bgu.cs.bp.bprobot.util.ReflectionUtils;
 
 import java.io.IOException;
@@ -28,15 +28,15 @@ public class GrovePiBoard extends Board<GrovePiPort> {
   }
 
   @Override
-  protected DeviceWrapper<?> createDeviceWrapper(String nickname, GrovePiPort port, String type, Object... ctorParams) throws Exception {
+  protected Device createDeviceWrapper(String nickname, GrovePiPort port, String type, Object... ctorParams) throws Exception {
     Class<?> cl = ReflectionUtils.getClass(type, packages);
     Constructor<?> constructor;
-    Object device;
     Class<?>[] ctorParamsTypes = new Class<?>[ctorParams.length + 3];
     Object[] fullCtorParams = new Object[ctorParams.length + 3];
     ctorParamsTypes[0] = String.class;
-    ctorParamsTypes[1] = GrovePiPort.class;
-    ctorParamsTypes[2] = GrovePi.class;
+    ctorParamsTypes[1] = String.class;
+    ctorParamsTypes[2] = GrovePiPort.class;
+    ctorParamsTypes[3] = GrovePi.class;
     for (int i = 0; i < ctorParams.length; i++) {
       ctorParamsTypes[i + 3] = ctorParams[i].getClass();
     }
@@ -49,8 +49,7 @@ public class GrovePiBoard extends Board<GrovePiPort> {
     } catch (NoSuchMethodException e) {
       throw new NoSuchMethodException("No constructor found for " + type + " with params " + Arrays.toString(ctorParamsTypes));
     }
-    device = constructor.newInstance(fullCtorParams);
-    return new DeviceWrapper<>(name, nickname, port, device);
+    return (Device) constructor.newInstance(fullCtorParams);
   }
 
   @Override

@@ -10,8 +10,8 @@ public abstract class Board<P extends Port> {
   public final String name;
   protected final boolean isMock;
   protected final List<String> packages;
-  protected final Map<P, DeviceWrapper<?>> portDeviceMap = new HashMap<>();
-  protected final Map<String, DeviceWrapper<?>> nicknameDeviceMap = new HashMap<>();
+  protected final Map<P, Device> portDeviceMap = new HashMap<>();
+  protected final Map<String, Device> nicknameDeviceMap = new HashMap<>();
 
   protected Board(String name) {
     this(name, List.of(), false);
@@ -31,14 +31,14 @@ public abstract class Board<P extends Port> {
     this.packages = Collections.unmodifiableList(packages);
   }
 
-  public DeviceWrapper<?> getDevice(P port) {
+  public Device getDevice(P port) {
     if (!portDeviceMap.containsKey(port)) {
       throw new IllegalArgumentException("Port " + port.getName() + " does not exist");
     }
     return portDeviceMap.get(port);
   }
 
-  public DeviceWrapper<?> getDevice(String port) {
+  public Device getDevice(String port) {
     return nicknameDeviceMap.get(port);
   }
 
@@ -55,33 +55,33 @@ public abstract class Board<P extends Port> {
    * @return The device wrapper.
    * @throws Exception is thrown if the device cannot be created.
    */
-  protected abstract DeviceWrapper<?> createDeviceWrapper(String nickname, P port, String type, Object... ctorParams) throws Exception;
+  protected abstract Device createDeviceWrapper(String nickname, P port, String type, Object... ctorParams) throws Exception;
 
-  public DeviceWrapper<?> putDevice(P port, String nickname, String type, Integer mode, Object... ctorParams) throws Exception {
-    DeviceWrapper<?> dev = createDeviceWrapper(nickname, port, type, ctorParams);
+  public Device putDevice(P port, String nickname, String type, Integer mode, Object... ctorParams) throws Exception {
+    Device dev = createDeviceWrapper(nickname, port, type, ctorParams);
     if (mode != null) {
-      ((SensorWrapper<?>) dev).setCurrentMode(mode);
+      ((Sensor) dev).setCurrentMode(mode);
       if (isMock) {
-        Mockito.when(((SensorWrapper<?>) dev).getCurrentMode()).thenReturn(mode);
+        Mockito.when(((Sensor) dev).getCurrentMode()).thenReturn(mode);
       }
     }
     putDevice(port, nickname, dev);
     return dev;
   }
 
-  public DeviceWrapper<?> putDevice(P port, String nickname, String type, String mode, Object... ctorParams) throws Exception {
-    DeviceWrapper<?> dev = createDeviceWrapper(nickname, port, type, ctorParams);
+  public Device putDevice(P port, String nickname, String type, String mode, Object... ctorParams) throws Exception {
+    Device dev = createDeviceWrapper(nickname, port, type, ctorParams);
     if (mode != null) {
-      ((SensorWrapper<?>) dev).setCurrentMode(mode);
+      ((Sensor) dev).setCurrentMode(mode);
       if (isMock) {
-        Mockito.when(((SensorWrapper<?>) dev).getCurrentMode()).thenReturn(0);
+        Mockito.when(((Sensor) dev).getCurrentMode()).thenReturn(0);
       }
     }
     putDevice(port, nickname, dev);
     return dev;
   }
 
-  private void putDevice(P port, String nickname, DeviceWrapper<?> device) {
+  private void putDevice(P port, String nickname, Device device) {
     portDeviceMap.put(port, device);
     if (!Strings.isNullOrEmpty(nickname)) {
       if (nicknameDeviceMap.containsKey(nickname)) {

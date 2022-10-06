@@ -2,10 +2,9 @@ package il.ac.bgu.cs.bp.bprobot.robot;
 
 import com.google.common.base.Strings;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import il.ac.bgu.cs.bp.bprobot.robot.boards.DeviceWrapper;
+import il.ac.bgu.cs.bp.bprobot.robot.boards.Device;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.Ev3Board;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.grove.GrovePiBoard;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.Board;
@@ -26,7 +25,7 @@ public class Robot {
   private String mqttAddress = "localhost";
   private int mqttPort = 1833;
   private final Map<String, Board<?>> boards = new HashMap<>();
-  private final Map<String, DeviceWrapper<?>> nickname2DeviceWrapper = new HashMap<>();
+  private final Map<String, Device> nickname2DeviceWrapper = new HashMap<>();
 
   private Robot() {
   }
@@ -82,7 +81,7 @@ public class Robot {
       var address = portJson.get("address").getAsString();
       var type = portJson.get("type").getAsString();
       var mode = Optional.ofNullable(portJson.get("mode")).orElse(null);
-      DeviceWrapper<?> dev = null;
+      Device dev = null;
       if (mode == null) {
         dev = board.putDevice(board.getPort(address), name, type, (String) null);
       } else {
@@ -109,7 +108,7 @@ public class Robot {
     return boards.values();
   }
 
-  public DeviceWrapper<?> getDevice(String portNameOrNickname) {
+  public Device getDevice(String portNameOrNickname) {
     return nickname2DeviceWrapper.get(portNameOrNickname);
   }
 

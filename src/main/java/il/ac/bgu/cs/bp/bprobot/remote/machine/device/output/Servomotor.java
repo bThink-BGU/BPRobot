@@ -15,23 +15,21 @@
  */
 package il.ac.bgu.cs.bp.bprobot.remote.machine.device.output;
 
-import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.devices.RemoteDeviceBase;
-import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.devices.DeviceType;
+import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.devices.RemoteDevice;
 import il.ac.bgu.cs.bp.bprobot.remote.machine.device.port.OutputPort;
 import il.ac.bgu.cs.bp.bprobot.remote.command.CommandBase;
-import il.ac.bgu.cs.bp.bprobot.remote.command.CommandFactory;
 import il.ac.bgu.cs.bp.bprobot.remote.model.CommandType;
 import il.ac.bgu.cs.bp.bprobot.remote.model.ProtocolBase;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static il.ac.bgu.cs.bp.bprobot.remote.model.ev3.Ev3Constants.L_MOTOR;
+import static il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.Ev3Constants.L_MOTOR;
 
 /**
  * A servomotor class.
  */
-public class Servomotor extends RemoteDeviceBase {
+public class Servomotor extends RemoteDevice {
 
     public Servomotor(OutputPort port, ProtocolBase protocol) {
         super(port, L_MOTOR, protocol);

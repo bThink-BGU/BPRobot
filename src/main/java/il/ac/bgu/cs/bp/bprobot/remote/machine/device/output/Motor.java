@@ -15,23 +15,21 @@
  */
 package il.ac.bgu.cs.bp.bprobot.remote.machine.device.output;
 
-import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.devices.RemoteDeviceBase;
-import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.devices.DeviceType;
+import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.devices.RemoteDevice;
 import il.ac.bgu.cs.bp.bprobot.remote.machine.device.port.OutputPort;
 import il.ac.bgu.cs.bp.bprobot.remote.command.CommandBase;
-import il.ac.bgu.cs.bp.bprobot.remote.command.CommandFactory;
 import il.ac.bgu.cs.bp.bprobot.remote.model.CommandType;
 import il.ac.bgu.cs.bp.bprobot.remote.model.ProtocolBase;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static il.ac.bgu.cs.bp.bprobot.remote.model.ev3.Ev3Constants.OUTPUT_POWER;
+import static il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.Ev3Constants.OUTPUT_POWER;
 
 /**
  * A motor class.
  */
-public class Motor extends RemoteDeviceBase {
+public class Motor extends RemoteDevice {
     private int mSpeed = 50; // initial value
 
     public Motor(OutputPort port, ProtocolBase protocol) {

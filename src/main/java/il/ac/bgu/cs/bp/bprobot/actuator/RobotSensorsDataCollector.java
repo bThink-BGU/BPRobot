@@ -1,7 +1,7 @@
 package il.ac.bgu.cs.bp.bprobot.actuator;
 
 import com.google.gson.GsonBuilder;
-import il.ac.bgu.cs.bp.bprobot.robot.boards.SensorWrapper;
+import il.ac.bgu.cs.bp.bprobot.robot.boards.Sensor;
 import il.ac.bgu.cs.bp.bprobot.util.communication.MQTTCommunication;
 import il.ac.bgu.cs.bp.bprobot.util.communication.QueueNameEnum;
 import lejos.utility.Delay;
@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 public class RobotSensorsDataCollector implements Runnable {
   private final static Logger logger = Logger.getLogger("Robot Sensor Data");
-  private final ConcurrentHashMap<SensorWrapper<?>, AtomicInteger> sensors = new ConcurrentHashMap<>();
+  private final ConcurrentHashMap<Sensor<?>, AtomicInteger> sensors = new ConcurrentHashMap<>();
   private final AtomicLong msDelay = new AtomicLong(500);
   private final MQTTCommunication comm;
 
@@ -33,16 +33,16 @@ public class RobotSensorsDataCollector implements Runnable {
     this.msDelay.set(delay);
   }
 
-  public void subscribe(SensorWrapper<?> sensor) {
+  public void subscribe(Sensor<?> sensor) {
     sensors.putIfAbsent(sensor, new AtomicInteger(0));
     sensors.get(sensor).incrementAndGet();
   }
 
-  public void unsubscribe(SensorWrapper<?> sensor) {
+  public void unsubscribe(Sensor<?> sensor) {
     sensors.computeIfPresent(sensor, (s, p) -> p.decrementAndGet() == 0 ? null : p);
   }
 
-  private Map<SensorWrapper<?>, float[]> update() {
+  private Map<Sensor<?>, float[]> update() {
     return sensors.entrySet().stream().collect(Collectors.toUnmodifiableMap(Map.Entry::getKey, e -> {
       var res = new float[e.getKey().sampleSize()];
       e.getKey().fetchSample(res, 0);
@@ -70,7 +70,7 @@ public class RobotSensorsDataCollector implements Runnable {
     comm.send(message, QueueNameEnum.Data);
   }
 
-  private String toJson(Map<SensorWrapper<?>, float[]> data) {
+  private String toJson(Map<Sensor<?>, float[]> data) {
     var builder = new GsonBuilder();
     var map = data.entrySet().stream()
         .collect(Collectors.toUnmodifiableMap(

@@ -15,22 +15,20 @@
  */
 package il.ac.bgu.cs.bp.bprobot.remote.machine.device.input;
 
-import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.devices.RemoteDeviceBase;
-import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.devices.DeviceType;
+import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.devices.RemoteDevice;
 import il.ac.bgu.cs.bp.bprobot.remote.machine.device.port.InputPort;
 import il.ac.bgu.cs.bp.bprobot.remote.command.CommandBase;
-import il.ac.bgu.cs.bp.bprobot.remote.command.CommandFactory;
 import il.ac.bgu.cs.bp.bprobot.remote.model.CommandType;
 import il.ac.bgu.cs.bp.bprobot.remote.model.ProtocolBase;
 
 import java.util.Map;
 
-import static il.ac.bgu.cs.bp.bprobot.remote.model.ev3.Ev3Constants.EV3_TOUCH;
+import static il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.Ev3Constants.EV3_TOUCH;
 
 /**
  * A touch sensor class.
  */
-public class TouchSensor extends RemoteDeviceBase {
+public class TouchSensor extends RemoteDevice {
 
     public TouchSensor(InputPort port, ProtocolBase protocol) {
         super(port, EV3_TOUCH, protocol);

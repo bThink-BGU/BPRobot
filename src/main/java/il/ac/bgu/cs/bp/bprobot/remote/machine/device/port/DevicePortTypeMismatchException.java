@@ -15,10 +15,10 @@
  */
 package il.ac.bgu.cs.bp.bprobot.remote.machine.device.port;
 
-import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.devices.RemoteDeviceBase;
+import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.devices.RemoteDevice;
 
 /***
- * An exception thrown when an attempt to create a subclass of {@link RemoteDeviceBase}
+ * An exception thrown when an attempt to create a subclass of {@link RemoteDevice}
  * with inappropriate {@link DevicePort} type is used.
  *
  * Unchecked exception.

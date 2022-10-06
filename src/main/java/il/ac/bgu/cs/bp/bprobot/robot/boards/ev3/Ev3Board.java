@@ -4,8 +4,7 @@ import ev3dev.actuators.lego.motors.BaseRegulatedMotor;
 import ev3dev.actuators.lego.motors.BasicMotor;
 import ev3dev.sensors.BaseSensor;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.Board;
-import il.ac.bgu.cs.bp.bprobot.robot.boards.DeviceWrapper;
-import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.devices.sensors.Ev3RemoteSensorWrapper;
+import il.ac.bgu.cs.bp.bprobot.robot.boards.Device;
 import il.ac.bgu.cs.bp.bprobot.util.ReflectionUtils;
 import lejos.hardware.port.MotorPort;
 import lejos.hardware.port.Port;
@@ -46,10 +45,10 @@ public class Ev3Board extends Board<EV3DevPort> {
   }
 
   @Override
-  protected DeviceWrapper<?> createDeviceWrapper(String nickname, EV3DevPort port, String type, Object... ctorParams) throws Exception {
+  protected Device<?> createDeviceWrapper(String nickname, EV3DevPort port, String type, Object... ctorParams) throws Exception {
     Class<?> cl = ReflectionUtils.getClass(type, packages);
     Constructor<?> ctor;
-    Object device = null;
+    Object device;
     Class<?>[] ctorParamsTypes = new Class<?>[]{Port.class};
     ctorParams = new Object[]{port};
     try {
@@ -83,7 +82,7 @@ public class Ev3Board extends Board<EV3DevPort> {
 //    if (device instanceof BaseSensor) {
       return new Ev3BaseSensorWrapper(name, nickname, port, (BaseSensor) device);
     }
-    return new DeviceWrapper<>(name, nickname, port, device);
+    return new Device<>(name, nickname, port, device);
   }
 
   @Override

@@ -15,20 +15,18 @@
  */
 package il.ac.bgu.cs.bp.bprobot.remote.machine.device.output;
 
-import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.devices.RemoteDeviceBase;
-import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.devices.DeviceType;
+import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.devices.RemoteDevice;
 import il.ac.bgu.cs.bp.bprobot.remote.machine.device.port.OutputPort;
 import il.ac.bgu.cs.bp.bprobot.remote.command.CommandBase;
-import il.ac.bgu.cs.bp.bprobot.remote.command.CommandFactory;
 import il.ac.bgu.cs.bp.bprobot.remote.model.CommandType;
 import il.ac.bgu.cs.bp.bprobot.remote.model.ProtocolBase;
 
-import static il.ac.bgu.cs.bp.bprobot.remote.model.ev3.Ev3Constants.SOUND_CONTROL;
+import static il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.Ev3Constants.SOUND_CONTROL;
 
 /**
  * A buzzer class.
  */
-public class Buzzer extends RemoteDeviceBase {
+public class Buzzer extends RemoteDevice {
 
     public Buzzer(OutputPort port, ProtocolBase protocol) {
         super(port, SOUND_CONTROL, protocol);

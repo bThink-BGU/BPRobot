@@ -9,44 +9,48 @@ import java.util.logging.Logger;
 public class BluetoothCommunicator implements ICommunicator {
   private static final Logger logger = Logger.getLogger(BluetoothCommunicator.class.getName());
 
-  private SerialPort port;
+  private final SerialPort port;
   private int delay = 0;
 
-  public int getDelay(){return delay;}
-  public void setDelay(int delay){this.delay = delay;}
+  public int getDelay() {
+    return delay;
+  }
+
+  public void setDelay(int delay) {
+    this.delay = delay;
+  }
 
   public BluetoothCommunicator(String portName) {
     logger.info("EV3.EV3 object initiated at - " + LocalDateTime.now());
     logger.config("Trying to connect to EV3.EV3 Brick...");
-
-    for (SerialPort sp: SerialPort.getCommPorts()) {
-      if (sp.getSystemPortName().equals(portName)){
+    SerialPort port = null;
+    for (SerialPort sp : SerialPort.getCommPorts()) {
+      if (sp.getSystemPortName().equals(portName)) {
         port = sp;
         logger.config("Connecting to: " + sp.getSystemPortName());
         break;
       }
     }
-    if (port != null) {
-      port.openPort();
-      logger.info("Port open!");
-      port.setComPortTimeouts
-          (SerialPort.NO_PARITY, SerialPort.TIMEOUT_READ_BLOCKING, SerialPort.TIMEOUT_WRITE_BLOCKING);
-    } else {
+    if (port == null) {
       logger.severe("No EV3.EV3 Brick Found!");
       throw new NullPointerException("Brick was not found!\n");
+    } else {
+      this.port = port;
     }
   }
 
   @Override
   public void open() throws IOException {
     port.openPort();
+    logger.info("Port open!");
+    port.setComPortTimeouts
+        (SerialPort.NO_PARITY, SerialPort.TIMEOUT_READ_BLOCKING, SerialPort.TIMEOUT_WRITE_BLOCKING);
   }
 
   @Override
   public void close() {
     stop();
     port.closePort();
-    port = null;
   }
 
   @Override
@@ -67,13 +71,13 @@ public class BluetoothCommunicator implements ICommunicator {
   /**
    * Stop all motors at once.
    */
-  public void stop(){
+  public void stop() {
 //    spin(0,0,0,0);
     delay();
   }
 
-  private void delay(){
-    if (delay > 0){
+  private void delay() {
+    if (delay > 0) {
       try {
         Thread.sleep(delay);
       } catch (InterruptedException e) {

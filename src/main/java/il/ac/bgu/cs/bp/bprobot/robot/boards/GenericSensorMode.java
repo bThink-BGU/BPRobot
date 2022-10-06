@@ -1,5 +1,6 @@
 package il.ac.bgu.cs.bp.bprobot.robot.boards;
 
+import il.ac.bgu.cs.bp.bprobot.remote.enums.Input;
 import lejos.hardware.sensor.SensorMode;
 
 public class GenericSensorMode implements SensorMode {
@@ -8,7 +9,6 @@ public class GenericSensorMode implements SensorMode {
   private final float correctMin;
   private final float correctMax;
   private final float correctFactor;
-  private final SampleType sampleType;
 
   /**
    * Create new generic sensor handler.
@@ -26,20 +26,7 @@ public class GenericSensorMode implements SensorMode {
   public GenericSensorMode(
       final int sampleSize,
       final String modeName) {
-    this(sampleSize, modeName, SampleType.UNSET);
-  }
-
-  /**
-   * Create new generic sensor handler.
-   *
-   * @param sampleSize Number of returned samples.
-   * @param modeName   Human-readable sensor mode name.
-   */
-  public GenericSensorMode(
-      final int sampleSize,
-      final String modeName,
-      final SampleType sampleType) {
-    this(sampleSize, modeName, Float.MIN_VALUE, Float.MAX_VALUE, 1.0f, sampleType);
+    this(sampleSize, modeName, Float.MIN_VALUE, Float.MAX_VALUE, 1.0f);
   }
 
   /**
@@ -56,14 +43,12 @@ public class GenericSensorMode implements SensorMode {
       final String modeName,
       final float correctMin,
       final float correctMax,
-      final float correctFactor,
-      final SampleType sampleType) {
+      final float correctFactor) {
     this.sampleSize = sampleSize;
     this.modeName = modeName;
     this.correctMin = correctMin;
     this.correctMax = correctMax;
     this.correctFactor = correctFactor;
-    this.sampleType = sampleType;
   }
 
   @Override
@@ -100,9 +85,5 @@ public class GenericSensorMode implements SensorMode {
       // store
       sample[offset + n] = sample[n];
     }
-  }
-
-  public SampleType getSampleType() {
-    return sampleType;
   }
 }

@@ -4,7 +4,7 @@ import com.google.gson.*;
 import ev3dev.sensors.BaseSensor;
 import il.ac.bgu.cs.bp.bprobot.robot.Robot;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.Board;
-import il.ac.bgu.cs.bp.bprobot.robot.boards.SensorWrapper;
+import il.ac.bgu.cs.bp.bprobot.robot.boards.Sensor;
 import il.ac.bgu.cs.bp.bprobot.util.communication.MQTTCommunication;
 import il.ac.bgu.cs.bp.bprobot.util.communication.QueueNameEnum;
 import lejos.hardware.port.Port;
@@ -150,11 +150,11 @@ public class CommandHandler implements Runnable {
     var addresses = params.getAsJsonArray().get(0).getAsJsonObject().getAsJsonArray("address");
     for (int i = 0; i < addresses.size(); i++) {
       var address = addresses.get(i).getAsString();
-      subscribe((SensorWrapper<?>) robot.getDevice(address));
+      subscribe((Sensor<?>) robot.getDevice(address));
     }
   }
 
-  private void subscribe(SensorWrapper<?> sensor) {
+  private void subscribe(Sensor<?> sensor) {
     dataCollector.subscribe(sensor);
     startExecutor();
   }
@@ -172,12 +172,12 @@ public class CommandHandler implements Runnable {
     var addresses = params.getAsJsonArray().get(0).getAsJsonObject().getAsJsonArray("address");
     for (int i = 0; i < addresses.size(); i++) {
       var address = addresses.get(i).getAsString();
-      unsubscribe((SensorWrapper<?>) robot.getDevice(address));
+      unsubscribe((Sensor<?>) robot.getDevice(address));
     }
 
   }
 
-  private void unsubscribe(SensorWrapper<?> sensor) {
+  private void unsubscribe(Sensor<?> sensor) {
     dataCollector.unsubscribe(sensor);
   }
 

@@ -1,13 +1,13 @@
 package il.ac.bgu.cs.bp.bprobot.robot.boards.ev3;
 
 import ev3dev.sensors.BaseSensor;
-import il.ac.bgu.cs.bp.bprobot.robot.boards.SensorWrapper;
+import il.ac.bgu.cs.bp.bprobot.robot.boards.Sensor;
 import lejos.hardware.sensor.SensorMode;
 import lejos.internals.EV3DevPort;
 
 import java.util.ArrayList;
 
-public class Ev3BaseSensorWrapper extends SensorWrapper<BaseSensor> {
+public class Ev3BaseSensorWrapper extends Sensor<BaseSensor> {
   public Ev3BaseSensorWrapper(String board, String name, EV3DevPort port, BaseSensor device) {
     super(board, name, port, device);
   }

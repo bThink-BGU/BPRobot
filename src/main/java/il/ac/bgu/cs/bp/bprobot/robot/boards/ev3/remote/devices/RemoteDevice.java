@@ -16,8 +16,7 @@
 package il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.devices;
 
 import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.CommandBase;
-import il.ac.bgu.cs.bp.bprobot.remote.machine.device.port.DevicePort;
-import il.ac.bgu.cs.bp.bprobot.remote.model.CommandType;
+import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.enums.Port;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.protocol.ProtocolBase;
 
 import java.util.HashMap;
@@ -27,19 +26,19 @@ import java.util.Map;
  * A base class of a (input / output) device.
  */
 public class RemoteDevice {
-  protected final DevicePort port;
+  protected final Port port;
   protected final ProtocolBase protocol;
   protected final byte type;
   private final Map<String, CommandBase> commands = new HashMap<>();
 
-  public RemoteDevice(DevicePort port, ProtocolBase protocol, byte type) {
+  public RemoteDevice(Port port, ProtocolBase protocol, byte type) {
     this.port = port;
     this.protocol = protocol;
     this.type = type;
   }
 
   public Map<String, Object> exec(CommandBase command) {
-    return protocol.exec(port.getRaw(), command);
+    return protocol.exec(port, command);
   }
 
   public int getSystemMode() {

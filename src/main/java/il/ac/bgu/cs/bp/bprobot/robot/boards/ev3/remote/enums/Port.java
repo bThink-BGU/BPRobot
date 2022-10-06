@@ -1,6 +1,6 @@
 package il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.enums;
 
-public class Port extends RemoteCode {
+public class Port extends RemoteCode implements lejos.hardware.port.Port {
   public static final Port A = new Port("A", false, (byte) 0x00);
   public static final Port B = new Port("B", false, (byte) 0x01);
   public static final Port C = new Port("C", false, (byte) 0x02);
@@ -14,5 +14,10 @@ public class Port extends RemoteCode {
   protected Port(String name, boolean isSensor, byte code) {
     super(name, code);
     this.isSensor = isSensor;
+  }
+
+  @Override
+  public String getName() {
+    return name;
   }
 }

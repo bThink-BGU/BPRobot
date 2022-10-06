@@ -1,4 +1,4 @@
-package il.ac.bgu.cs.bp.bprobot.remote.enums;
+package il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.enums;
 
 public class Port extends RemoteCode {
   public static final Port A = new Port("A", false, (byte) 0x00);

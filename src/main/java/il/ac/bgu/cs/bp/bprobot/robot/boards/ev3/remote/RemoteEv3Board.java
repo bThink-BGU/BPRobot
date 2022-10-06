@@ -1,13 +1,14 @@
 package il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote;
 
 import il.ac.bgu.cs.bp.bprobot.remote.machine.device.port.DevicePort;
-import il.ac.bgu.cs.bp.bprobot.remote.model.ProtocolBase;
-import il.ac.bgu.cs.bp.bprobot.remote.model.com.ICommunicator;
+import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.communication.ICommunicator;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.Board;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.Device;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.devices.sensors.Ev3RemoteSensor;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.port.Ev3InputPort;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.port.Ev3OutputPort;
+import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.protocol.Ev3Protocol;
+import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.protocol.ProtocolBase;
 import il.ac.bgu.cs.bp.bprobot.util.ReflectionUtils;
 
 import java.io.IOException;

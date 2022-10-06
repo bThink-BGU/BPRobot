@@ -16,9 +16,9 @@
 package il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.devices.sensors;
 
 import il.ac.bgu.cs.bp.bprobot.remote.machine.device.port.InputPort;
-import il.ac.bgu.cs.bp.bprobot.remote.model.ProtocolBase;
+import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.protocol.ProtocolBase;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.GenericSensorMode;
-import il.ac.bgu.cs.bp.bprobot.remote.enums.Input;
+import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.enums.Input;
 import lejos.hardware.sensor.SensorMode;
 
 import static il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.Ev3Constants.EV3_COLOR;

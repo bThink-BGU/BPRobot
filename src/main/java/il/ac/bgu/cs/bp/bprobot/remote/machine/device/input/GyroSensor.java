@@ -17,9 +17,9 @@ package il.ac.bgu.cs.bp.bprobot.remote.machine.device.input;
 
 import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.devices.RemoteDevice;
 import il.ac.bgu.cs.bp.bprobot.remote.machine.device.port.InputPort;
-import il.ac.bgu.cs.bp.bprobot.remote.command.CommandBase;
+import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.CommandBase;
 import il.ac.bgu.cs.bp.bprobot.remote.model.CommandType;
-import il.ac.bgu.cs.bp.bprobot.remote.model.ProtocolBase;
+import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.protocol.ProtocolBase;
 
 import java.util.Map;
 

@@ -1,9 +1,9 @@
 package il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.devices.sensors;
 
-import il.ac.bgu.cs.bp.bprobot.remote.command.CommandBase;
+import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.CommandBase;
 import il.ac.bgu.cs.bp.bprobot.remote.machine.device.port.DevicePort;
 import il.ac.bgu.cs.bp.bprobot.remote.model.CommandType;
-import il.ac.bgu.cs.bp.bprobot.remote.model.ProtocolBase;
+import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.protocol.ProtocolBase;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.GenericSensorMode;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.Sensor;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.devices.RemoteDevice;

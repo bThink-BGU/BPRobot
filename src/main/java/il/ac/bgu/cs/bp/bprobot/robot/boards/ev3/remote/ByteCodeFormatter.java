@@ -15,7 +15,7 @@
  */
 package il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote;
 
-import il.ac.bgu.cs.bp.bprobot.remote.enums.RemoteCode;
+import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.enums.RemoteCode;
 import il.ac.bgu.cs.bp.bprobot.util.Log;
 
 import java.io.ByteArrayOutputStream;

@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package il.ac.bgu.cs.bp.bprobot.remote.model;
+package il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.protocol;
 
-import il.ac.bgu.cs.bp.bprobot.remote.command.CommandBase;
-import il.ac.bgu.cs.bp.bprobot.remote.enums.RemoteCode;
-import il.ac.bgu.cs.bp.bprobot.remote.model.com.ICommunicator;
+import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.CommandBase;
+import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.enums.RemoteCode;
+import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.communication.ICommunicator;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.devices.RemoteDevice;
 
 import java.io.IOException;

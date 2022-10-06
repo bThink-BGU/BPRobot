@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package il.ac.bgu.cs.bp.bprobot.remote.model.com;
+package il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.communication;
 
 import java.io.IOException;
 

@@ -1,4 +1,4 @@
-package il.ac.bgu.cs.bp.bprobot.remote.enums;
+package il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.enums;
 
 import java.util.List;
 

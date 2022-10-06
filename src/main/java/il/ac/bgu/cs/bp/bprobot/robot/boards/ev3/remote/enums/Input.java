@@ -1,15 +1,6 @@
-package il.ac.bgu.cs.bp.bprobot.remote.enums;
+package il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.enums;
 
-import il.ac.bgu.cs.bp.bprobot.remote.model.com.ICommunicator;
-import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.ByteCodeFormatter;
-
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.util.Arrays;
 import java.util.List;
-
-import static il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.Ev3Constants.*;
-import static il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.Ev3Constants.LAYER_MASTER;
 
 public abstract class Input extends RemoteCode {
   public static final Input SAMPLE = new Input("SAMPLE", (byte) 0x97) {

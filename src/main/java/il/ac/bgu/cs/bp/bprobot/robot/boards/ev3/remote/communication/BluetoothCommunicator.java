@@ -1,4 +1,4 @@
-package il.ac.bgu.cs.bp.bprobot.remote.model.com;
+package il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.communication;
 
 import com.fazecast.jSerialComm.SerialPort;
 

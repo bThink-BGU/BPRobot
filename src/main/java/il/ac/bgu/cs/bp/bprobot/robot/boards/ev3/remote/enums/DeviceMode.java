@@ -1,9 +1,9 @@
-package il.ac.bgu.cs.bp.bprobot.remote.enums;
+package il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.enums;
 
 import java.util.List;
 import java.util.Map;
 
-import static il.ac.bgu.cs.bp.bprobot.remote.enums.DeviceType.*;
+import static il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.enums.DeviceType.*;
 
 public class DeviceMode extends RemoteCode {
   public static final byte DONT_CHANGE = (byte) -0x01;

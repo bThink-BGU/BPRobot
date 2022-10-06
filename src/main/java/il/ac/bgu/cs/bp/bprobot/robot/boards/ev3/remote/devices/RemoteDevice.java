@@ -15,10 +15,10 @@
  */
 package il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.devices;
 
-import il.ac.bgu.cs.bp.bprobot.remote.command.CommandBase;
+import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.CommandBase;
 import il.ac.bgu.cs.bp.bprobot.remote.machine.device.port.DevicePort;
 import il.ac.bgu.cs.bp.bprobot.remote.model.CommandType;
-import il.ac.bgu.cs.bp.bprobot.remote.model.ProtocolBase;
+import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.protocol.ProtocolBase;
 
 import java.util.HashMap;
 import java.util.Map;

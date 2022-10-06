@@ -1,6 +1,5 @@
 package il.ac.bgu.cs.bp.bprobot.robot.boards;
 
-import il.ac.bgu.cs.bp.bprobot.remote.enums.Input;
 import lejos.hardware.sensor.SensorMode;
 
 public class GenericSensorMode implements SensorMode {

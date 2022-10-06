@@ -49,22 +49,22 @@ public class Ev3Protocol extends ProtocolBase {
   }
 
   @Override
-  public Map<String, Object> exec(RemoteCode code, Map<String, Object> args) {
-    if (InputDeviceSubCommand.READY_SI == code) {
+  public Map<String, Object> exec(IRemoteAction action, Map<String, Object> args) {
+    if (InputDeviceSubCommand.READY_SI == action) {
       var port = (Port) args.get("port");
       if (port == null) throw new IllegalArgumentException("port is null");
       var type = (DeviceType) args.getOrDefault("type", DeviceType.DONT_CHANGE);
       var mode = (DeviceMode) args.getOrDefault("mode", DeviceMode.DONT_CHANGE);
       return Map.of(KEY_VALUE, getSiValue(port, type, mode, (int) args.get("nvalue")));
     }
-    if (InputDeviceSubCommand.READY_PCT == code) {
+    if (InputDeviceSubCommand.READY_PCT == action) {
       var port = (Port) args.get("port");
       if (port == null) throw new IllegalArgumentException("port is null");
       var type = (DeviceType) args.getOrDefault("type", DeviceType.DONT_CHANGE);
       var mode = (DeviceMode) args.getOrDefault("mode", DeviceMode.DONT_CHANGE);
       return Map.of(KEY_VALUE, getPercentValue(port, type, mode, (int) args.get("nvalue")));
     }
-    throw new UnsupportedOperationException("Unsupported command: " + code);
+    throw new UnsupportedOperationException("Unsupported command: " + action);
   }
 
   /**

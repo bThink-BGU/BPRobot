@@ -107,7 +107,7 @@ public abstract class Sensor<T> extends Device<T> implements SensorModes {
     }
   }
 
-  private boolean modeInvalid(int mode) {
+  protected boolean modeInvalid(int mode) {
     return modes == null || mode < 0 || mode >= modes.length;
   }
 

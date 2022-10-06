@@ -15,35 +15,29 @@
  */
 package il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.devices;
 
-import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.CommandBase;
+import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.enums.DeviceType;
+import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.enums.IRemoteAction;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.enums.Port;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.protocol.ProtocolBase;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
  * A base class of a (input / output) device.
  */
 public class RemoteDevice {
-  protected final Port port;
-  protected final ProtocolBase protocol;
-  protected final byte type;
-  private final Map<String, CommandBase> commands = new HashMap<>();
+  public final Port port;
+  public final ProtocolBase protocol;
+  public final DeviceType type;
+  private final Map<String, IRemoteAction> actions;
 
-  public RemoteDevice(Port port, ProtocolBase protocol, byte type) {
+  public RemoteDevice(Port port, ProtocolBase protocol, DeviceType type) {
+    this(port, protocol, type, Map.of());
+  }
+  public RemoteDevice(Port port, ProtocolBase protocol, DeviceType type, Map<String, IRemoteAction> actions) {
     this.port = port;
     this.protocol = protocol;
     this.type = type;
-  }
-
-  public Map<String, Object> exec(CommandBase command) {
-    return protocol.exec(port, command);
-  }
-
-  public int getSystemMode() {
-    var cmd = CommandFactory.createCommand(CommandType.GET_SYSTEM_TYPE_MODE, Map.of());
-    var res = exec(cmd);
-    return (int) res.get("mode");
+    this.actions = actions;
   }
 }

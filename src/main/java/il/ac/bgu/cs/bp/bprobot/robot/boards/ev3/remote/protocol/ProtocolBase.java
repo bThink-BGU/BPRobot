@@ -16,6 +16,7 @@
 package il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.protocol;
 
 import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.CommandBase;
+import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.enums.IRemoteAction;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.enums.RemoteCode;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.communication.ICommunicator;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.devices.RemoteDevice;
@@ -54,5 +55,5 @@ public abstract class ProtocolBase {
      * @param args arguments of the command
      * @return the result of the command
      */
-    public abstract Map<String, Object> exec(RemoteCode cmd, Map<String, Object> args);
+    public abstract Map<String, Object> exec(IRemoteAction cmd, Map<String, Object> args);
 }

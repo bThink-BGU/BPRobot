@@ -1,9 +1,7 @@
 package il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.devices.sensors;
 
-import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.CommandBase;
-import il.ac.bgu.cs.bp.bprobot.remote.machine.device.port.DevicePort;
-import il.ac.bgu.cs.bp.bprobot.remote.model.CommandType;
-import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.protocol.ProtocolBase;
+import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.enums.DeviceMode;
+import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.enums.Port;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.GenericSensorMode;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.Sensor;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.devices.RemoteDevice;
@@ -12,28 +10,26 @@ import lejos.hardware.sensor.SensorMode;
 import java.util.Map;
 
 public abstract class Ev3RemoteSensor extends Sensor<RemoteDevice> {
-  private final ProtocolBase protocol;
-  private final byte type;
-
-  public Ev3RemoteSensor(String board, String name, DevicePort port, ProtocolBase protocol, byte type, RemoteDevice device, SensorMode... modes) {
-    super(board, name, port, device, modes);
-    this.protocol = protocol;
-    this.type = type;
+  public Ev3RemoteSensor(String board, String name, RemoteDevice device) {
+    super(board, name, device.port, device, DeviceMode.DeviceModes.get(device.type).stream().map(m -> new GenericSensorMode(m.sampleSize, m.name)).toArray(SensorMode[]::new));
   }
 
-  public Map<String, Object> exec(CommandBase command) {
-    return protocol.exec(((DevicePort) port).getRaw(), command);
+  @Override
+  public void setCurrentMode(int mode) {
+    super.setCurrentMode(mode);
+//    device.protocol.exec()
   }
 
   @Override
   protected void sample(float[] sample) throws Exception {
     var mode = (GenericSensorMode) getMode(getCurrentMode());
-    CommandType commandType = mode.getSampleType().getCommandType();
-    CommandBase cmd = CommandFactory.createCommand(commandType,
-        Map.of("nargs", mode.sampleSize(), "type", type));
-    exec(cmd);
+    var deviceMode = DeviceMode.DeviceModes.get(device.type).get(getCurrentMode());
+    assert deviceMode.sampleSize == mode.sampleSize();
+    var sampleDevice = (float[]) device.protocol.exec(deviceMode.subCommand, Map.of("port", port, "nvalue", deviceMode.sampleSize)).get("value");
+    System.arraycopy(sampleDevice, 0, sample, 0, sample.length);
   }
 
+  //TODO: reimplement below
   @Override
   public void runVoidMethod(String name, Object... params) throws NoSuchMethodException {
     super.runVoidMethod(name, params);

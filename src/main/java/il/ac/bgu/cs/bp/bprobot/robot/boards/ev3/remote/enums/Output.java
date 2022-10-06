@@ -2,7 +2,7 @@ package il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.enums;
 
 import java.util.List;
 
-public class Output extends RemoteCode {
+public class Output extends RemoteCode implements IRemoteAction{
   public static final Output GET_TYPE = new Output("GET_TYPE", (byte) 0xA0);
   public static final Output SET_MODE = new Output("SET_MODE", (byte) 0xA1);
   public static final Output RESET = new Output("RESET", (byte) 0xA2);

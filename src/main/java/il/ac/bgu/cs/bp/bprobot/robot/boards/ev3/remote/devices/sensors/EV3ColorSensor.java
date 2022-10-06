@@ -16,6 +16,10 @@
 package il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.devices.sensors;
 
 import il.ac.bgu.cs.bp.bprobot.remote.machine.device.port.InputPort;
+import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.devices.RemoteDevice;
+import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.enums.DeviceMode;
+import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.enums.DeviceType;
+import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.enums.Port;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.protocol.ProtocolBase;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.GenericSensorMode;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.enums.Input;
@@ -27,21 +31,8 @@ import static il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.Ev3Constants.EV3_C
  * A color sensor class.
  */
 public class EV3ColorSensor extends Ev3RemoteSensor {
-  private static final String LEGO_EV3_COLOR_SENSOR = "lego-ev3-color";
-  private static final String COL_COLOR = "COL-COLOR";
-  private static final String COL_REFLECT = "COL-REFLECT";
-  private static final String COL_AMBIENT = "COL-AMBIENT";
-  private static final String COL_RGBRAW = "RGB-RAW";
-  private static final String COL_REFRAW = "REF-RAW";
-  private static final String COL_CAL = "COL-CAL";
-
-  public EV3ColorSensor(String board, String name, InputPort port, ProtocolBase protocol) {
-    super(board, name, port, protocol, EV3_COLOR, null,
-        new GenericSensorMode(1, "ColorID", Input.SI),
-        new GenericSensorMode(1, "Red", Input.SI),
-        new GenericSensorMode(1, "Ambient", Input.SI),
-        new GenericSensorMode(3, "RGB", Input.SI)
-    );
+  public EV3ColorSensor(String board, String name, Port port, ProtocolBase protocol) {
+    super(board, name, new RemoteDevice(port, protocol, DeviceType.EV3_COLOR));
   }
   public int getColorID() {
     float[] sample = new float[1];

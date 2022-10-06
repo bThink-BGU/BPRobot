@@ -51,10 +51,12 @@ public class DeviceMode extends RemoteCode {
 
   public final DeviceType deviceType;
   public final int sampleSize;
+  public final InputDeviceSubCommand subCommand;
 
-  private DeviceMode(DeviceType deviceType, String modeName, byte modeCode, int sampleSize) {
+  private DeviceMode(DeviceType deviceType, String modeName, byte modeCode, int sampleSize, InputDeviceSubCommand subCommand) {
     super(modeName, modeCode);
     this.deviceType = deviceType;
     this.sampleSize = sampleSize;
+    this.subCommand = subCommand;
   }
 }

@@ -1,6 +1,6 @@
 package il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.enums;
 
-public class SoundSubCommand extends RemoteCode {
+public class SoundSubCommand extends RemoteCode implements IRemoteAction{
   public static final SoundSubCommand BREAK = new SoundSubCommand("BREAK", (byte) 0x00);
   public static final SoundSubCommand TONE = new SoundSubCommand("TONE", (byte) 0x01);
   public static final SoundSubCommand PLAY = new SoundSubCommand("PLAY", (byte) 0x02);

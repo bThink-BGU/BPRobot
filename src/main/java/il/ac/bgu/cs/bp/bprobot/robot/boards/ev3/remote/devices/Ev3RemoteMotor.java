@@ -15,29 +15,44 @@
  */
 package il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.devices;
 
+import il.ac.bgu.cs.bp.bprobot.robot.boards.Device;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.enums.DeviceType;
-import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.enums.IRemoteAction;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.enums.Port;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.protocol.ProtocolBase;
 
-import java.util.Map;
 
 /**
  * A base class of a (input / output) device.
  */
-public class RemoteDevice {
-  public final Port port;
+public class Ev3RemoteMotor extends Device<DeviceType> implements Ev3RemoteDevice{
   public final ProtocolBase protocol;
-  public final DeviceType type;
-  private final Map<String, IRemoteAction> actions;
 
-  public RemoteDevice(Port port, ProtocolBase protocol, DeviceType type) {
-    this(port, protocol, type, Map.of());
-  }
-  public RemoteDevice(Port port, ProtocolBase protocol, DeviceType type, Map<String, IRemoteAction> actions) {
-    this.port = port;
+  public Ev3RemoteMotor(String board, String name, Port port, ProtocolBase protocol, DeviceType device) {
+    super(board, name, port, device);
     this.protocol = protocol;
-    this.type = type;
-    this.actions = actions;
+  }
+
+  @Override
+  public ProtocolBase getProtocol() {
+    return protocol;
+  }
+
+  @Override
+  public void runVoidMethod(String name, Object... params) throws NoSuchMethodException {
+    try{
+      super.runVoidMethod(name, params);
+    } catch (NoSuchMethodException e) {
+      device.execute(this, name, params);
+    }
+
+  }
+
+  @Override
+  public <V> V runMethod(String name, Object... params) throws NoSuchMethodException {
+    try{
+      return super.runMethod(name, params);
+    } catch (NoSuchMethodException e) {
+      return device.execute(this, name, params);
+    }
   }
 }

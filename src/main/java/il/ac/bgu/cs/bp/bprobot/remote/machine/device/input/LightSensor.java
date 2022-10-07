@@ -15,7 +15,7 @@
  */
 package il.ac.bgu.cs.bp.bprobot.remote.machine.device.input;
 
-import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.devices.RemoteDevice;
+import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.devices.Ev3RemoteMotor;
 import il.ac.bgu.cs.bp.bprobot.remote.machine.device.port.InputPort;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.CommandBase;
 import il.ac.bgu.cs.bp.bprobot.remote.model.CommandType;
@@ -28,7 +28,7 @@ import static il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.Ev3Constants.NXT_L
 /**
  * A light sensor class.
  */
-public class LightSensor extends RemoteDevice {
+public class LightSensor extends Ev3RemoteMotor {
 
     public LightSensor(InputPort port, ProtocolBase protocol) {
         super(port, NXT_LIGHT, protocol);

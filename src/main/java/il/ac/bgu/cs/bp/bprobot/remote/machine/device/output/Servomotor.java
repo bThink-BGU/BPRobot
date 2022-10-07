@@ -15,7 +15,7 @@
  */
 package il.ac.bgu.cs.bp.bprobot.remote.machine.device.output;
 
-import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.devices.RemoteDevice;
+import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.devices.Ev3RemoteMotor;
 import il.ac.bgu.cs.bp.bprobot.remote.machine.device.port.OutputPort;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.CommandBase;
 import il.ac.bgu.cs.bp.bprobot.remote.model.CommandType;
@@ -29,7 +29,7 @@ import static il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.Ev3Constants.L_MOT
 /**
  * A servomotor class.
  */
-public class Servomotor extends RemoteDevice {
+public class Servomotor extends Ev3RemoteMotor {
 
     public Servomotor(OutputPort port, ProtocolBase protocol) {
         super(port, L_MOTOR, protocol);

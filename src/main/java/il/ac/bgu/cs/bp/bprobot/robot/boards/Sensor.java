@@ -1,6 +1,7 @@
 package il.ac.bgu.cs.bp.bprobot.robot.boards;
 
 import ev3dev.sensors.GenericMode;
+import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.enums.DeviceMode;
 import lejos.hardware.port.Port;
 import lejos.hardware.sensor.SensorMode;
 import lejos.hardware.sensor.SensorModes;
@@ -143,6 +144,10 @@ public abstract class Sensor<T> extends Device<T> implements SensorModes {
     return currentMode;
   }
 
+  public String getCurrentModeName() {
+    return getAvailableModes().get(currentMode);
+  }
+
   /**
    * Set the current SensorMode name.
    *
@@ -155,6 +160,10 @@ public abstract class Sensor<T> extends Device<T> implements SensorModes {
   @Override
   public void setCurrentMode(String modeName) {
     setCurrentMode(getIndex(modeName));
+  }
+
+  public void setCurrentMode(DeviceMode mode) {
+    setCurrentMode(mode.name);
   }
 
   @Override

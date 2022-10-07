@@ -15,7 +15,7 @@
  */
 package il.ac.bgu.cs.bp.bprobot.remote.machine.device.input;
 
-import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.devices.RemoteDevice;
+import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.devices.Ev3RemoteMotor;
 import il.ac.bgu.cs.bp.bprobot.remote.machine.device.port.InputPort;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.CommandBase;
 import il.ac.bgu.cs.bp.bprobot.remote.model.CommandType;
@@ -28,7 +28,7 @@ import static il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.Ev3Constants.NXT_S
 /**
  * A sound sensor class.
  */
-public class SoundSensor extends RemoteDevice {
+public class SoundSensor extends Ev3RemoteMotor {
 
     public SoundSensor(InputPort port, ProtocolBase protocol) {
         super(port, NXT_SOUND, protocol);

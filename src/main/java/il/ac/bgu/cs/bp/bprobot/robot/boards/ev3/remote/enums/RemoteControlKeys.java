@@ -1,4 +1,4 @@
-package il.ac.bgu.cs.bp.bprobot.robot.boards.ev3;
+package il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.enums;
 
 import java.util.Arrays;
 import java.util.EnumSet;
@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
  * 11 TOP-RIGHT + BOTTOM-RIGHT<br>
  */
 public enum RemoteControlKeys {
+  NONE(0, 0),
   TOP_LEFT(1, 1),
   BOTTOM_LEFT(2, 2),
   TOP_RIGHT(4, 3),

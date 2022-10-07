@@ -16,7 +16,7 @@
 package il.ac.bgu.cs.bp.bprobot.remote.machine.device.output;
 
 
-import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.devices.RemoteDevice;
+import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.devices.Ev3RemoteMotor;
 import il.ac.bgu.cs.bp.bprobot.remote.machine.device.port.OutputPort;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.CommandBase;
 import il.ac.bgu.cs.bp.bprobot.remote.model.CommandType;
@@ -27,7 +27,7 @@ import static il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.Ev3Constants.UI_WR
 /**
  * A LED class.
  */
-public class Led extends RemoteDevice {
+public class Led extends Ev3RemoteMotor {
 
   public Led(OutputPort port, ProtocolBase protocol) {
     super(port, UI_WRITE_CMD_LED, protocol);

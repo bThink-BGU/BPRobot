@@ -3,6 +3,7 @@ package il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.enums;
 import java.util.List;
 
 public class InputDeviceSubCommand extends RemoteCode implements IRemoteAction {
+  public static final InputDeviceSubCommand NONE = new InputDeviceSubCommand("NONE", (byte) 0x00);
   public static final InputDeviceSubCommand GET_FORMAT = new InputDeviceSubCommand("GET_FORMAT", (byte) 0x02);
   public static final InputDeviceSubCommand CAL_MINMAX = new InputDeviceSubCommand("CAL_MINMAX", (byte) 0x03);
   public static final InputDeviceSubCommand CAL_DEFAULT = new InputDeviceSubCommand("CAL_DEFAULT", (byte) 0x04);

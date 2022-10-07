@@ -17,16 +17,15 @@ package il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.protocol;
 
 import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.CommandBase;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.enums.IRemoteAction;
-import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.enums.RemoteCode;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.communication.ICommunicator;
-import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.devices.RemoteDevice;
+import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.devices.Ev3RemoteMotor;
 
 import java.io.IOException;
 import java.util.Map;
 
 /**
  * A base class of protocols which are used for
- * {@link RemoteDevice}.
+ * {@link Ev3RemoteMotor}.
  * to interpret machine-specific byte codes.
  */
 public abstract class ProtocolBase {

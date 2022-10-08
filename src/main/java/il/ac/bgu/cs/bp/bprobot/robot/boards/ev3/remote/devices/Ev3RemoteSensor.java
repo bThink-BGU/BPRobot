@@ -10,7 +10,7 @@ import lejos.hardware.sensor.SensorMode;
 
 import java.util.Map;
 
-public abstract class Ev3RemoteSensor extends Sensor<DeviceType> implements Ev3RemoteDevice {
+public class Ev3RemoteSensor extends Sensor<DeviceType> implements Ev3RemoteDevice {
   protected final ProtocolBase protocol;
 
   public Ev3RemoteSensor(String board, Port port, ProtocolBase protocol, String name, DeviceType device) {

@@ -281,6 +281,7 @@ public abstract class DeviceType extends RemoteCode {
   };
 
   private static final List<DeviceType> values = List.of(
+      DONT_CHANGE,
       L_MOTOR,
       M_MOTOR,
       EV3_TOUCH,

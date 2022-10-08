@@ -6,6 +6,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.Device;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.Ev3Board;
+import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.RemoteEv3Board;
+import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.communication.BluetoothCommunicator;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.grove.GrovePiBoard;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.Board;
 import lejos.hardware.port.Port;
@@ -46,6 +48,7 @@ public class Robot {
       var deviceJson = devices.get(i).getAsJsonObject();
       var isMocked = Optional.ofNullable(deviceJson.get("mock")).orElse(new JsonPrimitive(false)).getAsBoolean();
       var type = Optional.ofNullable(deviceJson.get("type")).orElseThrow(() -> new IllegalArgumentException("Device in build does not include a 'type' parameter")).getAsString();
+      var address = Optional.ofNullable(deviceJson.get("address")).orElse(new JsonPrimitive("default")).getAsString();
       var parser = parsers.get(type);
       if (parser == null)
         throw new IllegalArgumentException("'" + type + "' is not a known type of device (Must be 'GROVEPI' or any ev3dev.hardware.EV3DevPlatform.*)");
@@ -53,7 +56,7 @@ public class Robot {
       if (robot.boards.containsKey(name))
         throw new IllegalArgumentException("There is more than one board with the name " + name);
       var ports = deviceJson.getAsJsonArray("ports");
-      robot.boards.put(name, parser.executeParser(robot, name, ports, isMocked));
+      robot.boards.put(name, parser.executeParser(robot, name, address, ports, isMocked));
     }
     return robot;
   }
@@ -62,13 +65,18 @@ public class Robot {
     return boards.get(name);
   }
 
-  private static Ev3Board ev3Parser(Robot robot, String boardName, JsonArray ports, boolean isMocked) throws Exception {
-    var board = new Ev3Board(boardName, isMocked);
+  private static Board ev3Parser(Robot robot, String boardName, String address, JsonArray ports, boolean isMocked) throws Exception {
+    Board board;
+    if(!isMocked && address.startsWith("bt:")) {
+      board = new RemoteEv3Board(new BluetoothCommunicator("isa"), boardName);
+    } else {
+      board = new Ev3Board(boardName, isMocked);
+    }
     addPorts(robot, board, ports);
     return board;
   }
 
-  private static GrovePiBoard grovePiParser(Robot robot, String boardName, JsonArray ports, boolean isMocked) throws Exception {
+  private static GrovePiBoard grovePiParser(Robot robot, String boardName, String address, JsonArray ports, boolean isMocked) throws Exception {
     var board = new GrovePiBoard(boardName, isMocked);
     addPorts(robot, board, ports);
     return board;
@@ -118,6 +126,6 @@ public class Robot {
   @FunctionalInterface
   public interface IParser {
     @SuppressWarnings("rawtypes")
-    Board executeParser(Robot robot, String name, JsonArray ports, boolean isMocked) throws Exception;
+    Board executeParser(Robot robot, String name, String address, JsonArray ports, boolean isMocked) throws Exception;
   }
 }

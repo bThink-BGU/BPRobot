@@ -1,4 +1,4 @@
-const RemoteControlKeys = Packages.il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.devices.sensors.RemoteControlKeys;
+const RemoteControlKeys = Packages.il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.enums.RemoteControlKeys;
 
 const anyActuation = bp.EventSet('AnyActuation', function (e) {
   return e.name === 'Command' && ['rotate','forward','backward'].includes(e.data.action)

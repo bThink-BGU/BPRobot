@@ -7,7 +7,8 @@ const config = command('config', {
     {
       name: 'EV3_1',
       type: 'EV3BRICK', //corresponds to GROVEPI or any ev3dev.hardware.EV3DevPlatform.*
-      mock: true,
+      // mock: true,
+      address: 'bt:COM1', //either 'localhost' (default) or '<protocol>:<address>', where protocol = bt/wifi/usb and address = device name, MAC address or IP address
       ports: [
         {
           address: 'A',

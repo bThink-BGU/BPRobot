@@ -1,15 +1,9 @@
 package il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.enums;
 
-import ev3dev.sensors.Battery;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.devices.Ev3RemoteDevice;
-import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.devices.Ev3RemoteMotor;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.devices.Ev3RemoteSensor;
-import lejos.hardware.port.Port;
 import lejos.hardware.sensor.SensorMode;
-import lejos.robotics.RegulatedMotorListener;
 import lejos.robotics.SampleProvider;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -21,14 +15,10 @@ public abstract class DeviceType extends RemoteCode {
     }
   };
   public static final DeviceType L_MOTOR = new DeviceType("L_MOTOR", (byte) 0x07) {
-
     @Override
-    public <T> T execute(Ev3RemoteDevice device, String command, Object... args) {
-      BaseRegulatedMotor motor = new BaseRegulatedMotor((Ev3RemoteMotor) device, 4.0F, 0.04F, 10.0F, 2.0F, 0.02F, 8.0F, 0, 1050);
+    public <T> T execute(Ev3RemoteDevice device, String command, Object... args) throws NoSuchMethodException {
       throw new UnsupportedOperationException();
     }
-
-
   };
   public static final DeviceType M_MOTOR = new DeviceType("M_MOTOR", (byte) 0x08) {
     @Override
@@ -40,6 +30,7 @@ public abstract class DeviceType extends RemoteCode {
     @Override
     public <T> T execute(Ev3RemoteDevice device, String command, Object... args) {
       throw new UnsupportedOperationException();
+      //TODO: implement STOP_ALL CLEAR_ALL
     }
   };
   public static final DeviceType EV3_TOUCH = new DeviceType("EV3_TOUCH", (byte) 0x10) {
@@ -299,7 +290,7 @@ public abstract class DeviceType extends RemoteCode {
       EV3_IR
   );
 
-  private DeviceType(String name, byte code) {
+  protected DeviceType(String name, byte code) {
     super(name, code);
   }
 
@@ -312,183 +303,5 @@ public abstract class DeviceType extends RemoteCode {
       }
     }
     throw new IllegalArgumentException("Unknown device type: " + code);
-  }
-
-  private static class BaseRegulatedMotor {
-    private static final Logger log = LoggerFactory.getLogger(BaseRegulatedMotor.class);
-    protected final int MAX_SPEED_AT_9V;
-    private int speed = 360;
-    protected int acceleration = 6000;
-    private boolean regulationFlag = true;
-    private final Ev3RemoteMotor motor;
-
-    public BaseRegulatedMotor(Ev3RemoteMotor motor, float moveP, float moveI, float moveD, float holdP, float holdI, float holdD, int offset, int maxSpeed) {
-      this.motor = motor;
-      this.MAX_SPEED_AT_9V = maxSpeed;
-
-      /*this.detect("lego-port", port);
-      if (log.isDebugEnabled()) {
-        log.debug("Setting port in mode: {}", "tacho-motor");
-      }
-
-      this.setStringAttribute("mode", "tacho-motor");
-      Delay.msDelay(1000L);
-      this.detect("tacho-motor", port);
-      Delay.msDelay(1000L);
-      this.setStringAttribute("command", "reset");
-      if (log.isDebugEnabled()) {
-        log.debug("Motor ready to use on Port: {}", motorPort.getName());
-      }*/
-
-    }
-
-    public Boolean suspendRegulation() {
-      this.regulationFlag = false;
-      return this.regulationFlag;
-    }
-
-    public Integer getTachoCount() {
-      return this.getIntegerAttribute("position");
-    }
-
-    public Float getPosition() {
-      return (float)this.getTachoCount();
-    }
-
-    public void forward() {
-      this.setSpeedDirect(this.speed);
-      if (!this.regulationFlag) {
-        this.setStringAttribute("command", "run-direct");
-      } else {
-        this.setStringAttribute("command", "run-forever");
-      }
-    }
-
-    public void backward() {
-      this.setSpeedDirect(-this.speed);
-      if (!this.regulationFlag) {
-        this.setStringAttribute("command", "run-direct");
-      } else {
-        this.setStringAttribute("command", "run-forever");
-      }
-    }
-
-    public void flt(boolean immediateReturn) {
-      this.doStop("coast", immediateReturn);
-    }
-
-    public void flt() {
-      this.flt(false);
-    }
-
-    public void coast() {
-      this.doStop("coast", false);
-    }
-
-    public void brake() {
-      this.doStop("brake", false);
-    }
-
-    public void hold() {
-      this.doStop("hold", false);
-    }
-
-    public void stop() {
-      this.stop(false);
-    }
-
-    public void stop(boolean immediateReturn) {
-      this.doStop("hold", immediateReturn);
-    }
-
-    private void doStop(String mode, boolean immediateReturn) {
-      if(!immediateReturn) {
-        throw new UnsupportedOperationException("Cannot stop motors without immediate return");
-      }
-      this.setStringAttribute("stop_action", mode);
-      this.setStringAttribute("command", "stop");
-    }
-
-    public boolean isMoving() {
-      return this.getStringAttribute("state").contains("running");
-    }
-
-    public void setSpeed(int speed) {
-      this.speed = speed;
-      this.setSpeedDirect(speed);
-    }
-
-    private void setSpeedDirect(int speed) {
-      if (!this.regulationFlag) {
-        this.setIntegerAttribute("duty_cycle_sp", speed);
-      } else {
-        this.setIntegerAttribute("speed_sp", speed);
-      }
-
-    }
-
-    public void resetTachoCount() {
-      this.setStringAttribute("command", "reset");
-      this.regulationFlag = true;
-    }
-
-    public void rotate(int angle, boolean immediateReturn) {
-      if(!immediateReturn) {
-        throw new UnsupportedOperationException("Cannot stop motors without immediate return");
-      }
-      this.setSpeedDirect(this.speed);
-      this.setIntegerAttribute("position_sp", angle);
-      this.setStringAttribute("command", "run-to-rel-pos");
-    }
-
-    public void rotate(int angle) {
-      this.rotate(angle, false);
-    }
-
-    public void rotateTo(int limitAngle, boolean immediateReturn) {
-      if(!immediateReturn) {
-        throw new UnsupportedOperationException("Cannot stop motors without immediate return");
-      }
-      this.setSpeedDirect(this.speed);
-      this.setIntegerAttribute("position_sp", limitAngle);
-      this.setStringAttribute("command", "run-to-abs-pos");
-    }
-
-    public void rotateTo(int limitAngle) {
-      this.rotateTo(limitAngle, false);
-    }
-
-    public int getSpeed() {
-      return !this.regulationFlag ? this.getIntegerAttribute("duty_cycle_sp") : this.getIntegerAttribute("speed_sp");
-    }
-
-    public boolean isStalled() {
-      return this.getStringAttribute("state").contains("stalled");
-    }
-
-    public int getRotationSpeed() {
-      return 0;
-    }
-
-    public void addListener(RegulatedMotorListener regulatedMotorListener) {
-      throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public RegulatedMotorListener removeListener() {
-      throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void waitComplete() {
-      throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public float getMaxSpeed() {
-      return Battery.getInstance().getVoltage() * (float)this.MAX_SPEED_AT_9V / 9.0F * 0.9F;
-    }
-
-    public void setAcceleration(int acceleration) {
-      this.acceleration = Math.abs(acceleration);
-      log.warn("Not executed internally the method: setAcceleration");
-    }
   }
 }

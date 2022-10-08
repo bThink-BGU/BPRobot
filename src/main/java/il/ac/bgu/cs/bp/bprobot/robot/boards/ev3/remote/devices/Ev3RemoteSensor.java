@@ -19,6 +19,12 @@ public abstract class Ev3RemoteSensor extends Sensor<DeviceType> implements Ev3R
   }
 
   @Override
+  public void setCurrentMode(int mode) {
+    super.setCurrentMode(mode);
+    fetchSample(new float[sampleSize()],0);
+  }
+
+  @Override
   protected void sample(float[] sample) throws Exception {
     var mode = (GenericSensorMode) getMode(getCurrentMode());
     var deviceMode = DeviceMode.DeviceModes.get(device).get(getCurrentMode());

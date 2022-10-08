@@ -30,7 +30,7 @@ import java.util.Map;
  * A protocol class for LEGO MINDSTORMS EV3.
  */
 public class Ev3Protocol extends ProtocolBase {
-  private static final String KEY_VALUE = "value";
+  public static final String KEY_VALUE = "value";
   private static final String TAG = "Ev3Protocol";
   private static final byte OUTPUT_PORT_OFFSET = 0x10;
 
@@ -64,6 +64,47 @@ public class Ev3Protocol extends ProtocolBase {
       var mode = (DeviceMode) args.getOrDefault("mode", DeviceMode.DONT_CHANGE);
       return Map.of(KEY_VALUE, getPercentValue(port, type, mode, (int) args.get("nvalue")));
     }
+    if (UIReadSubCommand.GET_VBATT == action) {
+      return Map.of(KEY_VALUE, getBatteryVoltage());
+    }
+    if (Output.RESET == action) {
+      var port = (Port) args.get("port");
+      if (port == null) throw new IllegalArgumentException("port is null");
+      resetTachoCounts(port);
+      return Map.of();
+    }
+    if (Output.SPEED == action) {
+      var port = (Port) args.get("port");
+      if (port == null) throw new IllegalArgumentException("port is null");
+      var speed = (Integer) args.get("speed");
+      if (speed == null) throw new IllegalArgumentException("speed not defined");
+      setOutputSpeed(port, speed);
+      return Map.of();
+    }
+    if (Output.POWER == action) {
+      var port = (Port) args.get("port");
+      if (port == null) throw new IllegalArgumentException("port is null");
+      var power = (Integer) args.get("power");
+      if (power == null) throw new IllegalArgumentException("power not defined");
+      setOutputPower(port, power);
+      return Map.of();
+    }
+    if (Output.TEST == action) {
+      var port = (Port) args.get("port");
+      if (port == null) throw new IllegalArgumentException("port is null");
+      return Map.of(KEY_VALUE, testOutput(port));
+    }
+    if (Output.STEP_POWER == action) {
+      var port = (Port) args.get("port");
+      if (port == null) throw new IllegalArgumentException("port is null");
+      var power = (Integer) args.get("power");
+      if (power == null) throw new IllegalArgumentException("power not defined");
+      var steps = (int[]) args.get("steps");
+      if (steps == null) throw new IllegalArgumentException("steps not defined");
+      var brake = (int) args.getOrDefault("brake", 1);
+      stepPower(port, power, steps, brake);
+      return Map.of();
+    }
     throw new UnsupportedOperationException("Unsupported command: " + action);
   }
 
@@ -92,6 +133,26 @@ public class Ev3Protocol extends ProtocolBase {
       result[i] = ByteBuffer.wrap(data).order(ByteOrder.LITTLE_ENDIAN).getFloat();
     }
     return result;
+  }
+
+
+  private float getBatteryVoltage() {
+    ByteCodeFormatter byteCode = new ByteCodeFormatter();
+    byteCode.addOpCode(CommandType.DIRECT_COMMAND_REPLY);
+
+    // TODO: NOT TESTED when nvalue is more than 2
+    byteCode.addGlobalAndLocalBufferSize(4, 0);
+    byteCode.addOpCode(UIReadSubCommand.GET_VBATT);
+    byteCode.addGlobalIndex((byte) 0x00);
+    mCommunicator.write(byteCode.byteArray());
+
+    byte[] reply = readAnswer();
+
+    // check the validity of the response
+    boolean valid = (reply[2] == CommandType.DIRECT_COMMAND_SUCCESS.code);
+
+    byte[] result = new byte[]{reply[3]};
+    return ByteBuffer.wrap(result).order(ByteOrder.LITTLE_ENDIAN).getFloat();
   }
 
   private byte[] inputDeviceCommand(InputDeviceSubCommand subCommand, Port port, DeviceType type, DeviceMode mode, int nvalue, int nvalueMultiplier) {
@@ -149,13 +210,50 @@ public class Ev3Protocol extends ProtocolBase {
     else return 0x00; // this will not happen
   }
 
-  /**
-   * Sets the speed of output device.
-   *
-   * @param port  the port of a device
-   * @param speed the speed of a device
-   */
+  private int testOutput(Port port) {
+    ByteCodeFormatter byteCode = new ByteCodeFormatter();
+
+    // convert port number
+    byte byteCodePort = toByteCodePort(port.code);
+
+    byteCode.addOpCode(CommandType.DIRECT_COMMAND_NOREPLY);
+    byteCode.addGlobalAndLocalBufferSize(0, 0);
+
+    byteCode.addOpCode(Output.TEST);
+    byteCode.addParameter(Layer.MASTER);
+    byteCode.addParameter(byteCodePort);
+
+    // send message
+    mCommunicator.write(byteCode.byteArray());
+
+    byte[] reply = readAnswer();
+
+    // check the validity of the response
+    boolean valid = (reply[2] == CommandType.DIRECT_COMMAND_SUCCESS.code);
+
+    // read the percent value in short type
+    return (int) reply[3];
+  }
+
   private void setOutputSpeed(Port port, int speed) {
+    ByteCodeFormatter byteCode = new ByteCodeFormatter();
+
+    // convert port number
+    byte byteCodePort = toByteCodePort(port.code);
+
+    byteCode.addOpCode(CommandType.DIRECT_COMMAND_NOREPLY);
+    byteCode.addGlobalAndLocalBufferSize(0, 0);
+
+    byteCode.addOpCode(Output.SPEED);
+    byteCode.addParameter(Layer.MASTER);
+    byteCode.addParameter(byteCodePort);
+    byteCode.addParameter((byte) speed);
+
+    // send message
+    mCommunicator.write(byteCode.byteArray());
+  }
+
+  private void setOutputPower(Port port, int power) {
     ByteCodeFormatter byteCode = new ByteCodeFormatter();
 
     // convert port number
@@ -167,9 +265,44 @@ public class Ev3Protocol extends ProtocolBase {
     byteCode.addOpCode(Output.POWER);
     byteCode.addParameter(Layer.MASTER);
     byteCode.addParameter(byteCodePort);
-    byteCode.addParameter((byte) speed);
+    byteCode.addParameter((byte) power);
 
-    byteCode.addOpCode(Output.START);
+    // send message
+    mCommunicator.write(byteCode.byteArray());
+  }
+
+  private void stepPower(Port port, int power, int[] steps, int brake) {
+    ByteCodeFormatter byteCode = new ByteCodeFormatter();
+
+    // convert port number
+    byte byteCodePort = toByteCodePort(port.code);
+
+    byteCode.addOpCode(CommandType.DIRECT_COMMAND_NOREPLY);
+    byteCode.addGlobalAndLocalBufferSize(0, 0);
+
+    byteCode.addOpCode(Output.POWER);
+    byteCode.addParameter(Layer.MASTER);
+    byteCode.addParameter(byteCodePort);
+    byteCode.addParameter((byte) power);
+    byteCode.addParameter((short) steps[0]);
+    byteCode.addParameter((short) steps[1]);
+    byteCode.addParameter((short) steps[2]);
+    byteCode.addParameter((byte) brake);
+
+    // send message
+    mCommunicator.write(byteCode.byteArray());
+  }
+
+  private void resetTachoCounts(Port port) {
+    ByteCodeFormatter byteCode = new ByteCodeFormatter();
+
+    // convert port number
+    byte byteCodePort = toByteCodePort(port.code);
+
+    byteCode.addOpCode(CommandType.DIRECT_COMMAND_NOREPLY);
+    byteCode.addGlobalAndLocalBufferSize(0, 0);
+
+    byteCode.addOpCode(Output.RESET);
     byteCode.addParameter(Layer.MASTER);
     byteCode.addParameter(byteCodePort);
 

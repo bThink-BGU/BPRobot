@@ -18,8 +18,8 @@ const remoteChannel = 1
 
 bthread('interleave', function () {
   while (true) {
-    sync({ waitFor: AnySensorsData, block: anyActuation })
-    sync({ waitFor: anyActuation })
+    sync({ waitFor: anySensorsDataEvent, block: anyActuationEvent })
+    sync({ waitFor: anyActuationEvent })
   }
 })
 
@@ -62,7 +62,7 @@ ctx.bthread('Stop raise trunk on touch pressed', 'touch.pressed', function (enti
 
 ctx.bthread('Handle remote', 'remote.pressed', function (entity) {
   while(true) {
-    let remoteCommand = getRemoteCommand(entity.id, remoteChannel)
+    let remoteCommand = getRemoteControlPressedKeys(entity.id, remoteChannel)
     if (remoteCommand.contains(RemoteControlKeys.TOP_LEFT)) {
       bp.log.info('top left')
     }
@@ -78,7 +78,7 @@ ctx.bthread('Handle remote', 'remote.pressed', function (entity) {
     if (remoteCommand.contains(RemoteControlKeys.CENTER_BEACON)) {
       bp.log.info('center beacon')
     }
-    sync({waitFor: AnySensorsData})
+    sync({waitFor: anySensorsDataEvent})
   }
 })
 

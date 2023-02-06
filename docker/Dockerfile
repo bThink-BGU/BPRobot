@@ -21,6 +21,7 @@ RUN echo "alias ll='ls -al'">>.bashrc && \
 	cd BPRobot && \
 	git checkout newimpl && \
 	mvn compile && \
+    mvn package -P"uber-jar" && \
 	cd ../ && \
 	chown -R robot BPRobot
 	

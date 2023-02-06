@@ -6,8 +6,8 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.logging.Logger;
 
-public class BluetoothCommunicator implements ICommunicator {
-  private static final Logger logger = Logger.getLogger(BluetoothCommunicator.class.getName());
+public class SerialCommunicator implements ICommunicator {
+  private static final Logger logger = Logger.getLogger(SerialCommunicator.class.getName());
   private static final int TIMEOUT = 1000;
 
   private final SerialPort port;
@@ -21,7 +21,7 @@ public class BluetoothCommunicator implements ICommunicator {
     this.delay = delay;
   }
 
-  public BluetoothCommunicator(String portName) {
+  public SerialCommunicator(String portName) {
     logger.info("EV3.EV3 object initiated at - " + LocalDateTime.now());
     logger.config("Trying to connect to EV3.EV3 Brick...");
     SerialPort port = null;

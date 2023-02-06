@@ -7,7 +7,7 @@ import com.google.gson.JsonPrimitive;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.Device;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.Ev3Board;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.RemoteEv3Board;
-import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.communication.BluetoothCommunicator;
+import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.communication.SerialCommunicator;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.grove.GrovePiBoard;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.Board;
 import lejos.hardware.port.Port;
@@ -67,8 +67,8 @@ public class Robot {
 
   private static Board ev3Parser(Robot robot, String boardName, String address, JsonArray ports, boolean isMocked) throws Exception {
     Board board;
-    if(!isMocked && address.startsWith("bt:")) {
-      board = new RemoteEv3Board(new BluetoothCommunicator(address.split(":")[1]), boardName);
+    if(!isMocked && (address.startsWith("bt:") || address.startsWith("usb:"))) {
+      board = new RemoteEv3Board(new SerialCommunicator(address.split(":")[1]), boardName);
     } else {
       board = new Ev3Board(boardName, isMocked);
     }

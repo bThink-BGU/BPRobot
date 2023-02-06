@@ -134,3 +134,5 @@ gradle-app.setting
 *.hprof
 
 # End of https://www.toptal.com/developers/gitignore/api/intellij+all,gradle,maven
+/docker/ev3dev-ev3-bpjs.img
+/docker/ev3dev-ev3-bpjs.tar

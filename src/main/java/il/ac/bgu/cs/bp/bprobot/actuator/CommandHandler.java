@@ -208,7 +208,7 @@ public class CommandHandler implements Runnable {
       throw new RuntimeException("Robot is not initialized");
     }
     for (var act : buildActivationMap(commandName, json.getAsJsonArray())) {
-      var device = act.board.getDevice(act.port.getName()).device;
+      var device = act.board.getDevice(act.port.getName());
       var methods = device.getClass().getMethods();
       Method method = null;
       Object[] params = null;

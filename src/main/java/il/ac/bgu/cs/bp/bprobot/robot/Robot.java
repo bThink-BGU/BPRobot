@@ -68,7 +68,7 @@ public class Robot {
   private static Board ev3Parser(Robot robot, String boardName, String address, JsonArray ports, boolean isMocked) throws Exception {
     Board board;
     if(!isMocked && address.startsWith("bt:")) {
-      board = new RemoteEv3Board(new BluetoothCommunicator("isa"), boardName);
+      board = new RemoteEv3Board(new BluetoothCommunicator(address.split(":")[1]), boardName);
     } else {
       board = new Ev3Board(boardName, isMocked);
     }

@@ -1,20 +1,20 @@
 const config = command('config', {
-  mqtt: {
+/*  mqtt: {
     address: 'localhost',
     port: 1833
-  },
+  },*/
   devices: [
     {
       name: 'EV3_1',
       type: 'EV3BRICK', //corresponds to GROVEPI or any ev3dev.hardware.EV3DevPlatform.*
       // mock: true,
-      address: 'bt:COM1', //either 'localhost' (default) or '<protocol>:<address>', where protocol = bt/wifi/usb and address = device name, MAC address or IP address
+      address: 'bt:COM4', //either 'localhost' (default) or '<protocol>:<address>', where protocol = bt/wifi/usb and address = device name, MAC address or IP address
       ports: [
-        {
+/*        {
           address: 'A',
           name: 'arm',
           type: 'EV3MediumRegulatedMotor', //corresponds to a class that inherits or ev3dev.hardware.EV3DevDevice (e.g., EV3LargeRegulatedMotor)
-        },
+        },*/
         {
           address: 'B',
           name: 'right',

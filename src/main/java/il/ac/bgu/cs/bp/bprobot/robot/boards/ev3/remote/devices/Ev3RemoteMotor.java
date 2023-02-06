@@ -156,7 +156,7 @@ public class Ev3RemoteMotor extends Device<DeviceType> implements Ev3RemoteDevic
   }
 
   private void setSpeedDirect(int speed) {
-    protocol.exec(Output.POWER, Map.of("port", port, "speed", speed));
+    protocol.exec(Output.POWER, Map.of("port", port, "power", speed));
   }
 
   public void resetTachoCount() {

@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 
 public class BluetoothCommunicator implements ICommunicator {
   private static final Logger logger = Logger.getLogger(BluetoothCommunicator.class.getName());
+  private static final int TIMEOUT = 1000;
 
   private final SerialPort port;
   private int delay = 0;
@@ -44,7 +45,7 @@ public class BluetoothCommunicator implements ICommunicator {
     port.openPort();
     logger.info("Port open!");
     port.setComPortTimeouts
-        (SerialPort.NO_PARITY, SerialPort.TIMEOUT_READ_BLOCKING, SerialPort.TIMEOUT_WRITE_BLOCKING);
+        (SerialPort.TIMEOUT_READ_BLOCKING | SerialPort.TIMEOUT_WRITE_BLOCKING, TIMEOUT, TIMEOUT);
   }
 
   @Override

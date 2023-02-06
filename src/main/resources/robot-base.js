@@ -254,9 +254,18 @@ const engine = {
   backward: function (address) {
     return portCommand('backward', address)
   }
-};
+}
 
 // Object.freeze(engine)
+
+/**
+ * Subscribe to sensors readings.
+ * @param {string|string[]}address board.port or nickname
+ * @returns {bp.Event}
+ */
+function subscribe(address) {
+  return portCommand('subscribe', address)
+}
 
 (() => {
   ctx.populateContext([
@@ -278,12 +287,11 @@ const engine = {
 
   ctx.registerEffect('SensorsData', function (data) {
     var obj = data.get()
-    if (obj === null) {
+    if (obj === null || ''===obj) {
       ctx.getEntityById('sensors').data = null
       ctx.getEntityById('changes').data = new java.util.HashSet()
-      return
+      return;
     }
-
     var json = JSON.parse(data)
     ctx.getEntityById('sensors').data = json
     var changes = new java.util.HashSet()

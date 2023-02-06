@@ -62,7 +62,8 @@ public class Ev3Protocol extends ProtocolBase {
       if (port == null) throw new IllegalArgumentException("port is null");
       var type = (DeviceType) args.getOrDefault("type", DeviceType.DONT_CHANGE);
       var mode = (DeviceMode) args.getOrDefault("mode", DeviceMode.DONT_CHANGE);
-      return Map.of(KEY_VALUE, getPercentValue(port, type, mode, (int) args.get("nvalue")));
+      var val = getPercentValue(port, type, mode, (int) args.get("nvalue"));
+      return Map.of(KEY_VALUE, val);
     }
     if (UIReadSubCommand.GET_VBATT == action) {
       return Map.of(KEY_VALUE, getBatteryVoltage());
@@ -181,7 +182,7 @@ public class Ev3Protocol extends ProtocolBase {
    * @param nvalue the number of the response value
    * @return a returned value in percent
    */
-  private short[] getPercentValue(Port port, DeviceType type, DeviceMode mode, int nvalue) {
+  private float[] getPercentValue(Port port, DeviceType type, DeviceMode mode, int nvalue) {
     byte[] command = inputDeviceCommand(InputDeviceSubCommand.READY_PCT, port, type, mode, nvalue, 1);
     // Send message
     mCommunicator.write(command);
@@ -192,7 +193,7 @@ public class Ev3Protocol extends ProtocolBase {
     boolean valid = (reply[2] == CommandType.DIRECT_COMMAND_SUCCESS.code);
 
     // read the percent value in short type
-    short[] result = new short[nvalue];
+    float[] result = new float[nvalue];
     for (int i = 0; i < nvalue; i++) {
       result[i] = reply[3 + i];
     }

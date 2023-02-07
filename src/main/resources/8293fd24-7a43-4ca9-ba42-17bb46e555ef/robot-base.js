@@ -51,16 +51,12 @@ function shallowArraysEqual(array1, array2) {
   return array1.length === array2.length && array1.every((value, index) => value === array2[index])
 }
 
-/**
- * A set of sensors' related functions.
- * @type {{mockSensorSampleSize: (function(string, int): Event), getSensorsData: (function(): *), getRemoteControlPressedKeys: ((function(*, *): java.util.EnumSet<il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.enums.RemoteControlKeys>)|*), getSensorsChanges: (function(): *), mockSensorValue: (function(string, int[], long): Event)}}
- */
 const sensors = {
   /**
    * Cause {@link RobotSensorsDataCollector} to return {@param value} when collecting data.
    * @param {string}address The address (board.port or nickname).
    * @param {int[]}value An array of sensor values.
-   * @param {long}delay  delay in milliseconds before the sensors data is changed to {@param value}
+   * @param {int}delay  delay in milliseconds before the sensors data is changed to {@param value}
    * @returns {bp.Event} A Command event.
    */
   mockSensorValue: function (address, value, delay) {
@@ -126,13 +122,19 @@ const sensors = {
   getSensorsChanges: function () {
     return ctx.getEntityById('changes').data
   }
-}
+};
 
-/**
- * A set of actions for controlling the motors.
- * @type {{rotate: (function(string, int, boolean=): Event), setSpeed: (function(string, int): Event), stop: (function(string, boolean=): Event), forward: (function(string): Event), suspendRegulation: (function(string): Event), backward: (function(string): Event), resetTachoCount: (function(string): Event), rotateTo: (function(string, int, boolean=): Event), setAcceleration: (function(string, int): Event), flt: (function(string, boolean=): Event)}}
- */
+
 const engine = {
+  /**
+   * Removes power from the motor and creates a passive electrical load. This is usually done by shorting the motor terminals together. This load will absorb the energy from the rotation of the motors and cause the motor to stop more quickly than coasting.
+   * @see https://ev3dev-lang-java.github.io/docs/api/latest/ev3dev-lang-java/ev3dev/actuators/lego/motors/BaseRegulatedMotor.html#brake--
+   * @param {string}address board.port or nickname
+   * @returns {bp.Event}
+   */
+  brake: function (address) {
+    return portCommand('brake', address)
+  },
   /**
    * Rotate engine by number of degrees.
    * @see https://ev3dev-lang-java.github.io/docs/api/latest/ev3dev-lang-java/ev3dev/actuators/lego/motors/BaseRegulatedMotor.html#rotate-int-boolean-

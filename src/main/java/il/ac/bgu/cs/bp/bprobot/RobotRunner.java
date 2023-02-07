@@ -10,32 +10,13 @@ import java.io.IOException;
 import java.nio.file.Files;
 
 public class RobotRunner {
-
-  // Call with a path to a js file or a directory with js files.
   public static void main(String[] args) throws IOException {
     if (args.length == 0) {
-      System.err.println("Usage: java -jar BPRobot-1.0-SNAPSHOT.uber.jar <path to js file or directory>");
-      System.exit(1);
-    }
-    var file = new File(args[0]);
-    if (!file.exists()) {
-      System.err.println("File or directory does not exist: " + file.getAbsolutePath());
-      System.exit(1);
+      args = new String[] {"RobotEducator/data.js", "RobotEducator/behavior-low.js", "RobotEducator/behavior-high.js"};
     }
 
-    File[] files = null;
-    if (file.isDirectory()) {
-      files = file.listFiles((dir, name) -> name.endsWith(".js"));
-    } else {
-      files = new File[]{file};
-    }
-    // This will load the program file  <Project>/src/main/resources/HelloBPjsWorld.js
-    final BProgram bprog = new ContextBProgram("robot-base.js");
-    for (int i = 0; i < files.length; i++) {
-      bprog.appendSource(Files.readString(files[i].toPath()));
-    }
+    final BProgram bprog = new RobotBProgram(args);
     bprog.setWaitForExternalEvents(true);
-//    bprog.getGlobalScope()..putInGlobalScope("Colors", lejos.robotics.Color);
     BProgramRunner rnr = new BProgramRunner(bprog);
 
     // Print program events to the console
@@ -45,5 +26,4 @@ public class RobotRunner {
     // go!
     rnr.run();
   }
-
 }

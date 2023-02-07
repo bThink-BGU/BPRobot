@@ -1,16 +1,15 @@
 // https://pybricks.com/ev3-micropython/examples/elephant.html
 
 const actions = {
-  walkForward: portCommand('rotate', 'legs', [900, true]),
-  walkBackward: portCommand('rotate', 'legs', [-900, true]),
-  stop_legs: portCommand('brake', 'EV3_1.A'),
-  raise_trunk: portCommand('forward', 'trunk'),
-  lower_trunk: portCommand('backward', 'trunk'),
-  stop_trunk: portCommand('brake', 'trunk'),
-  raise_neck: portCommand('forward', 'neck'),
-  lower_neck: portCommand('backward', 'neck'),
-  stop_neck: portCommand('brake', 'neck'),
-  subscribe: address => portCommand('subscribe', address)
+  walkForward: engine.rotate('legs', 900),
+  walkBackward: engine.rotate('legs', -900),
+  stop_legs: engine.brake('EV3_1.A'),
+  raise_trunk: engine.forward('trunk'),
+  lower_trunk: engine.backward('trunk'),
+  stop_trunk: engine.brake('trunk'),
+  raise_neck: engine.forward('neck'),
+  lower_neck: engine.backward('neck'),
+  stop_neck: engine.brake('neck')
 }
 
 const device = 'EV3_1'
@@ -27,7 +26,7 @@ bthread('Initiation', function () {
   sync({ block: config.negate(), request: config })
   sync({ request: portCommand('setSpeed', 'neck', 750) })
   sync({ request: portCommand('setSpeed', 'trunk', 600) })
-  sync({ request: actions.subscribe(['EV3_1.S1', 'EV3_1.S2', 'color']) })
+  sync({ request: subscribe(['EV3_1.S1', 'EV3_1.S2', 'color']) })
 })
 
 
@@ -62,7 +61,7 @@ ctx.bthread('Stop raise trunk on touch pressed', 'touch.pressed', function (enti
 
 ctx.bthread('Handle remote', 'remote.pressed', function (entity) {
   while(true) {
-    let remoteCommand = getRemoteControlPressedKeys(entity.id, remoteChannel)
+    let remoteCommand = sensors.getRemoteControlPressedKeys(entity.id, remoteChannel)
     if (remoteCommand.contains(RemoteControlKey.TOP_LEFT)) {
       bp.log.info('top left')
     }
@@ -83,11 +82,11 @@ ctx.bthread('Handle remote', 'remote.pressed', function (entity) {
 })
 
 bthread('mock', function () {
-  sync({ request: mockSensorSampleSize('touch', 1) })
-  sync({ request: mockSensorSampleSize('remote', 4) })
-  sync({ request: mockSensorSampleSize('EV3_1.S4', 1) }) //color
-  sync({ request: mockSensorValue('touch', [1], 10000) })
-  sync({ request: mockSensorValue('color', [1], 5000) })
-  sync({ request: mockSensorValue('remote', [0,1,0,0], 1000) })
-  sync({ request: mockSensorValue('remote', [0,5,0,0], 2000) })
+  sync({ request: sensors.mockSensorSampleSize('touch', 1) })
+  sync({ request: sensors.mockSensorSampleSize('remote', 4) })
+  sync({ request: sensors.mockSensorSampleSize('EV3_1.S4', 1) }) //color
+  sync({ request: sensors.mockSensorValue('touch', [1], 10000) })
+  sync({ request: sensors.mockSensorValue('color', [1], 5000) })
+  sync({ request: sensors.mockSensorValue('remote', [0,1,0,0], 1000) })
+  sync({ request: sensors.mockSensorValue('remote', [0,5,0,0], 2000) })
 })

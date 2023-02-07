@@ -5,6 +5,7 @@ import ev3dev.sensors.BaseSensor;
 import il.ac.bgu.cs.bp.bprobot.robot.Robot;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.Board;
 import il.ac.bgu.cs.bp.bprobot.robot.boards.Sensor;
+import il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.devices.Ev3RemoteDevice;
 import il.ac.bgu.cs.bp.bprobot.util.communication.MQTTCommunication;
 import il.ac.bgu.cs.bp.bprobot.util.communication.QueueNameEnum;
 import lejos.hardware.port.Port;
@@ -208,7 +209,8 @@ public class CommandHandler implements Runnable {
       throw new RuntimeException("Robot is not initialized");
     }
     for (var act : buildActivationMap(commandName, json.getAsJsonArray())) {
-      var device = act.board.getDevice(act.port.getName());
+      var deviceP = act.board.getDevice(act.port.getName());
+      var device = deviceP instanceof Ev3RemoteDevice? deviceP : deviceP.device;
       var methods = device.getClass().getMethods();
       Method method = null;
       Object[] params = null;

@@ -18,10 +18,10 @@
 # -- Project information -----------------------------------------------------
 
 project = 'RobotBP'
-copyright = 'Ben-Gurion University SE project documentation 2021, Adi Jumah, David Ziegler, Peleg Avraham'
-author = 'Adi Jumah, David Ziegler, Peleg Avraham'
+copyright = 'This project is under the MIT license.'
+author = 'Achiya Elyasaf'
 # The full version, including alpha/beta/rc tags
-release = '0.1'
+release = '1.0.0'
 
 
 # -- General configuration ---------------------------------------------------

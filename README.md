@@ -8,6 +8,6 @@ BPRobot is a library for programming Lego Mindstorms with [BPjs](https://github.
 For more information, visit the [documentation site](https://bthink-bgu.github.io/BPRobot).
 
 # Thanks
-The library was written based on the final B.Sc. project of Adi Jumah, David Ziegler and Peleg Avraham at the Ben-Gurion University.
+Thanks to Adi Jumah, David Ziegler and Peleg Avraham, who developed one of the early versions of this library.
 
 The design for controlling the brick remotely via bluetooth was library is partially based on [PileProject](https://github.com/PileProject/drivecommand).

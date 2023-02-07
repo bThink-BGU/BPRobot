@@ -1,20 +1,12 @@
-.. RobotBP documentation master file, created by
-   sphinx-quickstart on Sat Apr 17 22:19:46 2021.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
 Welcome to RobotBP's documentation!
 ===================================
-First we will note that this site documents project called RobotBP.
-This project is final project in SE degree in Ben-Gurion University done in 2021.
-Link to the department's website: https://in.bgu.ac.il/engn/se/Pages/default.aspx .
+BPRobot is a library for programming Lego Mindstorms with [Behavioral Programming](https://github.com/bThink-BGU/BPjs-Context).
 
-Here you will learn how to actuate robot based on raspberry-pi supported EV3 Lego and Grove-pi kit with behavioral
-programming written in Javascript, whats called BPjs.
+The BP code can be on a Lego EV3 brick with an ev3dev sd-card, or on a remote computer/Raspberry PI and control the EV3 through bluetooth.
+
+When running on a Raspberry PI, the program can also control [Grove-PI](https://www.dexterindustries.com/grovepi/) devices.
 
 If you are new to BPjs you can learn from the tutorial in: `BPjs tutorial <https://bpjs.readthedocs.io/en/latest/>`_
-
-In additional, you will learn on several ways how to extend the existing project.
 
 Topics:
 ========

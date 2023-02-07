@@ -77,7 +77,7 @@ public abstract class DeviceType extends RemoteCode {
 
     public Integer getColorID(Ev3RemoteSensor device) {
       float[] sample = new float[1];
-      device.setCurrentMode(DeviceMode.get(EV3_COLOR, "COL-COLOR"));
+      device.setCurrentMode(DeviceMode.get(EV3_COLOR, "COL-COLOR").get());
       device.fetchSample(sample, 0);
       return (int) sample[0];
     }
@@ -146,7 +146,7 @@ public abstract class DeviceType extends RemoteCode {
       return device.getMode("RGB-RAW");
     }
   };
-  public static final DeviceType EV3_ULTRASONIC = new DeviceType("EV3_ULTRASONIC", (byte) 0x1E) {
+  public static final DeviceType EV3_ULTRASONIC = new DeviceType("EV3-ULTRASONIC", (byte) 0x1E) {
     @Override
     public <T> T execute(Ev3RemoteDevice device, String command, Object... args) throws NoSuchMethodException {
       var sensor = (Ev3RemoteSensor) device;
@@ -190,7 +190,7 @@ public abstract class DeviceType extends RemoteCode {
       return !Objects.equals(sensor.getCurrentModeName(), "US-SI-CM");
     }
   };
-  public static final DeviceType EV3_GYRO = new DeviceType("EV3_GYRO", (byte) 0x20) {
+  public static final DeviceType EV3_GYRO = new DeviceType("EV3-GYRO", (byte) 0x20) {
     @Override
     public <T> T execute(Ev3RemoteDevice device, String command, Object... args) throws NoSuchMethodException {
       var sensor = (Ev3RemoteSensor) device;
@@ -227,7 +227,7 @@ public abstract class DeviceType extends RemoteCode {
       sensor.setCurrentMode("GYRO-G&A");
     }
   };
-  public static final DeviceType EV3_IR = new DeviceType("EV3_IR", (byte) 0x21) {
+  public static final DeviceType EV3_IR = new DeviceType("EV3-IR", (byte) 0x21) {
     @Override
     public <T> T execute(Ev3RemoteDevice device, String command, Object... args) throws NoSuchMethodException {
       var sensor = (Ev3RemoteSensor) device;
@@ -280,15 +280,15 @@ public abstract class DeviceType extends RemoteCode {
     }
   };
 
-  private static final List<DeviceType> values = List.of(
-      DONT_CHANGE,
-      L_MOTOR,
-      M_MOTOR,
-      EV3_TOUCH,
-      EV3_COLOR,
-      EV3_ULTRASONIC,
-      EV3_GYRO,
-      EV3_IR
+  public static final Map<String, DeviceType> DEVICE_TYPES = Map.of(
+      "DONT-CHANGE", DONT_CHANGE,
+      "L-MOTOR", L_MOTOR,
+      "M-MOTOR", M_MOTOR,
+      "EV3-TOUCH", EV3_TOUCH,
+      "EV3-COLOR", EV3_COLOR,
+      "EV3-ULTRASONIC", EV3_ULTRASONIC,
+      "EV3-GYRO", EV3_GYRO,
+      "EV3-IR", EV3_IR
   );
 
   protected DeviceType(String name, byte code) {
@@ -297,12 +297,11 @@ public abstract class DeviceType extends RemoteCode {
 
   public abstract <T> T execute(Ev3RemoteDevice device, String command, Object... args) throws NoSuchMethodException;
 
-  public static DeviceType fromCode(byte code) {
-    for (DeviceType type : values) {
-      if (type.code == code) {
-        return type;
-      }
-    }
-    throw new IllegalArgumentException("Unknown device type: " + code);
+  public static Optional<DeviceType> fromCode(byte code) {
+    return DEVICE_TYPES.values().stream().filter(type -> type.code == code).findFirst();
+  }
+
+  public static Optional<DeviceType> fromName(String name) {
+    return Optional.ofNullable(DEVICE_TYPES.get(name.toUpperCase()));
   }
 }

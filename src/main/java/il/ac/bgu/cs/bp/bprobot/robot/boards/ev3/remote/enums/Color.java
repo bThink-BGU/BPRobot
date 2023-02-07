@@ -1,5 +1,8 @@
 package il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.enums;
 
+import java.util.Map;
+import java.util.Optional;
+
 public class Color extends RemoteCode {
   public static final Color NONE = new Color("NONE", (byte) 0x00);
   public static final Color BLACK = new Color("BLACK", (byte) 0x01);
@@ -12,5 +15,23 @@ public class Color extends RemoteCode {
 
   protected Color(String name, byte code) {
     super(name, code);
+  }
+
+  public static final Map<String, Color> COLORS = Map.of(
+    "NONE", NONE,
+    "BLACK", BLACK,
+    "BLUE", BLUE,
+    "GREEN", GREEN,
+    "YELLOW", YELLOW,
+    "RED", RED,
+    "WHITE", WHITE,
+    "BROWN", BROWN);
+
+  public static Optional<Color> fromName(String name) {
+    return Optional.ofNullable(COLORS.get(name.toUpperCase()));
+  }
+
+  public static Optional<Color> fromCode(byte code) {
+    return COLORS.values().stream().filter(t->t.code == code).findFirst();
   }
 }

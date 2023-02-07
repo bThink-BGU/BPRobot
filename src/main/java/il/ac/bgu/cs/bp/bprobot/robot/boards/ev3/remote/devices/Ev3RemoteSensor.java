@@ -14,7 +14,7 @@ public class Ev3RemoteSensor extends Sensor<DeviceType> implements Ev3RemoteDevi
   protected final ProtocolBase protocol;
 
   public Ev3RemoteSensor(String board, Port port, ProtocolBase protocol, String name, DeviceType device) {
-    super(board, name, port, device, DeviceMode.DeviceModes.get(device).stream().map(m -> new GenericSensorMode(m.sampleSize, m.name)).toArray(SensorMode[]::new));
+    super(board, name, port, device, DeviceMode.get(device).stream().map(m -> new GenericSensorMode(m.sampleSize, m.name)).toArray(SensorMode[]::new));
     this.protocol = protocol;
   }
 
@@ -27,7 +27,7 @@ public class Ev3RemoteSensor extends Sensor<DeviceType> implements Ev3RemoteDevi
   @Override
   protected void sample(float[] sample) throws Exception {
     var mode = (GenericSensorMode) getMode(getCurrentMode());
-    var deviceMode = DeviceMode.DeviceModes.get(device).get(getCurrentMode());
+    var deviceMode = DeviceMode.get(device).get(getCurrentMode());
     assert deviceMode.sampleSize == mode.sampleSize();
     var sampleDevice = (float[]) protocol.exec(deviceMode.unit.command, Map.of("mode", deviceMode, "port", port, "nvalue", deviceMode.sampleSize)).get("value");
     System.arraycopy(sampleDevice, 0, sample, 0, sample.length);

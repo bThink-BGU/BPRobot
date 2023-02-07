@@ -57,7 +57,7 @@ public class CommandHandler implements Runnable {
     try {
       comm.connect(true);
     } catch (MqttException e) {
-      throw new RuntimeException(e);
+      throw new RuntimeException("Failed to connect, is Mosquitto installed?");
     }
     Runtime.getRuntime().addShutdownHook(new Thread(() -> {
       System.out.println("CommandHandler: Trying to disconnect from MQTT broker");

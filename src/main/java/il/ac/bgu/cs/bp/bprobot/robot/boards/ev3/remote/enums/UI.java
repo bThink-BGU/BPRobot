@@ -1,5 +1,8 @@
 package il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.enums;
 
+import java.util.Map;
+import java.util.Optional;
+
 public class UI extends RemoteCode implements IRemoteAction {
   public static final UI FLUSH = new UI("FLUSH", (byte)0x80);
   public static final UI READ = new UI("READ", (byte)0x81);
@@ -9,5 +12,21 @@ public class UI extends RemoteCode implements IRemoteAction {
 
   protected UI(String name, byte code) {
     super(name, code);
+  }
+
+  public static final Map<String, UI> UIS = Map.of(
+    "FLUSH", FLUSH,
+    "READ", READ,
+    "WRITE", WRITE,
+    "BUTTON", BUTTON,
+    "DRAW", DRAW
+  );
+
+  public static Optional<UI> fromName(String name) {
+    return Optional.ofNullable(UIS.get(name.toUpperCase()));
+  }
+
+  public static Optional<UI> fromCode(byte code) {
+    return UIS.values().stream().filter(t->t.code == code).findFirst();
   }
 }

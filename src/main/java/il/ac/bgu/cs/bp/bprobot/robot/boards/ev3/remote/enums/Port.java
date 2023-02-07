@@ -1,5 +1,8 @@
 package il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.enums;
 
+import java.util.Map;
+import java.util.Optional;
+
 public class Port extends RemoteCode implements lejos.hardware.port.Port {
   public static final Port A = new Port("A", false, (byte) 0x00);
   public static final Port B = new Port("B", false, (byte) 0x01);
@@ -19,5 +22,24 @@ public class Port extends RemoteCode implements lejos.hardware.port.Port {
   @Override
   public String getName() {
     return name;
+  }
+
+  public static final Map<String, Port> PORTS = Map.of(
+    "A",A,
+    "B",B,
+    "C",C,
+    "D",D,
+    "S1",S1,
+    "S2",S2,
+    "S3",S3,
+    "S4",S4
+  );
+
+  public static Optional<Port> fromName(String name) {
+    return Optional.ofNullable(PORTS.get(name.toUpperCase()));
+  }
+
+  public static Optional<Port> fromCode(byte code) {
+    return PORTS.values().stream().filter(t->t.code == code).findFirst();
   }
 }

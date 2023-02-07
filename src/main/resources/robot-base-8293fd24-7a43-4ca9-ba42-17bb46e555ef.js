@@ -1,5 +1,7 @@
 /*global bp,ctx*/
-const RemoteControlKeys = Packages.il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.enums.RemoteControlKeys
+const RemoteControlKey = Packages.il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.enums.RemoteControlKey
+const Color = Packages.il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.enums.Color
+const DeviceMode = Packages.il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.enums.DeviceMode
 
 const anyActuationEvent = bp.EventSet('AnyActuation', function (e) {
   return e.name === 'Command' && ['rotate', 'forward', 'backward'].includes(e.data.action)
@@ -81,7 +83,7 @@ const sensors = {
   /**
    * Get the pressed keys of the remote control.
    * The returned object is a {@link https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/class-use/EnumSet.html|java.util.EnumSet}
-   * of {@link il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.enums.RemoteControlKeys|RemoteControlKeys}.
+   * of {@link il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.enums.RemoteControlKeys|RemoteControlKey}.
    * @param full_address board.port
    * @param channel the channel of the remote control (0-3)
    * @returns {java.util.EnumSet<il.ac.bgu.cs.bp.bprobot.robot.boards.ev3.remote.enums.RemoteControlKeys>}
@@ -94,7 +96,7 @@ const sensors = {
       throw new Error('Port ' + full_address + ' is not configured')
     }
     if (portEntity.data.length === 0) {
-      return RemoteControlKeys.empty()
+      return RemoteControlKey.empty()
     }
     if (portEntity.mode !== 2) {
       throw new Error('Remote mode is not configured to "Remote". Value is ' + portEntity.mode)
@@ -102,7 +104,7 @@ const sensors = {
     if (channel < 0 || channel >= portEntity.data.length) {
       throw new Error('Illegal channel number: ' + channel)
     }
-    return RemoteControlKeys.fromEV3DevID(portEntity.data[channel])
+    return RemoteControlKey.fromEV3DevID(portEntity.data[channel])
   },
 
   /**

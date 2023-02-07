@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
  * 10 BOTTOM-LEFT + TOP-LEFT<br>
  * 11 TOP-RIGHT + BOTTOM-RIGHT<br>
  */
-public enum RemoteControlKeys {
+public enum RemoteControlKey {
   NONE(0, 0),
   TOP_LEFT(1, 1),
   BOTTOM_LEFT(2, 2),
@@ -41,24 +41,24 @@ public enum RemoteControlKeys {
   public final int bit;
   public final int EV3DevID;
 
-  private RemoteControlKeys(int bit, int ev3DevID) {
+  private RemoteControlKey(int bit, int ev3DevID) {
     this.bit = bit;
     EV3DevID = ev3DevID;
   }
 
-  public EnumSet<RemoteControlKeys> toSet() {
+  public EnumSet<RemoteControlKey> toSet() {
     return EnumSet.range(TOP_LEFT, CENTER_BEACON).stream()
         .filter(c -> (c.bit & this.bit) != 0)
-        .collect(Collectors.toCollection(() -> EnumSet.noneOf(RemoteControlKeys.class)));
+        .collect(Collectors.toCollection(() -> EnumSet.noneOf(RemoteControlKey.class)));
   }
 
-  public static EnumSet<RemoteControlKeys> empty() {
-    return EnumSet.noneOf(RemoteControlKeys.class);
+  public static EnumSet<RemoteControlKey> empty() {
+    return EnumSet.noneOf(RemoteControlKey.class);
   }
 
-  public static EnumSet<RemoteControlKeys> fromEV3DevID(int id) {
+  public static EnumSet<RemoteControlKey> fromEV3DevID(int id) {
     if (id == 0) {
-      return EnumSet.noneOf(RemoteControlKeys.class);
+      return EnumSet.noneOf(RemoteControlKey.class);
     }
     var command = Arrays.stream(values()).filter(c -> c.EV3DevID == id).findFirst();
     if (command.isPresent()) {

@@ -121,69 +121,102 @@ const sensors = {
    */
   getSensorsChanges: function () {
     return ctx.getEntityById('changes').data
-  }
-};
+  },
 
+  /**
+   * Subscribe to sensors readings.
+   * @param {string|string[]}address board.port or nickname
+   * @returns {bp.Event}
+   */
+  subscribe: function (address) {
+    return portCommand('subscribe', address)
+  }
+}
 
 const engine = {
   /**
    * Removes power from the motor and creates a passive electrical load. This is usually done by shorting the motor terminals together. This load will absorb the energy from the rotation of the motors and cause the motor to stop more quickly than coasting.
    * @see https://ev3dev-lang-java.github.io/docs/api/latest/ev3dev-lang-java/ev3dev/actuators/lego/motors/BaseRegulatedMotor.html#brake--
-   * @param {string}address board.port or nickname
+   * @param {string|string[]}addresses board.port or nickname
    * @returns {bp.Event}
    */
-  brake: function (address) {
-    return portCommand('brake', address)
+  brake: function (addresses) {
+    let address = addresses
+    if (!Array.isArray(addresses)) {
+      address = [addresses]
+    }
+    address.map(a => portParams(a, []))
+    return command('brake', address)
   },
   /**
    * Rotate engine by number of degrees.
    * @see https://ev3dev-lang-java.github.io/docs/api/latest/ev3dev-lang-java/ev3dev/actuators/lego/motors/BaseRegulatedMotor.html#rotate-int-boolean-
-   * @param {string}address board.port or nickname
+   * @param {string|string[]}addresses board.port or nickname
    * @param {int}angle number of degrees to rotate relative to the current position
    * @param {boolean}[immediateReturn=true] if true do not wait for the action to complete.
    * @returns {bp.Event}
    */
-  rotate: function (address, angle, immediateReturn) {
+  rotate: function (addresses, angle, immediateReturn) {
     if (immediateReturn === undefined || immediateReturn === null) {
       immediateReturn = true
     }
-    return portCommand('rotate', address, [angle, immediateReturn])
+    let address = addresses
+    if (!Array.isArray(addresses)) {
+      address = [addresses]
+    }
+    address.map(a => portParams(a, [angle, immediateReturn]))
+    return command('rotate', address)
   },
   /**
    * Rotate engine to the target angle.
    * @see https://ev3dev-lang-java.github.io/docs/api/latest/ev3dev-lang-java/ev3dev/actuators/lego/motors/BaseRegulatedMotor.html#rotateTo-int-boolean-
-   * @param {string}address board.port or nickname
+   * @param {string|string[]}addresses board.port or nickname
    * @param {int}angle Angle to rotate to
    * @param {boolean}[immediateReturn=true] if true do not wait for the action to complete.
    * @returns {bp.Event}
    */
-  rotateTo: function (address, angle, immediateReturn) {
+  rotateTo: function (addresses, angle, immediateReturn) {
     if (immediateReturn === undefined || immediateReturn === null) {
       immediateReturn = true
     }
-    return portCommand('rotateTo', address, [angle, immediateReturn])
+    let address = addresses
+    if (!Array.isArray(addresses)) {
+      address = [addresses]
+    }
+    address.map(a => portParams(a, [angle, immediateReturn]))
+    return command('rotateTo', address)
   },
   /**
    * Reset the tachometer associated with the motor. Note calling this method
    * will cause any current move operation to be halted.
    * @see https://ev3dev-lang-java.github.io/docs/api/latest/ev3dev-lang-java/ev3dev/actuators/lego/motors/BaseRegulatedMotor.html#resetTachoCount--
-   * @param {string}address board.port or nickname
+   * @param {string|string[]}addresses board.port or nickname
    * @returns {bp.Event}
    */
-  resetTachoCount: function (address) {
-    return portCommand('resetTachoCount', address, [])
+  resetTachoCount: function (addresses) {
+    let address = addresses
+    if (!Array.isArray(addresses)) {
+      address = [addresses]
+    }
+    address.map(a => portParams(a, []))
+    return command('resetTachoCount', address)
   },
   /**
    * Sets desired motors speed , in degrees per second;
    * The maximum reliably sustainable velocity is  100 x battery voltage under
    * moderate load, such as a direct drive robot on the level.
    * @see https://ev3dev-lang-java.github.io/docs/api/latest/ev3dev-lang-java/ev3dev/actuators/lego/motors/BaseRegulatedMotor.html#setSpeed-int-
-   * @param {string}address board.port or nickname
+   * @param {string|string[]}addresses board.port or nickname
    * @param {int}speed value in degrees/sec
    * @returns {bp.Event}
    */
-  setSpeed: function (address, speed) {
-    return portCommand('setSpeed', address, [speed])
+  setSpeed: function (addresses, speed) {
+    let address = addresses
+    if (!Array.isArray(addresses)) {
+      address = [addresses]
+    }
+    address.map(a => portParams(a, [speed]))
+    return command('setSpeed', address)
   },
   /**
    * Causes motors to stop, pretty much
@@ -192,41 +225,56 @@ const engine = {
    * any further motion.
    * Cancels any rotate() orders in progress
    * @see https://ev3dev-lang-java.github.io/docs/api/latest/ev3dev-lang-java/ev3dev/actuators/lego/motors/BaseRegulatedMotor.html#stop-boolean-
-   * @param {string}address board.port or nickname
+   * @param {string|string[]}addresses board.port or nickname
    * @param {boolean}[immediateReturn=true] if true do not wait for the action to complete.
    * @returns {bp.Event}
    */
-  stop: function (address, immediateReturn) {
+  stop: function (addresses, immediateReturn) {
     if (immediateReturn === undefined || immediateReturn === null) {
       immediateReturn = true
     }
-    return portCommand('stop', address, [immediateReturn])
+    let address = addresses
+    if (!Array.isArray(addresses)) {
+      address = [addresses]
+    }
+    address.map(a => portParams(a, [immediateReturn]))
+    return command('stop', address)
   },
   /**
    * sets the acceleration rate of this motor in degrees/sec/sec <br>
    * The default value is 6000; Smaller values will make speeding up. or stopping
    * at the end of a rotate() task, smoother;
    * @see https://ev3dev-lang-java.github.io/docs/api/latest/ev3dev-lang-java/ev3dev/actuators/lego/motors/BaseRegulatedMotor.html#setAcceleration-int-
-   * @param {string}address board.port or nickname
+   * @param {string|string[]}addresses board.port or nickname
    * @param {int}acceleration
    * @returns {bp.Event}
    */
-  setAcceleration: function (address, acceleration) {
-    return portCommand('setAcceleration', address, [acceleration])
+  setAcceleration: function (addresses, acceleration) {
+    let address = addresses
+    if (!Array.isArray(addresses)) {
+      address = [addresses]
+    }
+    address.map(a => portParams(a, [acceleration]))
+    return command('setAcceleration', address)
   },
   /**
    * Set the motors into float mode. This will stop the motors without braking
    * and the position of the motors will not be maintained.
    * @see https://ev3dev-lang-java.github.io/docs/api/latest/ev3dev-lang-java/ev3dev/actuators/lego/motors/BaseRegulatedMotor.html#flt-boolean-
-   * @param {string}address board.port or nickname
+   * @param {string|string[]}addresses board.port or nickname
    * @param {boolean}[immediateReturn=true] if true do not wait for the action to complete.
    * @returns {bp.Event}
    */
-  flt: function (address, immediateReturn) {
+  flt: function (addresses, immediateReturn) {
     if (immediateReturn === undefined || immediateReturn === null) {
       immediateReturn = true
     }
-    return portCommand('flt', address, [immediateReturn])
+    let address = addresses
+    if (!Array.isArray(addresses)) {
+      address = [addresses]
+    }
+    address.map(a => portParams(a, [immediateReturn]))
+    return command('flt', address)
   },
   /**
    * Removes this motors from the motors regulation system. After this call
@@ -234,42 +282,49 @@ const engine = {
    * of the high level move operations (forward, rotate etc.), will
    * automatically enable regulation.
    * @see https://ev3dev-lang-java.github.io/docs/api/latest/ev3dev-lang-java/ev3dev/actuators/lego/motors/BaseRegulatedMotor.html#suspendRegulation--
-   * @param {string}address board.port or nickname
+   * @param {string|string[]}addresses board.port or nickname
    * @returns {bp.Event}
    */
-  suspendRegulation: function (address) {
-    return portCommand('suspendRegulation', address)
+  suspendRegulation: function (addresses) {
+    let address = addresses
+    if (!Array.isArray(addresses)) {
+      address = [addresses]
+    }
+    address.map(a => portParams(a, []))
+    return command('suspendRegulation', address)
   },
   /**
    * Causes motors to rotate forward until {@link engine.stop} or {@link engine.flt} is called.
    * @see https://ev3dev-lang-java.github.io/docs/api/latest/ev3dev-lang-java/ev3dev/actuators/lego/motors/BaseRegulatedMotor.html#forward--
-   * @param {string}address board.port or nickname
+   * @param {string|string[]}addresses board.port or nickname
    * @returns {bp.Event}
    */
-  forward: function (address) {
-    return portCommand('forward', address)
+  forward: function (addresses) {
+    let address = addresses
+    if (!Array.isArray(addresses)) {
+      address = [addresses]
+    }
+    address.map(a => portParams(a, []))
+    return command('forward', address)
   },
   /**
    * Causes motors to rotate backward until {@link engine.stop} or {@link engine.flt} is called.
    * @see https://ev3dev-lang-java.github.io/docs/api/latest/ev3dev-lang-java/ev3dev/actuators/lego/motors/BaseRegulatedMotor.html#forward--
-   * @param {string}address board.port or nickname
+   * @param {string|string[]}addresses board.port or nickname
    * @returns {bp.Event}
    */
-  backward: function (address) {
-    return portCommand('backward', address)
+  backward: function (addresses) {
+    let address = addresses
+    if (!Array.isArray(addresses)) {
+      address = [addresses]
+    }
+    address.map(a => portParams(a, []))
+    return command('backward', address)
   }
 }
 
+// Object.freeze(sensors)
 // Object.freeze(engine)
-
-/**
- * Subscribe to sensors readings.
- * @param {string|string[]}address board.port or nickname
- * @returns {bp.Event}
- */
-function subscribe(address) {
-  return portCommand('subscribe', address)
-}
 
 (() => {
   ctx.populateContext([
@@ -291,10 +346,10 @@ function subscribe(address) {
 
   ctx.registerEffect('SensorsData', function (data) {
     var obj = data.get()
-    if (obj === null || ''===obj) {
+    if (obj === null || '' === obj) {
       ctx.getEntityById('sensors').data = null
       ctx.getEntityById('changes').data = new java.util.HashSet()
-      return;
+      return
     }
     var json = JSON.parse(data)
     ctx.getEntityById('sensors').data = json
